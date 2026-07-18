@@ -17,6 +17,7 @@ function toBookData(b: Book): BookData {
     description: b.description,
     coverImage: b.cover_image,
     buyUrl: b.buy_url || '',
+    buyUrl2: b.buy_url_2 || undefined,
     quotes: Array.isArray(b.quotes) ? b.quotes : [],
   }
 }

@@ -29,15 +29,14 @@ richards-site/
 │   ├── books/
 │   │   ├── page.tsx            # All books
 │   │   └── [slug]/page.tsx     # Individual book page
-│   ├── journalism/
-│   │   ├── page.tsx            # Full journalism archive
+│   ├── articles/
+│   │   ├── page.tsx            # Full articles archive
 │   │   └── [category]/page.tsx # Category filtered view
 │   ├── contact/page.tsx        # Contact form
 │   ├── admin/                  # Password-protected admin panel
 │   │   ├── login/page.tsx      # Standalone login page
-│   │   ├── articles/           # Manage journalism
+│   │   ├── articles/           # Manage articles
 │   │   ├── books/              # Manage books
-│   │   ├── broadcasts/         # Email broadcasts
 │   │   ├── subscribers/        # Subscriber list
 │   │   ├── messages/           # Contact form submissions
 │   │   └── settings/           # Site settings
@@ -50,13 +49,13 @@ richards-site/
 │   ├── layout/                 # Navbar, Footer
 │   ├── home/                   # Homepage sections
 │   ├── books/                  # BookCard, QuoteDisplay
-│   ├── journalism/             # ArticleCard, CardStack, CategoryFilter
+│   ├── articles/             # ArticleCard, CardStack, CategoryFilter
 │   ├── subscribe/              # SubscribeForm
 │   ├── contact/                # ContactForm
 │   └── ui/                     # Button, Input, LoadingSpinner, ErrorMessage
 ├── emails/                     # React Email templates
 │   ├── WelcomeEmail.tsx
-│   ├── BroadcastEmail.tsx
+│   ├── (no BroadcastEmail.tsx — see PROGRESS.md, that feature was removed)
 │   └── ContactNotification.tsx
 ├── lib/
 │   ├── auth/session.ts         # JWT helpers
@@ -125,9 +124,8 @@ The admin panel lives at `/admin`. Access requires the credentials set in your e
 
 | Section | Path | Purpose |
 |---|---|---|
-| Articles | `/admin/articles` | Add, edit, delete journalism pieces |
+| Articles | `/admin/articles` | Add, edit, delete articles pieces |
 | Books | `/admin/books` | Manage book listings |
-| Broadcasts | `/admin/broadcasts` | Write and send email broadcasts |
 | Subscribers | `/admin/subscribers` | View and manage email list |
 | Messages | `/admin/messages` | Read contact form submissions |
 | Settings | `/admin/settings` | Site-wide settings |
@@ -153,7 +151,7 @@ For the custom domain, go to **Settings → Domains** and add `randolphrichards.
 
 **Tailwind v4.** Uses `@import "tailwindcss"` and `@theme {}` in CSS rather than a `tailwind.config.js`. Design tokens are CSS custom properties so they work in both Tailwind utilities and inline styles.
 
-**React Email.** All transactional emails use typed React components rendered server-side via `@react-email/render`. Each broadcast is rendered per-recipient so the unsubscribe URL is personalised.
+**React Email.** Transactional emails (welcome email, contact notification) use typed React components rendered server-side via `@react-email/render`.
 
 ---
 
@@ -182,7 +180,6 @@ vanilla-tilt@latest
 ## What's Left to Build
 
 - Homepage component split (extract `HeroSection`, `RecentWork`, `BooksShowcase`, `SubscribeSection`)
-- Admin component split (extract `Sidebar`, `ArticleForm`, `BroadcastComposer`)
 - Goodreads RSS feed + `ReviewCard` on book pages
 - JSON-LD structured data on book pages
 - Publication logos on About page (`/public/assets/publications/`)

@@ -152,18 +152,6 @@ export default function ArticleForm({ article, saving, token, onChange, onSave, 
           </select>
         </div>
 
-        {(article.status ?? 'published') === 'published' && (
-          <div>
-            <label style={labelStyle}>Notify subscribers after (minutes)</label>
-            <input style={fieldStyle} type="number" min={5} max={10080}
-              value={(article as any).send_delay_minutes ?? 30}
-              onChange={(e) => set({ send_delay_minutes: parseInt(e.target.value) || 30 } as any)} />
-            <p style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.3)', marginTop: '0.35rem', lineHeight: 1.5 }}>
-              Default 30. Range 5–10080 (7 days). Only fires once per article — editing again won&apos;t re-notify. Cancelled if unpublished or deleted first.
-            </p>
-          </div>
-        )}
-
         {/* EXCERPT */}
         <div style={{ gridColumn: '1/-1' }}>
           <label style={labelStyle}>Excerpt</label>

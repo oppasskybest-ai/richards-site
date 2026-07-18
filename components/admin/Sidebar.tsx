@@ -10,7 +10,6 @@ const NAV = [
   { label: 'Books',       href: '/admin/books',         icon: '▣' },
   { label: 'Events',      href: '/admin/events',        icon: '◆' },
   { label: 'Subscribers', href: '/admin/subscribers',   icon: '◎' },
-  { label: 'Broadcasts',  href: '/admin/broadcasts',    icon: '⊕' },
   { label: 'Messages',    href: '/admin/messages',      icon: '◇' },
   { label: 'Settings',    href: '/admin/settings',      icon: '⚙' },
 ]

@@ -78,7 +78,6 @@ export interface Event {
   register_url: string
   image: string
   status: 'upcoming' | 'past' | 'cancelled'
-  notified: boolean
   created_at: string
   updated_at: string
 }

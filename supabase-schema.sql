@@ -1,20 +1,50 @@
 -- ============================================================
--- Randolph Richards — Biblical Thoughts — Supabase Schema
--- Run this in your Supabase SQL Editor
+-- RANDOLPH RICHARDS — BIBLICAL THOUGHTS
+-- Supabase Schema — SINGLE FILE, run once in the Supabase SQL Editor
+-- ============================================================
+-- This is the only SQL file in the project. It creates every table,
+-- index, and Row Level Security (RLS) policy the app needs. Safe to
+-- re-run any time — every statement uses "if not exists" or
+-- "create or replace", so running it twice does nothing destructive.
+--
+-- After running this:
+--   1. Copy your Project URL + anon key + service role key into
+--      .env.local (see .env.local.example).
+--   2. Log into /admin and go to Settings → "Run Seed" to load the
+--      4 real books and 10 real articles from lib/config/. That
+--      button is idempotent too — safe to click more than once.
+--
+-- Table of contents:
+--   1. Core content:     subscribers, contact_messages, articles,
+--                        books, events, settings
+--   2. Comments:         comments (on articles)
+--   3. Testimonials:     reviews (homepage/endorsements),
+--                        book_reviews (per-book reader reviews)
+--   4. Row Level Security policies for all of the above
 -- ============================================================
 
--- SUBSCRIBERS
+
+-- ============================================================
+-- 1. CORE CONTENT
+-- ============================================================
+
 create table if not exists subscribers (
   id uuid primary key default gen_random_uuid(),
   email text not null unique,
   first_name text,
   status text not null default 'active' check (status in ('active', 'unsubscribed')),
+  -- What they've opted into. No automated sending exists in this project —
+  -- these are just filters for when Randy exports the CSV to email people
+  -- manually (per the master prompt: no automation, no send functionality).
+  wants_newsletter boolean not null default true,
+  wants_book_updates boolean not null default true,
+  wants_article_updates boolean not null default true,
+  wants_event_updates boolean not null default true,
   created_at timestamptz default now()
 );
 create index if not exists subscribers_email_idx on subscribers(email);
 create index if not exists subscribers_status_idx on subscribers(status);
 
--- CONTACT MESSAGES
 create table if not exists contact_messages (
   id uuid primary key default gen_random_uuid(),
   first_name text not null,
@@ -27,18 +57,8 @@ create table if not exists contact_messages (
 );
 create index if not exists contact_messages_status_idx on contact_messages(status);
 
--- BROADCASTS
-create table if not exists broadcasts (
-  id uuid primary key default gen_random_uuid(),
-  subject text not null,
-  body text not null,
-  status text not null default 'draft' check (status in ('draft', 'sent')),
-  sent_at timestamptz,
-  recipient_count int default 0,
-  created_at timestamptz default now()
-);
-
--- ARTICLES (for CMS override — site falls back to static config if table empty)
+-- Falls back to the static list in lib/config/articles.ts if this table is
+-- empty or unreachable, so the site works even before Supabase is wired up.
 create table if not exists articles (
   id uuid primary key default gen_random_uuid(),
   title text not null,
@@ -52,8 +72,9 @@ create table if not exists articles (
   featured boolean default false,
   status text not null default 'published' check (status in ('published','draft')),
   content_type text not null default 'external' check (content_type in ('external', 'native')),
-  content_html text,
+  content_html text,          -- full post body, used when content_type = 'native'
   pdf_url text,
+  comments_enabled boolean default false,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
@@ -61,7 +82,8 @@ create index if not exists articles_category_idx on articles(category);
 create index if not exists articles_date_idx on articles(date desc);
 create index if not exists articles_featured_idx on articles(featured);
 
--- BOOKS (for CMS override — site falls back to static config if table empty)
+-- Falls back to the static list in lib/config/books.ts if this table is
+-- empty or unreachable.
 create table if not exists books (
   id uuid primary key default gen_random_uuid(),
   slug text unique not null,
@@ -79,23 +101,6 @@ create table if not exists books (
   updated_at timestamptz default now()
 );
 
--- Reader/press reviews attached to a book (shown on the book detail page).
--- Randy's real reviews still need to be added — see PROGRESS.md.
-create table if not exists book_reviews (
-  id uuid primary key default gen_random_uuid(),
-  book_slug text not null,
-  reviewer text not null,
-  title text,
-  country text,
-  review_date text,
-  body text not null,
-  rating int default 5,
-  source text default 'reader',
-  status text default 'approved',
-  created_at timestamptz default now()
-);
-
--- EVENTS
 create table if not exists events (
   id uuid primary key default gen_random_uuid(),
   title text not null,
@@ -110,14 +115,12 @@ create table if not exists events (
   register_url text,
   image text,
   status text not null default 'upcoming' check (status in ('upcoming','past','cancelled')),
-  notified boolean default false,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
 create index if not exists events_date_idx on events(event_date desc);
 create index if not exists events_status_idx on events(status);
 
--- SETTINGS
 create table if not exists settings (
   id uuid primary key default gen_random_uuid(),
   site_title text default 'Biblical Thoughts',
@@ -132,43 +135,11 @@ create table if not exists settings (
   updated_at timestamptz default now()
 );
 
--- RLS: allow anon inserts on subscribers and messages; service role handles everything else
-alter table subscribers enable row level security;
-alter table contact_messages enable row level security;
-alter table broadcasts enable row level security;
-alter table articles enable row level security;
-alter table books enable row level security;
-alter table events enable row level security;
-alter table settings enable row level security;
-
--- Public can insert subscribers
-create policy "public_insert_subscribers" on subscribers for insert to anon with check (true);
--- Public can insert contact messages
-create policy "public_insert_contact" on contact_messages for insert to anon with check (true);
--- Service role bypass (all tables)
-create policy "service_all_subscribers" on subscribers for all to service_role using (true) with check (true);
-create policy "service_all_contact" on contact_messages for all to service_role using (true) with check (true);
-create policy "service_all_broadcasts" on broadcasts for all to service_role using (true) with check (true);
-create policy "service_all_articles" on articles for all to service_role using (true) with check (true);
-create policy "service_all_books" on books for all to service_role using (true) with check (true);
-create policy "service_all_events" on events for all to service_role using (true) with check (true);
-create policy "service_all_settings" on settings for all to service_role using (true) with check (true);
-
--- Public read for articles (published only)
-create policy "public_read_articles" on articles for select to anon using (status = 'published');
--- Public read for books
-create policy "public_read_books" on books for select to anon using (true);
--- Public read for events (upcoming and past, not cancelled)
-create policy "public_read_events" on events for select to anon using (status != 'cancelled');
 
 -- ============================================================
--- COMMENTS SYSTEM (Item 5) — run this block in Supabase SQL editor
+-- 2. COMMENTS (on articles)
 -- ============================================================
 
--- 1. Add comments_enabled toggle to articles table
-alter table articles add column if not exists comments_enabled boolean default false;
-
--- 2. Comments table
 create table if not exists comments (
   id uuid primary key default gen_random_uuid(),
   article_id uuid not null references articles(id) on delete cascade,
@@ -179,26 +150,17 @@ create table if not exists comments (
   parent_id uuid references comments(id) on delete cascade,
   created_at timestamptz default now()
 );
-
--- 3. RLS
-alter table comments enable row level security;
-
--- Public can read approved comments only
-create policy "Public read approved comments" on comments
-  for select using (status = 'approved');
-
--- Service role full access
-create policy "Service role full access comments" on comments
-  for all using (true);
-
--- Index for lookups
 create index if not exists comments_article_id_idx on comments(article_id);
 create index if not exists comments_status_idx on comments(status);
 
+
 -- ============================================================
--- REVIEWS SYSTEM (Item 4) — run this block in Supabase SQL editor
+-- 3. TESTIMONIALS
 -- ============================================================
 
+-- Homepage / Endorsements page quotes. Currently a single honest
+-- placeholder is shown until real quotes are added — see PROGRESS.md.
+-- Do not seed this with invented quotes.
 create table if not exists reviews (
   id uuid primary key default gen_random_uuid(),
   quote text not null,
@@ -208,20 +170,9 @@ create table if not exists reviews (
   status text not null default 'pending' check (status in ('pending','approved','rejected')),
   created_at timestamptz default now()
 );
-
-alter table reviews enable row level security;
-
-create policy "Public read approved reviews" on reviews
-  for select using (status = 'approved');
-
-create policy "Service role full access reviews" on reviews
-  for all using (true);
-
 create index if not exists reviews_status_idx on reviews(status);
 
--- ============================================================
--- BOOK REVIEWS TABLE (Amazon reader reviews per book)
--- ============================================================
+-- Per-book reader reviews, shown on each book's detail page.
 create table if not exists book_reviews (
   id uuid primary key default gen_random_uuid(),
   book_slug text not null,
@@ -230,19 +181,52 @@ create table if not exists book_reviews (
   country text,
   review_date text,
   body text not null,
-  rating int default 5,
-  source text default 'amazon',
-  status text default 'approved' check (status in ('pending','approved','rejected')),
+  rating int default 5 check (rating between 1 and 5),
+  source text default 'reader',
+  status text not null default 'approved' check (status in ('pending','approved','rejected')),
   created_at timestamptz default now()
 );
-
-alter table book_reviews enable row level security;
-
-create policy "Public read approved book reviews" on book_reviews
-  for select using (status = 'approved');
-
-create policy "Service role full access book reviews" on book_reviews
-  for all using (true);
-
 create index if not exists book_reviews_slug_idx on book_reviews(book_slug);
 create index if not exists book_reviews_status_idx on book_reviews(status);
+
+
+-- ============================================================
+-- 4. ROW LEVEL SECURITY
+-- ============================================================
+-- Public (anon) visitors can only INSERT into subscribers/contact_messages
+-- and SELECT published/approved content. Every write from the admin panel
+-- goes through the service role key on the server, which bypasses RLS —
+-- that's what supabaseAdmin in lib/supabase/server.ts uses.
+
+alter table subscribers enable row level security;
+alter table contact_messages enable row level security;
+alter table articles enable row level security;
+alter table books enable row level security;
+alter table events enable row level security;
+alter table settings enable row level security;
+alter table comments enable row level security;
+alter table reviews enable row level security;
+alter table book_reviews enable row level security;
+
+-- Public inserts (subscribe form, contact form)
+create policy "public_insert_subscribers" on subscribers for insert to anon with check (true);
+create policy "public_insert_contact" on contact_messages for insert to anon with check (true);
+
+-- Public reads (published/approved content only)
+create policy "public_read_articles" on articles for select to anon using (status = 'published');
+create policy "public_read_books" on books for select to anon using (true);
+create policy "public_read_events" on events for select to anon using (status != 'cancelled');
+create policy "public_read_comments" on comments for select using (status = 'approved');
+create policy "public_read_reviews" on reviews for select using (status = 'approved');
+create policy "public_read_book_reviews" on book_reviews for select using (status = 'approved');
+
+-- Service role bypass (admin panel — all tables, all operations)
+create policy "service_all_subscribers" on subscribers for all to service_role using (true) with check (true);
+create policy "service_all_contact" on contact_messages for all to service_role using (true) with check (true);
+create policy "service_all_articles" on articles for all to service_role using (true) with check (true);
+create policy "service_all_books" on books for all to service_role using (true) with check (true);
+create policy "service_all_events" on events for all to service_role using (true) with check (true);
+create policy "service_all_settings" on settings for all to service_role using (true) with check (true);
+create policy "service_all_comments" on comments for all using (true);
+create policy "service_all_reviews" on reviews for all using (true);
+create policy "service_all_book_reviews" on book_reviews for all using (true);

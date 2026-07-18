@@ -261,17 +261,6 @@ export default function AdminBooks() {
               <input style={fieldStyle} type="number" min={0} value={editing.order_index ?? 0} onChange={(e) => setEditing(v => ({ ...v, order_index: parseInt(e.target.value) || 0 }))} />
             </div>
 
-            {/* AUTO-NOTIFY DELAY — only relevant on creation; scheduling is one-time per book */}
-            {!editing.id && (
-              <div>
-                <label style={labelStyle}>Notify subscribers after (minutes)</label>
-                <input style={fieldStyle} type="number" min={5} max={10080} value={(editing as any).send_delay_minutes ?? 30}
-                  onChange={(e) => setEditing(v => ({ ...v, send_delay_minutes: parseInt(e.target.value) || 30 } as any))} />
-                <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.3)', marginTop: '0.35rem' }}>
-                  Default 30. Range 5–10080 (7 days). Cancelled automatically if you delete this book first.
-                </p>
-              </div>
-            )}
           </div>
 
           {/* QUOTES */}

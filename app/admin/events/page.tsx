@@ -37,7 +37,6 @@ export default function AdminEvents() {
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Partial<Event> | null>(null)
   const [saving, setSaving] = useState(false)
-  const [notifying, setNotifying] = useState<string | null>(null)
   const [toast, setToast] = useState('')
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3500) }
@@ -79,18 +78,6 @@ export default function AdminEvents() {
     } catch { showToast('Delete failed.') }
   }
 
-  const notify = async (id: string, title: string) => {
-    if (!confirm(`Notify all active subscribers about "${title}"? This sends a real email.`)) return
-    setNotifying(id)
-    try {
-      const res = await authFetch(`/api/admin/events/${id}/notify`, { method: 'POST' })
-      const d = await res.json()
-      if (res.ok) { showToast(`Notified ${d.sent} subscriber${d.sent === 1 ? '' : 's'}.`); load() }
-      else showToast(d.message || 'Notify failed.')
-    } catch { showToast('Notify failed.') }
-    setNotifying(null)
-  }
-
   return (
     <div style={{ padding: '2.5rem' }}>
       {toast && (
@@ -126,7 +113,7 @@ export default function AdminEvents() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                {['Title', 'Date', 'Type', 'Status', 'Notified', ''].map((h) => (
+                {['Title', 'Date', 'Type', 'Status', ''].map((h) => (
                   <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
@@ -150,18 +137,7 @@ export default function AdminEvents() {
                       {ev.status}
                     </span>
                   </td>
-                  <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: ev.notified ? '#5ad88a' : 'rgba(255,255,255,0.25)', whiteSpace: 'nowrap' }}>
-                    {ev.notified ? 'Yes' : '—'}
-                  </td>
                   <td style={{ padding: '0.85rem 1rem', whiteSpace: 'nowrap' }}>
-                    {!ev.notified && (
-                      <button
-                        onClick={() => notify(ev.id, ev.title)}
-                        disabled={notifying === ev.id}
-                        style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.72rem', cursor: notifying === ev.id ? 'not-allowed' : 'pointer', marginRight: '0.75rem', opacity: notifying === ev.id ? 0.5 : 1 }}>
-                        {notifying === ev.id ? 'Sending…' : 'Notify'}
-                      </button>
-                    )}
                     <button onClick={() => setEditing(ev)} style={{ background: 'none', border: 'none', color: 'var(--gold-light)', fontSize: '0.72rem', cursor: 'pointer', marginRight: '0.75rem' }}>Edit</button>
                     <button onClick={() => del(ev.id, ev.title)} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.6)', fontSize: '0.72rem', cursor: 'pointer' }}>Delete</button>
                   </td>
@@ -247,17 +223,6 @@ export default function AdminEvents() {
                 <option value="cancelled">Cancelled</option>
               </select>
             </div>
-
-            {!editing.id && (
-              <div>
-                <label style={labelStyle}>Notify subscribers after (minutes)</label>
-                <input style={fieldStyle} type="number" min={5} max={10080} value={(editing as any).send_delay_minutes ?? 30}
-                  onChange={(e) => setEditing(v => ({ ...v, send_delay_minutes: parseInt(e.target.value) || 30 } as any))} />
-                <p style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.3)', marginTop: '0.35rem', lineHeight: 1.5 }}>
-                  Default 30. You can still use the manual "Notify subscribers" button on this event anytime — doing so cancels this auto-send.
-                </p>
-              </div>
-            )}
           </div>
 
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.75rem', justifyContent: 'flex-end' }}>

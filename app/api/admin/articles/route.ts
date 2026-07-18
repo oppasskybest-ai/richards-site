@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase/server'
 import { isAuthenticated } from '@/lib/auth/session'
-import { scheduleAutoBroadcast } from '@/lib/broadcast/scheduleBroadcast'
 
 function buildArticleLink(article: { content_type?: string; category: string; slug?: string | null; url: string }) {
   if (article.content_type === 'native' && article.slug) {
@@ -43,19 +42,6 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await supabaseAdmin.from('articles').insert(body).select().single()
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-    if (data.status === 'published') {
-      const subject = `New article: ${data.title}`
-      const bodyParts = [data.excerpt || '', `Read it: ${buildArticleLink(data)}`].filter(Boolean)
-      await scheduleAutoBroadcast({
-        sourceType: 'article',
-        sourceId: data.id,
-        subject,
-        body: bodyParts.join('\n\n'),
-        preferenceColumn: 'wants_article_updates',
-        delayMinutes: send_delay_minutes,
-      })
-    }
 
     return NextResponse.json(data, { status: 201 })
   } catch (err) {

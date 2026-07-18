@@ -199,6 +199,89 @@ genuinely doesn't exist on either side, front or back.
 
 ---
 
+# SESSION 3 (2026-07-18, same day) -- REMOVED AUTOMATED EMAIL SYSTEM, TRUE SQL CONSOLIDATION
+
+Randy caught two more real things: an actual cron-based automated email
+system still running in the codebase, and that "one SQL file" wasn't
+really one file yet, plus color values weren't as centralized as claimed.
+
+**1. Found and removed a full automated broadcast/cron system.** This was
+explicitly out of scope per the master prompt ("Not in scope: automated
+email workflows"), and it was real, working infrastructure, not just
+leftover text:
+- A `scheduled_broadcasts` table + pg_cron job (via Supabase Edge
+  Functions, `supabase/functions/process-scheduled-broadcasts/`) that ran
+  every 5 minutes and auto-emailed every subscriber whenever a book,
+  article, or event was published -- with a configurable delay.
+- A manual "Notify subscribers" button on the Events admin page that mass-
+  emailed every active subscriber on demand.
+- A full `/admin/broadcasts` compose-and-send newsletter UI.
+- All of it deleted: `app/admin/broadcasts/`, `app/api/admin/broadcasts/`,
+  `app/api/admin/scheduled-broadcasts/`, `app/api/admin/events/[id]/notify/`,
+  `lib/broadcast/`, `lib/email/sendBroadcast.ts`, `emails/BroadcastEmail.tsx`,
+  `components/admin/BroadcastComposer.tsx`,
+  `supabase/functions/process-scheduled-broadcasts/`,
+  `supabase-auto-broadcast-migration.sql`. Also removed the calls into this
+  system from the articles/books/events create/update/delete API routes
+  (they were importing and calling `scheduleAutoBroadcast`/
+  `cancelScheduledBroadcast` on every save), the now-dead `broadcasts`
+  table and its RLS policy, the dead `notified` column on `events`, and
+  the "Notify subscribers after (minutes)" input that was still showing
+  in the Articles/Books/Events admin forms even though nothing behind it
+  worked anymore.
+- **What's left, by design:** the `subscribers` table (people can still
+  sign up) and CSV export from Admin -> Subscribers. No sending
+  functionality at all -- exactly what the master prompt asked for
+  ("Emails are stored and can be exported as a CSV... No automation, no
+  send functionality. That's it.").
+
+**2. Actually consolidated to one SQL file, and fixed a duplicate-table
+bug in the process.** The earlier "single schema file" claim was true in
+file *count* but the file itself had grown by accretion (a base schema
+plus three appended sections from different points in duff-site's
+history) and had genuinely duplicated the `book_reviews` table
+definition with two different rating/status constraints. Also, two
+migration files still existed alongside it
+(`supabase-events-migration.sql`, `supabase-subscriber-preferences-migration.sql`)
+that were 100% redundant -- everything in them already existed in the main
+schema. Fixed: rewrote `supabase-schema.sql` from scratch as one
+logically-sectioned file (core content -> comments -> testimonials -> RLS),
+zero duplication, with a table-by-table comment explaining what each one
+is for. Deleted both redundant migration files. There is now exactly one
+`.sql` file in the project.
+
+**3. Wrote `SUPABASE.md`** -- a single dedicated doc covering setup, a
+table-by-table rundown, how RLS actually works here, and a full
+walkthrough of exactly how the seed button avoids conflicts (traced
+against the actual code, not asserted). `SETUP.md` now points to it
+instead of duplicating instructions.
+
+**4. Traced the actual Supabase -> frontend read path and found one more
+real bug.** `lib/data/books.ts`'s `toBookData()` -- the function that
+converts a database row back into what the public pages render -- was
+silently dropping the `buy_url_2` field. That means even after fixing the
+seed route in Session 2, once a book came back *from* Supabase (rather
+than the static fallback), its second buy link would have vanished on
+the live site. Fixed by adding the missing field to the mapper. This is
+the same category of bug as the Session 2 seed-route issue: the database
+had the right data, but a specific piece of frontend code wasn't reading
+all of it back out.
+
+**5. Verified -- not just claimed -- that the color scheme really is
+single-source now.** Re-ran the hex-literal search after all of Session 3's
+edits: zero hardcoded ink/paper/gold/gold-light/brick hex values remain in
+`app/`, `components/`, or `lib/`. Every one is a `var(--token)` or
+`rgba(var(--token-rgb),N)` reference back to the one documented block at
+the top of `styles/globals.css`.
+
+**6. `npm run lint` error count dropped from 17 to 13** as a side effect
+of removing the broadcast admin page (it had its own `set-state-in-effect`
+patterns). The remaining 13 are unchanged from Session 2 -- all
+pre-existing patterns in code that wasn't touched, still non-blocking for
+`next build`.
+
+---
+
 
 
 1. Podcasts -- doesn't exist yet. No Supabase table, no admin tab, no
@@ -243,15 +326,15 @@ genuinely doesn't exist on either side, front or back.
 9. Only reviewed the content visible in the one PDF screenshot (page 1 of
    his blog) plus image-map.txt -- the rest of the 465-page HTML scrape
    hasn't been sorted for additional usable blog history yet.
-10. Scope trim not done. Per the master prompt's budget rules, this
-    codebase (inherited from a different, bigger project) still includes
-    features beyond Randy's 4-type scope: broadcast/newsletter emails,
-    5-star book reviews with a submission form, an events/conferences
-    system, Goodreads RSS parsing. All of it currently works -- nothing is
-    broken -- but it should be reviewed against the $500/zero-cost budget
-    and trimmed before final handoff, per Rule 1 and Rule 2 in the master
-    prompt. Flagging rather than deleting, since removal is a scope
-    decision, not a build task.
+10. Scope trim partially done. Broadcast/newsletter automation was removed
+    in Session 3 (see above) -- that was the biggest one. Still remaining,
+    per the master prompt's budget rules: 5-star book reviews with a
+    submission form, an events/conferences system, Goodreads RSS parsing.
+    All of it currently works -- nothing is broken -- but it should be
+    reviewed against the $500/zero-cost budget and trimmed before final
+    handoff, per Rule 1 and Rule 2 in the master prompt. Flagging rather
+    than deleting, since removal is a scope decision Randy should confirm,
+    not something to assume.
 11. No live QA yet -- mobile pass, full link check, a real end-to-end test
     of the contact form actually landing in Randy's Gmail, and a CSV
     export test all still need to happen once this is deployed somewhere.

@@ -12,9 +12,11 @@
 
 ## 1. Supabase Setup
 
-1. Create a project at [supabase.com](https://supabase.com)
-2. Go to **SQL Editor** and run the entire contents of `supabase-schema.sql`
-3. Copy your project URL and API keys from **Settings → API**
+See **SUPABASE.md** — it's the single file covering the whole database:
+schema, security rules, how the seed button works, everything. Short
+version: create a project, run `supabase-schema.sql` once in the SQL
+Editor, copy your keys into `.env.local`, then use the Run Seed button in
+Admin → Settings.
 
 ---
 
@@ -87,10 +89,9 @@ Go to `/admin`. Default credentials are set via env vars:
 - Password: value of `ADMIN_PASSWORD`
 
 ### What the admin panel does:
-- **Articles** — Add, edit, delete journalism pieces (overrides static config)
+- **Articles** — Add, edit, delete articles (overrides static config)
 - **Books** — View the static book configuration
 - **Subscribers** — View, search, export active/unsubscribed list
-- **Broadcasts** — Compose and send email newsletters to all active subscribers
 - **Messages** — Read and reply to contact form submissions
 - **Settings** — View site config and env var requirements
 
@@ -136,7 +137,6 @@ app/
     articles/page.tsx
     books/page.tsx
     subscribers/page.tsx
-    broadcasts/page.tsx
     messages/page.tsx
     settings/page.tsx
   api/                  — All API routes
