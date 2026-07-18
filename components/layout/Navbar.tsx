@@ -38,7 +38,7 @@ export default function Navbar() {
       transition: 'all 0.35s ease',
       background: scrolled ? 'rgba(15,15,15,0.95)' : 'transparent',
       backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(15,92,115,0.18)' : 'none',
+      borderBottom: scrolled ? '1px solid rgba(var(--gold-rgb),0.18)' : 'none',
       padding: scrolled ? '0.85rem 0' : '1.5rem 0',
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -48,7 +48,7 @@ export default function Navbar() {
             <span style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.1rem', fontWeight: 400, color: 'white', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               E. Randolph Richards
             </span>
-            <span style={{ fontFamily: '"Inter", sans-serif', fontSize: '0.6rem', fontWeight: 300, color: 'rgba(15,92,115,0.9)', letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: '2px' }}>
+            <span style={{ fontFamily: '"Inter", sans-serif', fontSize: '0.6rem', fontWeight: 300, color: 'rgba(var(--gold-rgb),0.9)', letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: '2px' }}>
               Biblical Thoughts
             </span>
           </div>
@@ -73,7 +73,7 @@ export default function Navbar() {
                 <div style={{
                   position: 'absolute', top: '100%', left: 0,
                   background: 'rgba(15,15,15,0.97)', backdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(15,92,115,0.15)', minWidth: '210px', padding: '0.5rem 0',
+                  border: '1px solid rgba(var(--gold-rgb),0.15)', minWidth: '210px', padding: '0.5rem 0',
                 }}>
                   {link.children.map((child) => (
                     <Link key={child.label} href={child.href} style={{
@@ -83,7 +83,7 @@ export default function Navbar() {
                       padding: '0.7rem 1.5rem', borderLeft: '2px solid transparent',
                       transition: 'all 0.2s ease',
                     }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#17798f'; (e.currentTarget as HTMLElement).style.borderLeftColor = '#0f5c73'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--gold-light)'; (e.currentTarget as HTMLElement).style.borderLeftColor = 'var(--gold)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)'; (e.currentTarget as HTMLElement).style.borderLeftColor = 'transparent'; }}>
                       {child.label}
                     </Link>
@@ -111,7 +111,7 @@ export default function Navbar() {
 
       {/* MOBILE MENU */}
       {menuOpen && (
-        <div style={{ background: 'rgba(12,12,12,0.99)', padding: '1.5rem 2rem', borderTop: '1px solid rgba(15,92,115,0.15)' }}>
+        <div style={{ background: 'rgba(12,12,12,0.99)', padding: '1.5rem 2rem', borderTop: '1px solid rgba(var(--gold-rgb),0.15)' }}>
           {NAV_LINKS.map((link) => (
             <div key={link.label}>
               <Link href={link.href} onClick={() => setMenuOpen(false)} className="nav-link-mobile" style={{
@@ -124,7 +124,7 @@ export default function Navbar() {
               </Link>
               {link.children && menuOpen && link.children.map((child) => (
                 <Link key={child.label} href={child.href} onClick={() => setMenuOpen(false)} style={{
-                  display: 'block', color: 'rgba(15,92,115,0.85)', fontSize: '0.72rem',
+                  display: 'block', color: 'rgba(var(--gold-rgb),0.85)', fontSize: '0.72rem',
                   letterSpacing: '0.1em', textTransform: 'uppercase',
                   fontFamily: '"Inter", sans-serif', fontWeight: 300,
                   padding: '0.55rem 1rem', borderBottom: '1px solid rgba(255,255,255,0.04)',

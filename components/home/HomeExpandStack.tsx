@@ -44,7 +44,7 @@ interface Props {
 export default function HomeExpandStack({
   cards,
   label,
-  accent = '#0f5c73',
+  accent = 'var(--gold)',
   bgColor = 'rgba(8,18,32,0.97)',
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(false)

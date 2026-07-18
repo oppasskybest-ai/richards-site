@@ -62,7 +62,7 @@ export default async function BookReviews({ bookSlug }: Props) {
           fontSize: 'clamp(1.3rem,2.2vw,1.7rem)',
           fontWeight: 400,
           letterSpacing: '-0.01em',
-          color: '#1c1a17',
+          color: 'var(--ink)',
         }}>
           Reader Reviews
         </h2>
@@ -97,7 +97,7 @@ export default async function BookReviews({ bookSlug }: Props) {
                 {getInitials(r.reviewer)}
               </div>
               <div>
-                <div style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.85rem', color: '#1c1a17' }}>
+                <div style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.85rem', color: 'var(--ink)' }}>
                   {r.reviewer}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '2px' }}>

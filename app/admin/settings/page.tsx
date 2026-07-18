@@ -108,28 +108,27 @@ export default function AdminSettings() {
 
       {/* SITE INFO */}
       <div style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '1.75rem', marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Site Information</p>
+        <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Site Information</p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           {[
             { label: 'Site URL', value: 'randolphrichards.com' },
             { label: 'Admin Email', value: 'e.randolph.richards@gmail.com' },
             { label: 'From Email', value: 'hello@randolphrichards.com' },
-            { label: 'Agent Email', value: 'dkuhn@aevitascreative.com' },
           ].map((f) => (
             <div key={f.label}>
-              <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.35rem' }}>{f.label}</p>
+              <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.6)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.35rem' }}>{f.label}</p>
               <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', padding: '0.6rem 0.85rem', background: 'rgba(255,255,255,0.04)', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.06)' }}>{f.value}</p>
             </div>
           ))}
         </div>
         <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.25)', marginTop: '1rem', lineHeight: 1.6 }}>
-          Update site information in the <code style={{ color: '#17798f' }}>.env.local</code> file or via your deployment platform environment variables.
+          Update site information in the <code style={{ color: 'var(--gold-light)' }}>.env.local</code> file or via your deployment platform environment variables.
         </p>
       </div>
 
       {/* ENV VARS REMINDER */}
       <div style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '1.75rem', marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Required Environment Variables</p>
+        <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Required Environment Variables</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {[
             'NEXT_PUBLIC_SUPABASE_URL',
@@ -141,7 +140,7 @@ export default function AdminSettings() {
             'ADMIN_SESSION_SECRET',
           ].map((v) => (
             <div key={v} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.85rem', background: 'rgba(255,255,255,0.03)', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <code style={{ fontSize: '0.78rem', color: '#17798f', fontFamily: '"JetBrains Mono", monospace' }}>{v}</code>
+              <code style={{ fontSize: '0.78rem', color: 'var(--gold-light)', fontFamily: '"JetBrains Mono", monospace' }}>{v}</code>
             </div>
           ))}
         </div>
@@ -149,7 +148,7 @@ export default function AdminSettings() {
 
       {/* SECURITY */}
       <div style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '1.75rem', marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Session</p>
+        <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Session</p>
         <button onClick={logout} style={{ padding: '0.65rem 1.25rem', background: 'transparent', border: '1px solid rgba(255,80,80,0.25)', color: 'rgba(255,100,100,0.7)', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
           Sign Out
         </button>

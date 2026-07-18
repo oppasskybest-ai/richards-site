@@ -24,7 +24,7 @@ const fieldStyle: React.CSSProperties = {
 }
 
 const labelStyle: React.CSSProperties = {
-  display: 'block', fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)',
+  display: 'block', fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)',
   letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.4rem',
 }
 
@@ -69,8 +69,8 @@ export default function ArticleForm({ article, saving, token, onChange, onSave, 
             onClick={() => set({ content_type: 'external', content_html: null })}
             style={{
               flex: 1, padding: '0.7rem 1rem',
-              background: !isNative ? 'rgba(15,92,115,0.18)' : 'rgba(255,255,255,0.04)',
-              border: !isNative ? '1px solid rgba(15,92,115,0.45)' : '1px solid rgba(255,255,255,0.1)',
+              background: !isNative ? 'rgba(var(--gold-rgb),0.18)' : 'rgba(255,255,255,0.04)',
+              border: !isNative ? '1px solid rgba(var(--gold-rgb),0.45)' : '1px solid rgba(255,255,255,0.1)',
               color: !isNative ? '#e8c989' : 'rgba(255,255,255,0.45)',
               fontSize: '0.78rem', cursor: 'pointer', borderRadius: '2px',
               fontFamily: '"Inter", sans-serif',
@@ -86,8 +86,8 @@ export default function ArticleForm({ article, saving, token, onChange, onSave, 
             onClick={() => set({ content_type: 'native', url: '' })}
             style={{
               flex: 1, padding: '0.7rem 1rem',
-              background: isNative ? 'rgba(15,92,115,0.18)' : 'rgba(255,255,255,0.04)',
-              border: isNative ? '1px solid rgba(15,92,115,0.45)' : '1px solid rgba(255,255,255,0.1)',
+              background: isNative ? 'rgba(var(--gold-rgb),0.18)' : 'rgba(255,255,255,0.04)',
+              border: isNative ? '1px solid rgba(var(--gold-rgb),0.45)' : '1px solid rgba(255,255,255,0.1)',
               color: isNative ? '#e8c989' : 'rgba(255,255,255,0.45)',
               fontSize: '0.78rem', cursor: 'pointer', borderRadius: '2px',
               fontFamily: '"Inter", sans-serif',
@@ -159,7 +159,7 @@ export default function ArticleForm({ article, saving, token, onChange, onSave, 
               value={(article as any).send_delay_minutes ?? 30}
               onChange={(e) => set({ send_delay_minutes: parseInt(e.target.value) || 30 } as any)} />
             <p style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.3)', marginTop: '0.35rem', lineHeight: 1.5 }}>
-              Default 30. Range 5–10080 (7 days). Only fires once per article — editing again won't re-notify. Cancelled if unpublished or deleted first.
+              Default 30. Range 5–10080 (7 days). Only fires once per article — editing again won&apos;t re-notify. Cancelled if unpublished or deleted first.
             </p>
           </div>
         )}
@@ -183,7 +183,7 @@ export default function ArticleForm({ article, saving, token, onChange, onSave, 
 
         {/* FEATURED */}
         <div style={{ gridColumn: '1/-1', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <input type="checkbox" id="article-featured" checked={article.featured ?? false} onChange={(e) => set({ featured: e.target.checked })} style={{ accentColor: '#0f5c73', width: '14px', height: '14px' }} />
+          <input type="checkbox" id="article-featured" checked={article.featured ?? false} onChange={(e) => set({ featured: e.target.checked })} style={{ accentColor: 'var(--gold)', width: '14px', height: '14px' }} />
           <label htmlFor="article-featured" style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>
             Featured — shows on homepage
           </label>
@@ -192,7 +192,7 @@ export default function ArticleForm({ article, saving, token, onChange, onSave, 
         {/* COMMENTS TOGGLE — native articles only */}
         {isNative && (
           <div style={{ gridColumn: '1/-1', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <input type="checkbox" id="article-comments" checked={article.comments_enabled ?? false} onChange={(e) => set({ comments_enabled: e.target.checked })} style={{ accentColor: '#0f5c73', width: '14px', height: '14px' }} />
+            <input type="checkbox" id="article-comments" checked={article.comments_enabled ?? false} onChange={(e) => set({ comments_enabled: e.target.checked })} style={{ accentColor: 'var(--gold)', width: '14px', height: '14px' }} />
             <label htmlFor="article-comments" style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', cursor: 'pointer' }}>
               Enable comments on this article
             </label>
@@ -251,7 +251,7 @@ export default function ArticleForm({ article, saving, token, onChange, onSave, 
           Cancel
         </button>
         <button onClick={onSave} disabled={!canSave}
-          style={{ padding: '0.65rem 1.5rem', background: '#0f5c73', color: 'white', border: 'none', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: canSave ? 'pointer' : 'not-allowed', borderRadius: '2px', opacity: saving ? 0.7 : 1 }}>
+          style={{ padding: '0.65rem 1.5rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: canSave ? 'pointer' : 'not-allowed', borderRadius: '2px', opacity: saving ? 0.7 : 1 }}>
           {saving ? 'Saving…' : 'Save Article'}
         </button>
       </div>

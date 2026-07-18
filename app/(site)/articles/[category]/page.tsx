@@ -71,7 +71,7 @@ export default async function CategoryPage({ params }: Props) {
             href="/articles"
             style={{
               fontSize: '0.62rem', letterSpacing: '0.18em',
-              textTransform: 'uppercase', color: 'rgba(15,92,115,0.7)',
+              textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.7)',
               fontFamily: '"Inter", sans-serif', display: 'inline-block',
               marginBottom: '1.5rem',
             }}
@@ -131,7 +131,7 @@ export default async function CategoryPage({ params }: Props) {
           {featuredBook && (
             <div style={{
               background: 'white', border: '1px solid rgba(0,0,0,0.08)',
-              borderLeft: '4px solid #0f5c73',
+              borderLeft: '4px solid var(--gold)',
               padding: '1.75rem 2rem', marginBottom: '3.5rem',
               display: 'flex', gap: '2rem', alignItems: 'center',
               flexWrap: 'wrap', borderRadius: '0 2px 2px 0',
@@ -149,14 +149,14 @@ export default async function CategoryPage({ params }: Props) {
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{
-                  fontSize: '0.6rem', color: '#0f5c73', letterSpacing: '0.16em',
+                  fontSize: '0.6rem', color: 'var(--gold)', letterSpacing: '0.16em',
                   textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', marginBottom: '0.35rem',
                 }}>
                   Related Book
                 </p>
                 <h3 style={{
                   fontFamily: '"Playfair Display", serif', fontSize: '1.1rem',
-                  fontWeight: 400, color: '#1c1a17', marginBottom: '0.35rem',
+                  fontWeight: 400, color: 'var(--ink)', marginBottom: '0.35rem',
                 }}>
                   {featuredBook.title}
                 </h3>
@@ -170,7 +170,7 @@ export default async function CategoryPage({ params }: Props) {
                   href={`/books/${featuredBook.slug}`}
                   style={{
                     fontSize: '0.65rem', letterSpacing: '0.12em',
-                    textTransform: 'uppercase', color: '#0f5c73',
+                    textTransform: 'uppercase', color: 'var(--gold)',
                     fontFamily: '"Inter", sans-serif', fontWeight: 500,
                   }}
                 >

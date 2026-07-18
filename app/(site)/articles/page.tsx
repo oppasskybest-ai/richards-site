@@ -26,7 +26,7 @@ export default async function JournalismPage() {
         <div className="container-wide" style={{ zIndex: 2, textAlign: 'center' }}>
           <p style={{
             fontSize: '0.68rem', letterSpacing: '0.24em', textTransform: 'uppercase',
-            color: 'rgba(15,92,115,0.9)', fontFamily: '"Inter", sans-serif', marginBottom: '1.25rem',
+            color: 'rgba(var(--gold-rgb),0.9)', fontFamily: '"Inter", sans-serif', marginBottom: '1.25rem',
           }}>
             Journalism
           </p>
@@ -73,7 +73,7 @@ export default async function JournalismPage() {
           <div className="rule-line" style={{ marginBottom: '1.25rem' }} />
           <h2 style={{
             fontFamily: '"Playfair Display", serif', fontSize: '1.6rem',
-            fontWeight: 400, marginBottom: '2.5rem', color: '#1c1a17',
+            fontWeight: 400, marginBottom: '2.5rem', color: 'var(--ink)',
           }}>
             Recent additions
           </h2>

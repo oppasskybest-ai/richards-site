@@ -63,7 +63,7 @@ function LoginForm() {
       <div style={{
         width: '340px',
         background: '#111',
-        border: '1px solid rgba(15,92,115,0.2)',
+        border: '1px solid rgba(var(--gold-rgb),0.2)',
         borderRadius: '4px',
         padding: '2.5rem',
       }}>
@@ -79,7 +79,7 @@ function LoginForm() {
           </p>
           <p style={{
             fontSize: '0.62rem',
-            color: 'rgba(15,92,115,0.7)',
+            color: 'rgba(var(--gold-rgb),0.7)',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
           }}>
@@ -150,7 +150,7 @@ function LoginForm() {
           style={{
             width: '100%',
             padding: '0.8rem',
-            background: loading ? 'rgba(15,92,115,0.6)' : '#0f5c73',
+            background: loading ? 'rgba(var(--gold-rgb),0.6)' : 'var(--gold)',
             color: 'white',
             border: 'none',
             fontSize: '0.7rem',

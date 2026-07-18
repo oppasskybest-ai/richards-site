@@ -48,24 +48,24 @@ Fill in:
 
 ## 4. Assets
 
-Place the following files in `public/assets/images/`:
+Real images are already included in `public/assets/images/` (pulled from the
+`sorted-assets.zip` scrape of the live site):
 
 ```
 books/
-  tickled.jpg
-  the-golden-passport.jpg
-  the-firm.jpg
-  last-man-standing.jpg
-  the-ceo.jpg
+  misreading-scripture.jpg
+  rediscovering-jesus.jpg
+  book-cover-2d-ed-of-rediscovering-paul.jpg
+  little-book.jpg
 
 portraits/
   speaking-photo.jpg
-
-misc/
-  favicon.ico
+  grandkids-2025.jpg
+  img_1958.jpg
 ```
 
-These can be sourced from the original `randolphrichards.com` scraped assets.
+Still missing (see PROGRESS.md): `misc/favicon.ico`, `misc/og-default.jpg`,
+`misc/apple-touch-icon.png`, and any podcast/media logo SVGs.
 
 ---
 

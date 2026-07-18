@@ -62,7 +62,7 @@ export default function AdminSubscribers() {
           <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.8rem', color: 'white', fontWeight: 400, marginBottom: '0.25rem' }}>Subscribers</h1>
           <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)' }}>{total} {tab}</p>
         </div>
-        <button onClick={exportCSV} style={{ padding: '0.6rem 1.2rem', background: 'transparent', border: '1px solid rgba(15,92,115,0.4)', color: '#17798f', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
+        <button onClick={exportCSV} style={{ padding: '0.6rem 1.2rem', background: 'transparent', border: '1px solid rgba(var(--gold-rgb),0.4)', color: 'var(--gold-light)', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
           Export CSV
         </button>
       </div>
@@ -71,7 +71,7 @@ export default function AdminSubscribers() {
       <div style={{ display: 'flex', gap: '0', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         {(['active', 'unsubscribed'] as const).map((t) => (
           <button key={t} onClick={() => { setTab(t); setPage(1) }}
-            style={{ padding: '0.7rem 1.25rem', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t ? '#0f5c73' : 'transparent'}`, color: tab === t ? '#17798f' : 'rgba(255,255,255,0.35)', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s', marginBottom: '-1px' }}>
+            style={{ padding: '0.7rem 1.25rem', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t ? 'var(--gold)' : 'transparent'}`, color: tab === t ? 'var(--gold-light)' : 'rgba(255,255,255,0.35)', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s', marginBottom: '-1px' }}>
             {t}
           </button>
         ))}
@@ -94,7 +94,7 @@ export default function AdminSubscribers() {
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 {['Email', 'Name', 'Subscribed', ''].map((h) => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.6)', fontWeight: 400 }}>{h}</th>
+                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>

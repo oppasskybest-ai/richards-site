@@ -73,7 +73,7 @@ export default function AdminArticles() {
           <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)' }}>{total} total</p>
         </div>
         <button onClick={() => setEditing({ ...EMPTY })}
-          style={{ padding: '0.65rem 1.4rem', background: '#0f5c73', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
+          style={{ padding: '0.65rem 1.4rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
           + Add Article
         </button>
       </div>
@@ -100,7 +100,7 @@ export default function AdminArticles() {
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 {['Title', 'Publication', 'Category', 'Pub. Date', 'Posted', ''].map((h) => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.6)', fontWeight: 400 }}>{h}</th>
+                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -111,14 +111,14 @@ export default function AdminArticles() {
                   onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)', maxWidth: '280px' }}>
                     <p style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.title}</p>
-                    {a.featured && <span style={{ fontSize: '0.58rem', color: '#17798f', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Featured</span>}
+                    {a.featured && <span style={{ fontSize: '0.58rem', color: 'var(--gold-light)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Featured</span>}
                   </td>
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)', whiteSpace: 'nowrap' }}>{a.publication}</td>
-                  <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(15,92,115,0.7)', whiteSpace: 'nowrap' }}>{CATEGORY_LABELS[a.category as keyof typeof CATEGORY_LABELS]}</td>
+                  <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(var(--gold-rgb),0.7)', whiteSpace: 'nowrap' }}>{CATEGORY_LABELS[a.category as keyof typeof CATEGORY_LABELS]}</td>
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)', whiteSpace: 'nowrap' }}>{a.date?.slice(0, 10)}</td>
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.25)', whiteSpace: 'nowrap' }}>{a.created_at?.slice(0, 10)}</td>
                   <td style={{ padding: '0.85rem 1rem', whiteSpace: 'nowrap' }}>
-                    <button onClick={() => setEditing(a)} style={{ background: 'none', border: 'none', color: '#17798f', fontSize: '0.72rem', cursor: 'pointer', marginRight: '0.75rem' }}>Edit</button>
+                    <button onClick={() => setEditing(a)} style={{ background: 'none', border: 'none', color: 'var(--gold-light)', fontSize: '0.72rem', cursor: 'pointer', marginRight: '0.75rem' }}>Edit</button>
                     <button onClick={() => del(a.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.6)', fontSize: '0.72rem', cursor: 'pointer' }}>Delete</button>
                   </td>
                 </tr>

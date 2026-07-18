@@ -20,7 +20,7 @@ function Stars({ rating }: { rating: number }) {
           aria-hidden="true"
           style={{
             fontSize: '0.85rem',
-            color: s <= clamped ? '#0f5c73' : 'rgba(0,0,0,0.15)',
+            color: s <= clamped ? 'var(--gold)' : 'rgba(0,0,0,0.15)',
           }}
         >
           ★
@@ -43,15 +43,15 @@ function Initials({ name }: { name: string }) {
       aria-hidden="true"
       style={{
         width: '36px', height: '36px', borderRadius: '50%',
-        background: 'rgba(15,92,115,0.12)',
-        border: '1px solid rgba(15,92,115,0.22)',
+        background: 'rgba(var(--gold-rgb),0.12)',
+        border: '1px solid rgba(var(--gold-rgb),0.22)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0,
       }}
     >
       <span style={{
         fontFamily: '"Playfair Display", serif',
-        fontSize: '0.82rem', color: '#0f5c73', lineHeight: 1,
+        fontSize: '0.82rem', color: 'var(--gold)', lineHeight: 1,
       }}>
         {letters}
       </span>
@@ -76,13 +76,13 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, variant = 'dark' }) => {
   const isDark = variant === 'dark'
   const cardBg  = isDark ? 'rgba(255,255,255,0.04)' : 'white'
   const cardBorder = isDark
-    ? '1px solid rgba(15,92,115,0.18)'
+    ? '1px solid rgba(var(--gold-rgb),0.18)'
     : '1px solid rgba(0,0,0,0.08)'
   const quoteColor  = isDark ? 'rgba(255,255,255,0.82)' : '#1c1c1c'
-  const nameColor   = '#0f5c73'
+  const nameColor   = 'var(--gold)'
   const locationColor = isDark ? 'rgba(255,255,255,0.3)' : '#999'
   const dateColor     = isDark ? 'rgba(255,255,255,0.22)' : '#bbb'
-  const bigQuoteMark  = isDark ? 'rgba(15,92,115,0.14)' : 'rgba(15,92,115,0.1)'
+  const bigQuoteMark  = isDark ? 'rgba(var(--gold-rgb),0.14)' : 'rgba(var(--gold-rgb),0.1)'
 
   return (
     <article
@@ -151,8 +151,8 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, variant = 'dark' }) => {
           <span style={{
             fontSize: '0.58rem', letterSpacing: '0.12em',
             textTransform: 'uppercase', fontFamily: '"Inter", sans-serif',
-            color: 'rgba(15,92,115,0.65)',
-            border: '1px solid rgba(15,92,115,0.2)',
+            color: 'rgba(var(--gold-rgb),0.65)',
+            border: '1px solid rgba(var(--gold-rgb),0.2)',
             padding: '0.15rem 0.45rem', borderRadius: '2px',
             flexShrink: 0,
           }}>

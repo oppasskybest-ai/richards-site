@@ -134,7 +134,7 @@ export default function SubscribePopup() {
           maxWidth: '560px',
           maxHeight: '85vh',
           overflowY: 'auto',
-          background: '#f6f1e6',
+          background: 'var(--paper)',
           borderRadius: '4px',
           boxShadow: '0 24px 64px rgba(0,0,0,0.35)',
           padding: '2.75rem 2.5rem',
@@ -156,13 +156,13 @@ export default function SubscribePopup() {
           ×
         </button>
 
-        <div style={{ width: '40px', height: '2px', background: '#0f5c73', marginBottom: '1.25rem' }} />
+        <div style={{ width: '40px', height: '2px', background: 'var(--gold)', marginBottom: '1.25rem' }} />
 
         <h2
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
             fontSize: '1.6rem',
-            color: '#1c1a17',
+            color: 'var(--ink)',
             margin: '0 0 0.6rem',
             lineHeight: 1.25,
           }}

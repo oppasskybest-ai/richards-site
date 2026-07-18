@@ -70,7 +70,7 @@ export default function CategoryExpand({ articles }: { articles: Article[] }) {
 
   const activeData = byCategory.find((c) => c.slug === activeCategory)
   const bgColor = activeCategory ? CATEGORY_COLORS[activeCategory] : 'transparent'
-  const accent = activeCategory ? CATEGORY_ACCENT[activeCategory] : '#0f5c73'
+  const accent = activeCategory ? CATEGORY_ACCENT[activeCategory] : 'var(--gold)'
 
   return (
     <div style={{ position: 'relative', width: '100%' }}>

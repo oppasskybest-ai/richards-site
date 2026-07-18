@@ -48,7 +48,7 @@ export default function ImageUpload({
   return (
     <div>
       <label style={{
-        display: 'block', fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)',
+        display: 'block', fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)',
         letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.6rem',
       }}>
         {label}

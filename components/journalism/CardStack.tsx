@@ -47,10 +47,10 @@ export default function CardStack({ cards, label }: Props) {
     <div>
       {/* CATEGORY LABEL */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-        <span style={{ width: '28px', height: '1.5px', background: '#0f5c73', display: 'block', flexShrink: 0 }} />
+        <span style={{ width: '28px', height: '1.5px', background: 'var(--gold)', display: 'block', flexShrink: 0 }} />
         <span style={{
           fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase',
-          color: '#0f5c73', fontFamily: '"Inter", sans-serif', fontWeight: 500,
+          color: 'var(--gold)', fontFamily: '"Inter", sans-serif', fontWeight: 500,
         }}>
           {label}
         </span>
@@ -103,7 +103,7 @@ export default function CardStack({ cards, label }: Props) {
                   {card.image && (
                     <div style={{
                       position: 'relative', width: '100%', height: '100px',
-                      flexShrink: 0, background: '#ede4d1', overflow: 'hidden',
+                      flexShrink: 0, background: 'var(--paper-dark)', overflow: 'hidden',
                     }}>
                       <Image
                         src={card.image}
@@ -132,7 +132,7 @@ export default function CardStack({ cards, label }: Props) {
                       </span>
                       <p style={{
                         fontFamily: '"Playfair Display", serif', fontSize: '0.88rem',
-                        lineHeight: 1.4, color: '#1c1a17', fontWeight: 400,
+                        lineHeight: 1.4, color: 'var(--ink)', fontWeight: 400,
                         display: '-webkit-box', WebkitLineClamp: card.image ? 2 : 3,
                         WebkitBoxOrient: 'vertical', overflow: 'hidden',
                       }}>
@@ -140,7 +140,7 @@ export default function CardStack({ cards, label }: Props) {
                       </p>
                     </div>
                     <span style={{
-                      fontSize: '0.6rem', color: '#0f5c73', letterSpacing: '0.1em',
+                      fontSize: '0.6rem', color: 'var(--gold)', letterSpacing: '0.1em',
                       textTransform: 'uppercase', fontFamily: '"Inter", sans-serif',
                     }}>
                       Read ↗

@@ -118,7 +118,7 @@ export default async function BookPage({ params }: Props) {
           <div style={{ flex: 1, minWidth: '260px' }}>
             <p style={{
               fontSize: '0.65rem', letterSpacing: '0.22em',
-              textTransform: 'uppercase', color: 'rgba(15,92,115,0.9)',
+              textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.9)',
               fontFamily: '"Inter", sans-serif', marginBottom: '0.75rem',
             }}>
               {book.year}
@@ -150,7 +150,7 @@ export default async function BookPage({ params }: Props) {
                   rel="noopener noreferrer"
                   style={{
                     padding: '0.9rem 2.25rem',
-                    background: '#0f5c73', color: 'white',
+                    background: 'var(--gold)', color: 'white',
                     fontSize: '0.7rem', letterSpacing: '0.12em',
                     textTransform: 'uppercase', fontFamily: '"Inter", sans-serif',
                     fontWeight: 500, borderRadius: '2px', display: 'inline-block',
@@ -200,7 +200,7 @@ export default async function BookPage({ params }: Props) {
               </p>
               <h2 style={{
                 fontFamily: '"Playfair Display", serif', fontSize: '1.4rem',
-                fontWeight: 400, marginBottom: '1.5rem', color: '#1c1a17',
+                fontWeight: 400, marginBottom: '1.5rem', color: 'var(--ink)',
               }}>
                 What people said
               </h2>
@@ -224,7 +224,7 @@ export default async function BookPage({ params }: Props) {
               }}>
                 <p style={{
                   fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-                  color: '#0f5c73', fontFamily: '"Inter", sans-serif', marginBottom: '1.25rem',
+                  color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '1.25rem',
                 }}>
                   Get the Book
                 </p>
@@ -234,7 +234,7 @@ export default async function BookPage({ params }: Props) {
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
-                      display: 'block', padding: '0.85rem', background: '#1c1a17',
+                      display: 'block', padding: '0.85rem', background: 'var(--ink)',
                       color: 'white', textAlign: 'center', fontSize: '0.7rem',
                       letterSpacing: '0.1em', textTransform: 'uppercase',
                       fontFamily: '"Inter", sans-serif', fontWeight: 500,
@@ -253,7 +253,7 @@ export default async function BookPage({ params }: Props) {
               <div>
                 <p style={{
                   fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-                  color: '#0f5c73', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
+                  color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
                 }}>
                   Other Books
                 </p>
@@ -276,10 +276,10 @@ export default async function BookPage({ params }: Props) {
                       <ClientImage src={ob.coverImage} alt={ob.title} fill sizes="44px" style={{ objectFit: 'cover' }} />
                     </div>
                     <div>
-                      <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '0.85rem', color: '#1c1a17', lineHeight: 1.3 }}>
+                      <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '0.85rem', color: 'var(--ink)', lineHeight: 1.3 }}>
                         {ob.title}
                       </p>
-                      <p style={{ fontSize: '0.62rem', color: '#0f5c73', fontFamily: '"Inter", sans-serif', marginTop: '2px' }}>
+                      <p style={{ fontSize: '0.62rem', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginTop: '2px' }}>
                         {ob.year}
                       </p>
                     </div>
@@ -333,7 +333,7 @@ export default async function BookPage({ params }: Props) {
                 letterSpacing: '0.14em', textTransform: 'uppercase',
                 fontFamily: '"Inter", sans-serif', fontWeight: 500,
                 borderRadius: '2px', display: 'inline-block',
-                background: '#0f5c73', color: 'white', textDecoration: 'none',
+                background: 'var(--gold)', color: 'white', textDecoration: 'none',
               }}
             >
               Buy on Amazon ↗

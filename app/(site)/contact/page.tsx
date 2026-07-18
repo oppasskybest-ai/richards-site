@@ -24,7 +24,7 @@ export default function ContactPage() {
               fontSize: '0.68rem',
               letterSpacing: '0.24em',
               textTransform: 'uppercase',
-              color: 'rgba(15,92,115,0.9)',
+              color: 'rgba(var(--gold-rgb),0.9)',
               fontFamily: '"Inter", sans-serif',
               marginBottom: '1.25rem',
             }}
@@ -70,7 +70,7 @@ export default function ContactPage() {
             <div className="rule-line" style={{ marginBottom: '1.5rem' }} />
             <h2 style={{
               fontFamily: '"Playfair Display", serif', fontSize: '1.6rem',
-              fontWeight: 400, marginBottom: '0.5rem', color: '#1c1a17',
+              fontWeight: 400, marginBottom: '0.5rem', color: 'var(--ink)',
             }}>
               Send a message
             </h2>
@@ -90,7 +90,7 @@ export default function ContactPage() {
             }}>
               <p style={{
                 fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-                color: '#0f5c73', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
+                color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
               }}>
                 Direct
               </p>
@@ -98,7 +98,6 @@ export default function ContactPage() {
                 <a href="mailto:e.randolph.richards@gmail.com" style={{ color: 'white', fontWeight: 500 }}>
                   e.randolph.richards@gmail.com
                 </a>
-                <br />(845) 282-6918
               </p>
             </div>
 
@@ -110,31 +109,7 @@ export default function ContactPage() {
             }}>
               <p style={{
                 fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-                color: '#0f5c73', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
-              }}>
-                Literary Agent
-              </p>
-              <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.85 }}>
-                <strong style={{ color: 'white' }}>David Kuhn</strong><br />
-                Aevitas Creative Management<br />
-                19 West 21st Street, Suite 501<br />
-                New York, NY 10010<br />
-                (212) 765-6900<br />
-                <a href="mailto:dkuhn@aevitascreative.com" style={{ color: '#0f5c73' }}>
-                  dkuhn@aevitascreative.com
-                </a>
-              </p>
-            </div>
-
-            <div style={{
-              background: 'rgba(255,255,255,0.07)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              padding: '1.75rem', borderRadius: '2px',
-              backdropFilter: 'blur(8px)',
-            }}>
-              <p style={{
-                fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-                color: '#0f5c73', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
+                color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
               }}>
                 Connect
               </p>

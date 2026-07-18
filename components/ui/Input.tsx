@@ -61,7 +61,7 @@ function getFieldStyle(dark: boolean): React.CSSProperties {
     fontFamily: '"Inter", sans-serif',
     fontWeight: 300,
     background: dark ? 'rgba(255,255,255,0.08)' : 'white',
-    color: dark ? 'white' : '#1c1a17',
+    color: dark ? 'white' : 'var(--ink)',
     border: dark ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(0,0,0,0.18)',
     borderRadius: '2px',
     outline: 'none',
@@ -84,7 +84,7 @@ export function Input({
   return (
     <div style={{ marginBottom: '1rem' }}>
       {label && (
-        <label style={{ ...labelStyle, color: dark ? 'rgba(15,92,115,0.7)' : '#6b6b6b' }}>
+        <label style={{ ...labelStyle, color: dark ? 'rgba(var(--gold-rgb),0.7)' : '#6b6b6b' }}>
           {label}{required && ' *'}
         </label>
       )}
@@ -125,7 +125,7 @@ export function Textarea({
   return (
     <div style={{ marginBottom: '1rem' }}>
       {label && (
-        <label style={{ ...labelStyle, color: dark ? 'rgba(15,92,115,0.7)' : '#6b6b6b' }}>
+        <label style={{ ...labelStyle, color: dark ? 'rgba(var(--gold-rgb),0.7)' : '#6b6b6b' }}>
           {label}{required && ' *'}
         </label>
       )}
@@ -166,7 +166,7 @@ export function Select({
   return (
     <div style={{ marginBottom: '1rem' }}>
       {label && (
-        <label style={{ ...labelStyle, color: dark ? 'rgba(15,92,115,0.7)' : '#6b6b6b' }}>
+        <label style={{ ...labelStyle, color: dark ? 'rgba(var(--gold-rgb),0.7)' : '#6b6b6b' }}>
           {label}
         </label>
       )}

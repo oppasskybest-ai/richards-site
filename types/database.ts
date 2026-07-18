@@ -91,11 +91,7 @@ export interface Settings {
   hero_subline: string
   about_bio: string
   contact_email: string
-  agent_name: string
-  agent_email: string
-  agent_phone: string
-  agent_address: string
-  social_linkedin: string
+  social_academia: string
   admin_password_hash: string
   created_at: string
   updated_at: string

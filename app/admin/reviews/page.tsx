@@ -18,7 +18,7 @@ function formatDate(iso: string) {
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <span style={{ color: '#0f5c73', fontSize: '0.85rem', letterSpacing: '1px' }}>
+    <span style={{ color: 'var(--gold)', fontSize: '0.85rem', letterSpacing: '1px' }}>
       {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
     </span>
   )
@@ -80,7 +80,7 @@ export default function AdminReviews() {
         {tabs.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{
             padding: '0.55rem 1.1rem', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.1)',
-            background: tab === t.key ? '#0f5c73' : 'transparent',
+            background: tab === t.key ? 'var(--gold)' : 'transparent',
             color: tab === t.key ? '#0d0d0d' : 'rgba(255,255,255,0.6)',
             fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', fontFamily: '"Inter", sans-serif',
           }}>

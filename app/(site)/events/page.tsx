@@ -68,7 +68,7 @@ export default async function EventsPage() {
               fontSize: '0.68rem',
               letterSpacing: '0.24em',
               textTransform: 'uppercase',
-              color: 'rgba(15,92,115,0.9)',
+              color: 'rgba(var(--gold-rgb),0.9)',
               fontFamily: '"Inter", sans-serif',
               marginBottom: '1.25rem',
             }}
@@ -129,7 +129,7 @@ export default async function EventsPage() {
                   fontWeight: 400,
                   marginBottom: '1rem',
                   letterSpacing: '-0.01em',
-                  color: '#1c1a17',
+                  color: 'var(--ink)',
                 }}
               >
                 Stay tuned
@@ -168,7 +168,7 @@ export default async function EventsPage() {
                   fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
                   fontWeight: 400,
                   marginBottom: '2.5rem',
-                  color: '#1c1a17',
+                  color: 'var(--ink)',
                 }}
               >
                 Upcoming
@@ -184,7 +184,7 @@ export default async function EventsPage() {
                       gap: '2rem',
                       background: 'white',
                       border: '1px solid rgba(0,0,0,0.08)',
-                      borderLeft: '4px solid #0f5c73',
+                      borderLeft: '4px solid var(--gold)',
                       padding: '2rem',
                       borderRadius: '0 3px 3px 0',
                       flexWrap: 'wrap',
@@ -218,7 +218,7 @@ export default async function EventsPage() {
                           fontSize: '0.62rem',
                           letterSpacing: '0.14em',
                           textTransform: 'uppercase',
-                          color: '#0f5c73',
+                          color: 'var(--gold)',
                           fontFamily: '"Inter", sans-serif',
                           marginBottom: '0.5rem',
                         }}
@@ -230,7 +230,7 @@ export default async function EventsPage() {
                           fontFamily: '"Playfair Display", serif',
                           fontSize: '1.3rem',
                           fontWeight: 400,
-                          color: '#1c1a17',
+                          color: 'var(--ink)',
                           marginBottom: '0.4rem',
                         }}
                       >
@@ -280,7 +280,7 @@ export default async function EventsPage() {
                             fontSize: '0.7rem',
                             letterSpacing: '0.12em',
                             textTransform: 'uppercase',
-                            color: '#0f5c73',
+                            color: 'var(--gold)',
                             fontFamily: '"Inter", sans-serif',
                             fontWeight: 500,
                           }}
@@ -343,7 +343,7 @@ export default async function EventsPage() {
                         fontSize: '0.6rem',
                         letterSpacing: '0.14em',
                         textTransform: 'uppercase',
-                        color: 'rgba(15,92,115,0.75)',
+                        color: 'rgba(var(--gold-rgb),0.75)',
                         fontFamily: '"Inter", sans-serif',
                         marginBottom: '0.5rem',
                       }}

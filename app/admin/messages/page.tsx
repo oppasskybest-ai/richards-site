@@ -57,7 +57,7 @@ export default function AdminMessages() {
       <div style={{ display: 'flex', gap: '0', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         {(['unread', 'read', 'replied'] as const).map((t) => (
           <button key={t} onClick={() => setTab(t)}
-            style={{ padding: '0.7rem 1.25rem', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t ? '#0f5c73' : 'transparent'}`, color: tab === t ? '#17798f' : 'rgba(255,255,255,0.35)', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: '-1px' }}>
+            style={{ padding: '0.7rem 1.25rem', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t ? 'var(--gold)' : 'transparent'}`, color: tab === t ? 'var(--gold-light)' : 'rgba(255,255,255,0.35)', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: '-1px' }}>
             {t}
           </button>
         ))}
@@ -74,7 +74,7 @@ export default function AdminMessages() {
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 {['From', 'Subject', 'Date', ''].map((h) => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.6)', fontWeight: 400 }}>{h}</th>
+                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -107,7 +107,7 @@ export default function AdminMessages() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', width: '100%', maxWidth: '600px', maxHeight: '85vh', overflow: 'auto', padding: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-              <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Message</p>
+              <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Message</p>
               <button onClick={() => setOpen(null)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: '1.1rem', cursor: 'pointer' }}>✕</button>
             </div>
             <div style={{ marginBottom: '1.25rem', paddingBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
@@ -120,7 +120,7 @@ export default function AdminMessages() {
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <a href={`mailto:${open.email}?subject=Re: ${open.subject}`}
                 onClick={() => updateStatus(open.id, 'replied')}
-                style={{ padding: '0.65rem 1.25rem', background: '#0f5c73', color: 'white', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px', textDecoration: 'none' }}>
+                style={{ padding: '0.65rem 1.25rem', background: 'var(--gold)', color: 'white', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px', textDecoration: 'none' }}>
                 Reply via Email
               </a>
               {open.status !== 'replied' && (

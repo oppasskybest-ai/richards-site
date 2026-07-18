@@ -73,7 +73,7 @@ export default function AdminComments() {
         {tabs.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{
             padding: '0.55rem 1.1rem', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.1)',
-            background: tab === t.key ? '#0f5c73' : 'transparent',
+            background: tab === t.key ? 'var(--gold)' : 'transparent',
             color: tab === t.key ? '#0d0d0d' : 'rgba(255,255,255,0.6)',
             fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', fontFamily: '"Inter", sans-serif',
           }}>
@@ -105,7 +105,7 @@ export default function AdminComments() {
               </div>
 
               {c.articles && (
-                <p style={{ fontSize: '0.75rem', color: '#0f5c73', marginBottom: '0.5rem' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--gold)', marginBottom: '0.5rem' }}>
                   on &ldquo;{c.articles.title}&rdquo; ({c.articles.category})
                 </p>
               )}

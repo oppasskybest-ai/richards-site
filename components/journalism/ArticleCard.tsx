@@ -32,7 +32,7 @@ function CardInner({ article, compact = false }: Props) {
         width: compact ? '90px' : '100%',
         height: compact ? '90px' : '200px',
         flexShrink: 0,
-        background: '#ede4d1',
+        background: 'var(--paper-dark)',
         overflow: 'hidden',
       }}>
         {article.image ? (
@@ -56,7 +56,7 @@ function CardInner({ article, compact = false }: Props) {
         {isNative && (
           <span style={{
             position: 'absolute', top: '0.5rem', left: '0.5rem',
-            background: 'rgba(15,92,115,0.9)', color: 'white',
+            background: 'rgba(var(--gold-rgb),0.9)', color: 'white',
             fontSize: '0.52rem', letterSpacing: '0.12em', textTransform: 'uppercase',
             padding: '0.2rem 0.45rem', borderRadius: '2px',
             fontFamily: '"Inter", sans-serif', fontWeight: 500,
@@ -90,7 +90,7 @@ function CardInner({ article, compact = false }: Props) {
           fontWeight: 400,
           fontSize: compact ? '0.9rem' : '1.05rem',
           lineHeight: 1.38,
-          color: '#1c1a17',
+          color: 'var(--ink)',
           marginBottom: article.excerpt && !compact ? '0.65rem' : '1rem',
         }}>
           {article.title}
@@ -104,7 +104,7 @@ function CardInner({ article, compact = false }: Props) {
 
         <span style={{
           fontSize: '0.62rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-          color: '#0f5c73', fontFamily: '"Inter", sans-serif', fontWeight: 500,
+          color: 'var(--gold)', fontFamily: '"Inter", sans-serif', fontWeight: 500,
         }}>
           {isNative ? 'Read →' : 'Read ↗'}
         </span>

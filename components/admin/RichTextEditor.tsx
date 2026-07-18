@@ -25,8 +25,8 @@ const TOOLBAR_BTN: React.CSSProperties = {
 
 const TOOLBAR_BTN_ACTIVE: React.CSSProperties = {
   ...TOOLBAR_BTN,
-  background: 'rgba(15,92,115,0.25)',
-  border: '1px solid rgba(15,92,115,0.4)',
+  background: 'rgba(var(--gold-rgb),0.25)',
+  border: '1px solid rgba(var(--gold-rgb),0.4)',
   color: '#e8c989',
 }
 
@@ -153,7 +153,7 @@ export default function RichTextEditor({
         {/* BLOCKS */}
         <button type="button" style={btn(editor.isActive('blockquote'))}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}>
-          " Quote
+          &quot; Quote
         </button>
         <button type="button" style={btn(editor.isActive('codeBlock'))}
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
@@ -237,7 +237,7 @@ export default function RichTextEditor({
         }
         .ProseMirror li { margin-bottom: 0.35rem; }
         .ProseMirror blockquote {
-          border-left: 3px solid #0f5c73;
+          border-left: 3px solid var(--gold);
           margin: 1.25rem 0; padding: 0.5rem 0 0.5rem 1.25rem;
           color: rgba(255,255,255,0.65); font-style: italic;
         }

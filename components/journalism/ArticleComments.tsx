@@ -79,7 +79,7 @@ export default function ArticleComments({ articleId }: Props) {
   const inputStyle: React.CSSProperties = {
     width: '100%', padding: '0.75rem 1rem', border: '1px solid rgba(0,0,0,0.15)',
     borderRadius: '2px', fontSize: '0.9rem', fontFamily: '"Inter", sans-serif',
-    background: 'white', color: '#1c1a17', outline: 'none', boxSizing: 'border-box',
+    background: 'white', color: 'var(--ink)', outline: 'none', boxSizing: 'border-box',
   }
 
   return (
@@ -100,11 +100,11 @@ export default function ArticleComments({ articleId }: Props) {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'baseline', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.88rem', color: '#1c1a17' }}>{c.author_name}</span>
+                    <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.88rem', color: 'var(--ink)' }}>{c.author_name}</span>
                     <span style={{ fontSize: '0.75rem', color: '#aaa', fontFamily: '"Inter", sans-serif' }}>{formatDate(c.created_at)}</span>
                   </div>
                   <p style={{ lineHeight: 1.8, color: '#3a3a3a', fontSize: '0.93rem', marginBottom: '0.5rem' }}>{c.body}</p>
-                  <button onClick={() => setReplyTo(replyTo === c.id ? null : c.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', color: '#0f5c73', fontFamily: '"Inter", sans-serif', padding: 0, letterSpacing: '0.06em' }}>
+                  <button onClick={() => setReplyTo(replyTo === c.id ? null : c.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', padding: 0, letterSpacing: '0.06em' }}>
                     {replyTo === c.id ? 'Cancel reply' : '↩ Reply'}
                   </button>
 
@@ -128,7 +128,7 @@ export default function ArticleComments({ articleId }: Props) {
                       </div>
                       <div>
                         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'baseline', marginBottom: '0.3rem', flexWrap: 'wrap' }}>
-                          <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.82rem', color: '#1c1a17' }}>{r.author_name}</span>
+                          <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.82rem', color: 'var(--ink)' }}>{r.author_name}</span>
                           <span style={{ fontSize: '0.72rem', color: '#aaa', fontFamily: '"Inter", sans-serif' }}>{formatDate(r.created_at)}</span>
                         </div>
                         <p style={{ lineHeight: 1.8, color: '#3a3a3a', fontSize: '0.88rem' }}>{r.body}</p>
@@ -155,8 +155,8 @@ export default function ArticleComments({ articleId }: Props) {
             Leave a comment
           </h3>
           {submitted ? (
-            <div style={{ background: 'rgba(15,92,115,0.08)', border: '1px solid rgba(15,92,115,0.3)', borderRadius: '2px', padding: '1.25rem 1.5rem' }}>
-              <p style={{ color: '#0f5c73', fontFamily: '"Inter", sans-serif', fontSize: '0.9rem', fontWeight: 500 }}>
+            <div style={{ background: 'rgba(var(--gold-rgb),0.08)', border: '1px solid rgba(var(--gold-rgb),0.3)', borderRadius: '2px', padding: '1.25rem 1.5rem' }}>
+              <p style={{ color: 'var(--gold)', fontFamily: '"Inter", sans-serif', fontSize: '0.9rem', fontWeight: 500 }}>
                 ✓ Thank you — your comment has been submitted and is awaiting approval.
               </p>
             </div>

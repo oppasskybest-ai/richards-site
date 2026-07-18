@@ -32,7 +32,7 @@ const fieldStyle: React.CSSProperties = {
 const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: '0.62rem',
-  color: 'rgba(15,92,115,0.7)',
+  color: 'rgba(var(--gold-rgb),0.7)',
   letterSpacing: '0.12em',
   textTransform: 'uppercase',
   marginBottom: '0.4rem',
@@ -104,7 +104,7 @@ export function BroadcastComposer({
           disabled={!canSend}
           style={{
             padding: '0.65rem 1.5rem',
-            background: '#0f5c73', color: 'white', border: 'none',
+            background: 'var(--gold)', color: 'white', border: 'none',
             fontSize: '0.7rem', letterSpacing: '0.1em',
             textTransform: 'uppercase',
             cursor: canSend ? 'pointer' : 'not-allowed',
@@ -131,7 +131,7 @@ export function BroadcastPreview({ broadcast, onClose }: PreviewProps) {
     <Modal open onClose={onClose} maxWidth="600px">
       <p style={{
         fontSize: '0.62rem',
-        color: 'rgba(15,92,115,0.7)',
+        color: 'rgba(var(--gold-rgb),0.7)',
         letterSpacing: '0.12em',
         textTransform: 'uppercase',
         marginBottom: '0.75rem',
@@ -164,7 +164,7 @@ export function BroadcastPreview({ broadcast, onClose }: PreviewProps) {
         .broadcast-preview-prose strong { color: white; }
         .broadcast-preview-prose em { color: rgba(255,255,255,0.75); }
         .broadcast-preview-prose ul, .broadcast-preview-prose ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
-        .broadcast-preview-prose blockquote { border-left: 3px solid #0f5c73; margin: 1rem 0; padding: 0.4rem 0 0.4rem 1.1rem; color: rgba(255,255,255,0.6); font-style: italic; }
+        .broadcast-preview-prose blockquote { border-left: 3px solid var(--gold); margin: 1rem 0; padding: 0.4rem 0 0.4rem 1.1rem; color: rgba(255,255,255,0.6); font-style: italic; }
         .broadcast-preview-prose img { max-width: 100%; height: auto; border-radius: 3px; margin: 0.85rem 0; }
         .broadcast-preview-prose hr { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 1.25rem 0; }
       `}</style>

@@ -1,5 +1,5 @@
 -- ============================================================
--- The Duff Project — Supabase Schema
+-- Randolph Richards — Biblical Thoughts — Supabase Schema
 -- Run this in your Supabase SQL Editor
 -- ============================================================
 
@@ -45,12 +45,15 @@ create table if not exists articles (
   slug text unique,
   publication text not null,
   category text not null check (category in ('bible-culture','family-faith')),
-  url text not null,
+  url text,
   date date,
   excerpt text default '',
   image text default '',
   featured boolean default false,
   status text not null default 'published' check (status in ('published','draft')),
+  content_type text not null default 'external' check (content_type in ('external', 'native')),
+  content_html text,
+  pdf_url text,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
@@ -70,9 +73,26 @@ create table if not exists books (
   buy_url text,
   buy_url_2 text,
   badge text,
+  quotes jsonb default '[]'::jsonb,
   order_index int default 0,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
+);
+
+-- Reader/press reviews attached to a book (shown on the book detail page).
+-- Randy's real reviews still need to be added — see PROGRESS.md.
+create table if not exists book_reviews (
+  id uuid primary key default gen_random_uuid(),
+  book_slug text not null,
+  reviewer text not null,
+  title text,
+  country text,
+  review_date text,
+  body text not null,
+  rating int default 5,
+  source text default 'reader',
+  status text default 'approved',
+  created_at timestamptz default now()
 );
 
 -- EVENTS
@@ -100,17 +120,13 @@ create index if not exists events_status_idx on events(status);
 -- SETTINGS
 create table if not exists settings (
   id uuid primary key default gen_random_uuid(),
-  site_title text default 'The Duff Project',
+  site_title text default 'Biblical Thoughts',
   site_description text,
   hero_headline text,
   hero_subline text,
   about_bio text,
-  contact_email text default 'duffmcd@mac.com',
-  agent_name text default 'David Kuhn',
-  agent_email text default 'dkuhn@aevitascreative.com',
-  agent_phone text default '(212) 765-6900',
-  agent_address text default '19 West 21st Street, Suite 501, New York, NY 10010',
-  social_linkedin text default 'https://www.linkedin.com/in/duff-mcdonald-076a8664',
+  contact_email text default 'e.randolph.richards@gmail.com',
+  social_academia text default 'https://independent.academia.edu/ERandolphRichards',
   admin_password_hash text,
   created_at timestamptz default now(),
   updated_at timestamptz default now()

@@ -58,7 +58,7 @@ export default function HeroTypewriter() {
       {/* EYEBROW */}
       <p className="animate-fade-in" style={{
         fontSize: '0.7rem', letterSpacing: '0.26em', textTransform: 'uppercase',
-        color: 'rgba(15,92,115,0.85)', fontFamily: '"Inter", sans-serif',
+        color: 'rgba(var(--gold-rgb),0.85)', fontFamily: '"Inter", sans-serif',
         marginBottom: '1.75rem',
       }}>
         Biblical Thoughts
@@ -100,7 +100,7 @@ export default function HeroTypewriter() {
         fontWeight: 300,
       }}>
         Author of Misreading Scripture with Western Eyes, Rediscovering Paul,
-        and other books. Former Provost. I've spent a career trying to help
+        and other books. Former Provost. I&apos;ve spent a career trying to help
         people read Scripture a little more carefully — this is where I keep writing about it.
       </p>
 

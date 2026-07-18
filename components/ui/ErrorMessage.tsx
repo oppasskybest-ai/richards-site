@@ -121,7 +121,7 @@ export default function ErrorMessage({
         style={{
           fontFamily: '"Playfair Display", serif',
           fontSize: '1.1rem',
-          color: dark ? 'white' : '#1c1a17',
+          color: dark ? 'white' : 'var(--ink)',
           marginBottom: '0.5rem',
           fontWeight: 400,
         }}
@@ -152,7 +152,7 @@ export default function ErrorMessage({
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
             fontFamily: '"Inter", sans-serif',
-            color: '#1c1a17',
+            color: 'var(--ink)',
             cursor: 'pointer',
           }}
         >

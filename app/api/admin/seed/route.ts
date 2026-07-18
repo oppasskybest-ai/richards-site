@@ -24,13 +24,13 @@ export async function POST(req: NextRequest) {
 
   for (const article of SEED_ARTICLES) {
     // Skip if already in DB (was seeded before, or admin created/edited it)
-    if (existingSlugs.has(article.id)) {
+    if (existingSlugs.has(article.slug || article.id)) {
       results.articles.skipped++
       continue
     }
 
     const payload = {
-      slug:         article.id,          // seed articles use id as slug
+      slug:         article.slug || article.id,
       title:        article.title,
       publication:  article.publication,
       category:     article.category,
@@ -40,7 +40,8 @@ export async function POST(req: NextRequest) {
       image:        article.image || '',
       featured:     article.featured ?? false,
       status:       'published',
-      content_type: 'external',
+      content_type: article.content_type || 'external',
+      content_html: article.content_type === 'native' ? (article.content_html || '') : null,
     }
 
     const { error } = await supabaseAdmin.from('articles').insert(payload)
@@ -76,6 +77,7 @@ export async function POST(req: NextRequest) {
       description: book.description,
       cover_image: book.coverImage,
       buy_url:     book.buyUrl,
+      buy_url_2:   book.buyUrl2 || null,
       order_index: i + 1,
       quotes:      book.quotes || [],
     }

@@ -90,7 +90,7 @@ export default function AdminBroadcasts() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.8rem', color: 'white', fontWeight: 400 }}>Broadcasts</h1>
         <button onClick={() => setComposing(true)}
-          style={{ padding: '0.65rem 1.4rem', background: '#0f5c73', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
+          style={{ padding: '0.65rem 1.4rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
           + New Broadcast
         </button>
       </div>
@@ -112,7 +112,7 @@ export default function AdminBroadcasts() {
       {/* PENDING AUTO-SCHEDULED */}
       {pending.length > 0 && (
         <div style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.8)', marginBottom: '0.85rem' }}>
+          <h2 style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.8)', marginBottom: '0.85rem' }}>
             Pending — auto-scheduled ({pending.length})
           </h2>
           <div style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
@@ -120,7 +120,7 @@ export default function AdminBroadcasts() {
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                   {['Subject', 'Source', 'Sends', ''].map((h) => (
-                    <th key={h} style={{ padding: '0.7rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.6)', fontWeight: 400 }}>{h}</th>
+                    <th key={h} style={{ padding: '0.7rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -131,7 +131,7 @@ export default function AdminBroadcasts() {
                       <p style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.subject}</p>
                     </td>
                     <td style={{ padding: '0.8rem 1rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', textTransform: 'capitalize' }}>{p.source_type}</td>
-                    <td style={{ padding: '0.8rem 1rem', fontSize: '0.78rem', color: '#17798f' }}>{timeUntil(p.scheduled_for)}</td>
+                    <td style={{ padding: '0.8rem 1rem', fontSize: '0.78rem', color: 'var(--gold-light)' }}>{timeUntil(p.scheduled_for)}</td>
                     <td style={{ padding: '0.8rem 1rem', display: 'flex', gap: '0.85rem', alignItems: 'center' }}>
                       <button onClick={() => pushBack(p.id, 60 * 24)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', cursor: 'pointer' }}>Push +1 day</button>
                       <button onClick={() => cancelPending(p.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.65)', fontSize: '0.72rem', cursor: 'pointer' }}>Cancel</button>
@@ -155,7 +155,7 @@ export default function AdminBroadcasts() {
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 {['Subject', 'Status', 'Recipients', 'Sent', ''].map((h) => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.6)', fontWeight: 400 }}>{h}</th>
+                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -175,7 +175,7 @@ export default function AdminBroadcasts() {
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)' }}>{b.recipient_count || '—'}</td>
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)' }}>{b.sent_at?.slice(0, 10) || '—'}</td>
                   <td style={{ padding: '0.85rem 1rem' }}>
-                    <button onClick={() => setPreview(b)} style={{ background: 'none', border: 'none', color: '#17798f', fontSize: '0.72rem', cursor: 'pointer' }}>View</button>
+                    <button onClick={() => setPreview(b)} style={{ background: 'none', border: 'none', color: 'var(--gold-light)', fontSize: '0.72rem', cursor: 'pointer' }}>View</button>
                   </td>
                 </tr>
               ))}

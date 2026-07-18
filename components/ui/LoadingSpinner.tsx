@@ -24,7 +24,7 @@ export default function LoadingSpinner({
 }: LoadingSpinnerProps) {
   const px = SIZES[size]
   const color = dark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.35)'
-  const accent = '#0f5c73'
+  const accent = 'var(--gold)'
 
   return (
     <div

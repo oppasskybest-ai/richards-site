@@ -20,9 +20,9 @@ export default function CategoryFilter() {
           <Link key={cat.slug} href={cat.href} style={{
             padding: '0.5rem 1.1rem', fontSize: '0.7rem', letterSpacing: '0.12em',
             textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', fontWeight: 400,
-            border: `1px solid ${isActive ? '#0f5c73' : 'rgba(28,26,23,0.2)'}`,
-            color: isActive ? '#0f5c73' : '#6b6258',
-            background: isActive ? 'rgba(15,92,115,0.06)' : 'transparent',
+            border: `1px solid ${isActive ? 'var(--gold)' : 'rgba(var(--ink-rgb),0.2)'}`,
+            color: isActive ? 'var(--gold)' : '#6b6258',
+            background: isActive ? 'rgba(var(--gold-rgb),0.06)' : 'transparent',
             transition: 'all 0.2s ease', textDecoration: 'none',
             borderRadius: '2px',
           }}>

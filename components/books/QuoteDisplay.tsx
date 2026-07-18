@@ -7,7 +7,7 @@ interface Props {
 export default function QuoteDisplay({ quote, attribution, large = false }: Props) {
   return (
     <div style={{
-      borderLeft: '3px solid #0f5c73', paddingLeft: '1.5rem',
+      borderLeft: '3px solid var(--gold)', paddingLeft: '1.5rem',
       marginBottom: '1.5rem',
     }}>
       <p style={{

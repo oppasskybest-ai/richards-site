@@ -30,7 +30,7 @@ function StarDisplay({ rating = 5 }: { rating?: number }) {
   return (
     <div style={{ display: 'flex', gap: '3px', marginBottom: '0.75rem' }}>
       {[1,2,3,4,5].map(s => (
-        <span key={s} style={{ fontSize: '0.9rem', color: s <= rating ? '#0f5c73' : 'rgba(255,255,255,0.15)' }}>★</span>
+        <span key={s} style={{ fontSize: '0.9rem', color: s <= rating ? 'var(--gold)' : 'rgba(255,255,255,0.15)' }}>★</span>
       ))}
     </div>
   )
@@ -80,7 +80,7 @@ function StarPicker({ value, onChange }: { value: number; onChange: (v: number) 
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
             fontSize: '1.75rem', padding: '2px',
-            color: s <= (hovered || value) ? '#0f5c73' : 'rgba(255,255,255,0.2)',
+            color: s <= (hovered || value) ? 'var(--gold)' : 'rgba(255,255,255,0.2)',
             transform: s <= (hovered || value) ? 'scale(1.15)' : 'scale(1)',
             transition: 'all 0.12s', lineHeight: 1,
           }}
@@ -186,7 +186,7 @@ export default function HomepageReviews({ reviews }: { reviews: Review[] }) {
                 {/* Big quote mark */}
                 <span style={{
                   position: 'absolute', top: '1rem', right: '1.5rem',
-                  fontSize: '3.5rem', color: 'rgba(15,92,115,0.18)',
+                  fontSize: '3.5rem', color: 'rgba(var(--gold-rgb),0.18)',
                   fontFamily: '"Playfair Display", serif', lineHeight: 1, pointerEvents: 'none',
                 }} aria-hidden="true">&rdquo;</span>
 
@@ -205,15 +205,15 @@ export default function HomepageReviews({ reviews }: { reviews: Review[] }) {
                   <div style={{
                     width: '36px', height: '36px', borderRadius: '50%',
                     background: `hsl(${avatarHue(r.name)}, 38%, 32%)`,
-                    border: '1px solid rgba(15,92,115,0.25)',
+                    border: '1px solid rgba(var(--gold-rgb),0.25)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
-                    <span style={{ fontFamily: '"Playfair Display", serif', fontSize: '0.9rem', color: '#0f5c73' }}>
+                    <span style={{ fontFamily: '"Playfair Display", serif', fontSize: '0.9rem', color: 'var(--gold)' }}>
                       {getInitials(r.name)}
                     </span>
                   </div>
                   <div>
-                    <p style={{ color: '#0f5c73', fontSize: '0.8rem', fontFamily: '"Inter", sans-serif', margin: 0, fontWeight: 400 }}>
+                    <p style={{ color: 'var(--gold)', fontSize: '0.8rem', fontFamily: '"Inter", sans-serif', margin: 0, fontWeight: 400 }}>
                       — {r.name}
                     </p>
                     {r.location && (
@@ -242,7 +242,7 @@ export default function HomepageReviews({ reviews }: { reviews: Review[] }) {
                     style={{
                       width: i === current ? '18px' : '6px', height: '6px',
                       borderRadius: '3px', border: 'none', cursor: 'pointer', padding: 0,
-                      background: i === current ? '#0f5c73' : 'rgba(255,255,255,0.2)',
+                      background: i === current ? 'var(--gold)' : 'rgba(255,255,255,0.2)',
                       transition: 'all 0.3s ease',
                     }}
                   />
@@ -276,8 +276,8 @@ export default function HomepageReviews({ reviews }: { reviews: Review[] }) {
           <button onClick={() => setShowForm(f => !f)}
             style={{
               padding: '0.85rem 2.25rem',
-              background: showForm ? 'rgba(255,255,255,0.05)' : 'rgba(15,92,115,0.18)',
-              border: '1px solid rgba(15,92,115,0.45)', color: '#0f5c73', cursor: 'pointer',
+              background: showForm ? 'rgba(255,255,255,0.05)' : 'rgba(var(--gold-rgb),0.18)',
+              border: '1px solid rgba(var(--gold-rgb),0.45)', color: 'var(--gold)', cursor: 'pointer',
               fontSize: '0.72rem', letterSpacing: '0.14em', textTransform: 'uppercase',
               fontFamily: '"Inter", sans-serif', fontWeight: 400, borderRadius: '2px', transition: 'all 0.2s ease',
             }}>
@@ -288,8 +288,8 @@ export default function HomepageReviews({ reviews }: { reviews: Review[] }) {
 
       {/* ── SUCCESS ── */}
       {submitted && (
-        <div style={{ background: 'rgba(15,92,115,0.1)', border: '1px solid rgba(15,92,115,0.28)', padding: '1.5rem 2rem', textAlign: 'center', borderRadius: '2px' }}>
-          <p style={{ color: '#0f5c73', fontFamily: '"Playfair Display", serif', fontSize: '1.1rem', fontStyle: 'italic' }}>
+        <div style={{ background: 'rgba(var(--gold-rgb),0.1)', border: '1px solid rgba(var(--gold-rgb),0.28)', padding: '1.5rem 2rem', textAlign: 'center', borderRadius: '2px' }}>
+          <p style={{ color: 'var(--gold)', fontFamily: '"Playfair Display", serif', fontSize: '1.1rem', fontStyle: 'italic' }}>
             Thank you — your review has been submitted and will appear once approved.
           </p>
         </div>
@@ -298,7 +298,7 @@ export default function HomepageReviews({ reviews }: { reviews: Review[] }) {
       {/* ── INLINE REVIEW FORM ── */}
       {showForm && !submitted && (
         <div style={{
-          background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(15,92,115,0.18)',
+          background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(var(--gold-rgb),0.18)',
           borderTop: '2px solid var(--gold)', padding: '2.5rem', marginTop: '2rem', borderRadius: '0 0 2px 2px',
         }}>
           <h3 style={{ color: 'white', fontFamily: '"Playfair Display", serif', fontSize: '1.7rem', fontWeight: 400, marginBottom: '0.5rem' }}>
@@ -349,7 +349,7 @@ export default function HomepageReviews({ reviews }: { reviews: Review[] }) {
             <button type="submit" disabled={submitting}
               style={{
                 padding: '0.9rem 2.5rem',
-                background: submitting ? 'rgba(15,92,115,0.4)' : 'var(--gold)',
+                background: submitting ? 'rgba(var(--gold-rgb),0.4)' : 'var(--gold)',
                 color: submitting ? 'rgba(255,255,255,0.5)' : 'white',
                 border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
                 fontSize: '0.72rem', letterSpacing: '0.14em', textTransform: 'uppercase',

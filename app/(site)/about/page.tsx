@@ -33,7 +33,7 @@ export default function AboutPage() {
               fontSize: '0.68rem',
               letterSpacing: '0.24em',
               textTransform: 'uppercase',
-              color: 'rgba(15,92,115,0.9)',
+              color: 'rgba(var(--gold-rgb),0.9)',
               fontFamily: '"Inter", sans-serif',
               marginBottom: '1.25rem',
             }}
@@ -113,7 +113,7 @@ export default function AboutPage() {
                   <Link href="/books" className="btn-gold" style={{ padding: '0.9rem 2rem', fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', fontWeight: 500, borderRadius: '2px', display: 'inline-block' }}>
                     The Books
                   </Link>
-                  <Link href="/articles" style={{ padding: '0.9rem 2rem', background: 'transparent', color: '#1c1a17', fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', fontWeight: 400, borderRadius: '2px', border: '1px solid rgba(0,0,0,0.2)', display: 'inline-block', transition: 'all 0.2s ease' }}>
+                  <Link href="/articles" style={{ padding: '0.9rem 2rem', background: 'transparent', color: 'var(--ink)', fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', fontWeight: 400, borderRadius: '2px', border: '1px solid rgba(0,0,0,0.2)', display: 'inline-block', transition: 'all 0.2s ease' }}>
                     Read the Articles
                   </Link>
                 </div>
@@ -160,12 +160,12 @@ export default function AboutPage() {
               Speaking &amp; inquiries
             </h2>
             <div style={{ background: 'var(--paper)', border: '1px solid rgba(0,0,0,0.08)', borderLeft: '3px solid var(--gold)', padding: '2rem 2.5rem', maxWidth: '440px', borderRadius: '0 3px 3px 0' }}>
-              <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.15rem', color: '#1c1a17', marginBottom: '0.25rem', fontWeight: 400 }}>E. Randolph Richards</p>
-              <p style={{ fontSize: '0.82rem', color: '#0f5c73', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif', letterSpacing: '0.06em' }}>Palm Beach Atlantic University</p>
+              <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.15rem', color: 'var(--ink)', marginBottom: '0.25rem', fontWeight: 400 }}>E. Randolph Richards</p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--gold)', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif', letterSpacing: '0.06em' }}>Palm Beach Atlantic University</p>
               <p style={{ fontSize: '0.88rem', color: '#3a3a3a', lineHeight: 1.85 }}>
                 For speaking requests or general questions, use the contact form below —<br />
                 messages go straight to my inbox.<br />
-                <Link href="/contact" style={{ color: '#0f5c73', fontWeight: 400 }}>Go to Contact →</Link>
+                <Link href="/contact" style={{ color: 'var(--gold)', fontWeight: 400 }}>Go to Contact →</Link>
               </p>
             </div>
           </ScrollReveal>

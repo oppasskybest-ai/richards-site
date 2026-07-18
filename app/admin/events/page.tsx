@@ -20,7 +20,7 @@ const fieldStyle: React.CSSProperties = {
 }
 
 const labelStyle: React.CSSProperties = {
-  display: 'block', fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)',
+  display: 'block', fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)',
   letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.4rem',
 }
 
@@ -96,7 +96,7 @@ export default function AdminEvents() {
       {toast && (
         <div style={{
           position: 'fixed', top: '1.5rem', right: '1.5rem',
-          background: '#0f5c73', color: 'white', padding: '0.85rem 1.5rem',
+          background: 'var(--gold)', color: 'white', padding: '0.85rem 1.5rem',
           zIndex: 600, fontSize: '0.85rem', borderRadius: '2px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
         }}>
@@ -110,7 +110,7 @@ export default function AdminEvents() {
           <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)' }}>{events.length} total</p>
         </div>
         <button onClick={() => setEditing({ ...EMPTY })}
-          style={{ padding: '0.65rem 1.4rem', background: '#0f5c73', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
+          style={{ padding: '0.65rem 1.4rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
           + Add Event
         </button>
       </div>
@@ -127,7 +127,7 @@ export default function AdminEvents() {
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 {['Title', 'Date', 'Type', 'Status', 'Notified', ''].map((h) => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.6)', fontWeight: 400 }}>{h}</th>
+                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -142,7 +142,7 @@ export default function AdminEvents() {
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)', whiteSpace: 'nowrap' }}>
                     {formatDate(ev.event_date)}{ev.event_time ? ` · ${ev.event_time}` : ''}
                   </td>
-                  <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(15,92,115,0.7)', whiteSpace: 'nowrap' }}>{ev.event_type}</td>
+                  <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(var(--gold-rgb),0.7)', whiteSpace: 'nowrap' }}>{ev.event_type}</td>
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', whiteSpace: 'nowrap' }}>
                     <span style={{
                       color: ev.status === 'upcoming' ? '#5ad88a' : ev.status === 'past' ? 'rgba(255,255,255,0.4)' : '#d85a5a',
@@ -158,11 +158,11 @@ export default function AdminEvents() {
                       <button
                         onClick={() => notify(ev.id, ev.title)}
                         disabled={notifying === ev.id}
-                        style={{ background: 'none', border: 'none', color: '#0f5c73', fontSize: '0.72rem', cursor: notifying === ev.id ? 'not-allowed' : 'pointer', marginRight: '0.75rem', opacity: notifying === ev.id ? 0.5 : 1 }}>
+                        style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.72rem', cursor: notifying === ev.id ? 'not-allowed' : 'pointer', marginRight: '0.75rem', opacity: notifying === ev.id ? 0.5 : 1 }}>
                         {notifying === ev.id ? 'Sending…' : 'Notify'}
                       </button>
                     )}
-                    <button onClick={() => setEditing(ev)} style={{ background: 'none', border: 'none', color: '#17798f', fontSize: '0.72rem', cursor: 'pointer', marginRight: '0.75rem' }}>Edit</button>
+                    <button onClick={() => setEditing(ev)} style={{ background: 'none', border: 'none', color: 'var(--gold-light)', fontSize: '0.72rem', cursor: 'pointer', marginRight: '0.75rem' }}>Edit</button>
                     <button onClick={() => del(ev.id, ev.title)} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.6)', fontSize: '0.72rem', cursor: 'pointer' }}>Delete</button>
                   </td>
                 </tr>
@@ -266,7 +266,7 @@ export default function AdminEvents() {
               Cancel
             </button>
             <button onClick={save} disabled={saving || !editing.title || !editing.event_date}
-              style={{ padding: '0.65rem 1.5rem', background: '#0f5c73', color: 'white', border: 'none', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px', opacity: saving ? 0.7 : 1 }}>
+              style={{ padding: '0.65rem 1.5rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px', opacity: saving ? 0.7 : 1 }}>
               {saving ? 'Saving…' : 'Save Event'}
             </button>
           </div>

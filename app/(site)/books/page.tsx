@@ -35,7 +35,7 @@ export default async function BooksPage() {
         <div className="container-wide" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <p style={{
             fontSize: '0.68rem', letterSpacing: '0.24em', textTransform: 'uppercase',
-            color: 'rgba(15,92,115,0.9)', fontFamily: '"Inter", sans-serif', marginBottom: '1.25rem',
+            color: 'rgba(var(--gold-rgb),0.9)', fontFamily: '"Inter", sans-serif', marginBottom: '1.25rem',
           }}>
             The Books
           </p>
@@ -48,7 +48,7 @@ export default async function BooksPage() {
             Five books.<br />
             <span style={{ color: 'rgba(255,255,255,0.42)', fontStyle: 'italic' }}>One writer.</span>
           </h1>
-          <div style={{ width: '48px', height: '2px', background: '#0f5c73', margin: '1.5rem auto' }} />
+          <div style={{ width: '48px', height: '2px', background: 'var(--gold)', margin: '1.5rem auto' }} />
         </div>
       </section>
 
@@ -103,7 +103,7 @@ export default async function BooksPage() {
             {/* INFO */}
             <div style={{ flex: 1, minWidth: '260px' }}>
               <p style={{
-                fontSize: '0.65rem', color: 'rgba(15,92,115,0.9)',
+                fontSize: '0.65rem', color: 'rgba(var(--gold-rgb),0.9)',
                 letterSpacing: '0.2em', textTransform: 'uppercase',
                 fontFamily: '"Inter", sans-serif', marginBottom: '0.75rem',
               }}>
@@ -138,7 +138,7 @@ export default async function BooksPage() {
               {/* FIRST QUOTE */}
               {book.quotes[0] && (
                 <div style={{
-                  borderLeft: '2px solid rgba(15,92,115,0.6)',
+                  borderLeft: '2px solid rgba(var(--gold-rgb),0.6)',
                   paddingLeft: '1.25rem', marginBottom: '2rem',
                 }}>
                   <p style={{
@@ -148,7 +148,7 @@ export default async function BooksPage() {
                     &ldquo;{book.quotes[0].quote}&rdquo;
                   </p>
                   <p style={{
-                    fontSize: '0.7rem', color: '#0f5c73',
+                    fontSize: '0.7rem', color: 'var(--gold)',
                     fontFamily: '"Inter", sans-serif', marginTop: '0.4rem',
                   }}>
                     — {book.quotes[0].attribution}
@@ -161,7 +161,7 @@ export default async function BooksPage() {
                   href={`/books/${book.slug}`}
                   style={{
                     padding: '0.9rem 2rem',
-                    background: '#0f5c73', color: 'white',
+                    background: 'var(--gold)', color: 'white',
                     fontSize: '0.7rem', letterSpacing: '0.12em',
                     textTransform: 'uppercase', fontFamily: '"Inter", sans-serif',
                     fontWeight: 500, borderRadius: '2px', display: 'inline-block',
@@ -208,7 +208,7 @@ export default async function BooksPage() {
         }} />
         <div className="container-narrow" style={{ position: 'relative', zIndex: 1 }}>
           <p style={{
-            color: '#0f5c73', fontSize: '0.7rem', letterSpacing: '0.22em',
+            color: 'var(--gold)', fontSize: '0.7rem', letterSpacing: '0.22em',
             textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', marginBottom: '1rem',
           }}>
             Stay in Touch
@@ -221,14 +221,14 @@ export default async function BooksPage() {
           }}>
             New work, when it arrives.
           </h2>
-          <div style={{ width: '48px', height: '2px', background: '#0f5c73', margin: '1.25rem auto' }} />
+          <div style={{ width: '48px', height: '2px', background: 'var(--gold)', margin: '1.25rem auto' }} />
           <Link
             href="/#subscribe"
             style={{
               padding: '0.9rem 2.5rem',
-              background: 'rgba(15,92,115,0.18)',
-              border: '1px solid rgba(15,92,115,0.45)',
-              color: '#0f5c73',
+              background: 'rgba(var(--gold-rgb),0.18)',
+              border: '1px solid rgba(var(--gold-rgb),0.45)',
+              color: 'var(--gold)',
               fontSize: '0.72rem', letterSpacing: '0.14em',
               textTransform: 'uppercase', fontFamily: '"Inter", sans-serif',
               fontWeight: 400, borderRadius: '2px', display: 'inline-block',

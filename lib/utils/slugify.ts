@@ -9,16 +9,11 @@ export function slugify(text: string): string {
 
 export function getPublicationTag(publication: string): string {
   const pub = publication.toLowerCase()
-  if (pub.includes('vanity fair')) return 'pub-vanity-fair'
-  if (pub.includes('wired')) return 'pub-wired'
-  if (pub.includes('new yorker')) return 'pub-new-yorker'
-  if (pub.includes('new york') || pub.includes('nymag') || pub.includes('intelligencer')) return 'pub-new-york'
-  if (pub.includes('fortune')) return 'pub-fortune'
-  if (pub.includes('esquire')) return 'pub-esquire'
-  if (pub.includes('air mail')) return 'pub-air-mail'
-  if (pub.includes('bloomberg') || pub.includes('businessweek')) return 'pub-bloomberg'
-  if (pub.includes('observer') || pub.includes('nyo')) return 'pub-observer'
-  if (pub.includes('medium')) return 'pub-medium'
+  if (pub.includes('stone chapel')) return 'pub-stone-chapel'
+  if (pub.includes('clarity podcast')) return 'pub-clarity-podcast'
+  if (pub.includes('moody radio') || pub.includes('moody')) return 'pub-moody-radio'
+  if (pub.includes('christianity today')) return 'pub-christianity-today'
+  if (pub.includes('gospel coalition')) return 'pub-gospel-coalition'
   return 'pub-default'
 }
 

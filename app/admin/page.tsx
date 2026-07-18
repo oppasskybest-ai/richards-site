@@ -15,7 +15,7 @@ function StatCard({ label, value, icon }: { label: string; value: number | strin
     <div style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <span style={{ fontSize: '1.1rem' }}>{icon}</span>
       <p style={{ fontSize: '1.8rem', color: 'white', fontFamily: '"Playfair Display", serif', fontWeight: 400 }}>{value}</p>
-      <p style={{ fontSize: '0.65rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{label}</p>
+      <p style={{ fontSize: '0.65rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{label}</p>
     </div>
   )
 }
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
 
       {/* QUICK LINKS */}
       <div style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '1.5rem' }}>
-        <p style={{ fontSize: '0.65rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Quick Actions</p>
+        <p style={{ fontSize: '0.65rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Quick Actions</p>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           {[
             { label: 'Add Article', href: '/admin/articles' },
@@ -75,9 +75,9 @@ export default function AdminDashboard() {
             { label: 'Manage Books', href: '/admin/books' },
             { label: 'Manage Events', href: '/admin/events' },
           ].map((l) => (
-            <a key={l.label} href={l.href} style={{ padding: '0.6rem 1.1rem', background: 'rgba(15,92,115,0.1)', border: '1px solid rgba(15,92,115,0.2)', color: '#17798f', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px', textDecoration: 'none', transition: 'all 0.2s' }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(15,92,115,0.2)' }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(15,92,115,0.1)' }}>
+            <a key={l.label} href={l.href} style={{ padding: '0.6rem 1.1rem', background: 'rgba(var(--gold-rgb),0.1)', border: '1px solid rgba(var(--gold-rgb),0.2)', color: 'var(--gold-light)', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px', textDecoration: 'none', transition: 'all 0.2s' }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(var(--gold-rgb),0.2)' }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(var(--gold-rgb),0.1)' }}>
               {l.label}
             </a>
           ))}

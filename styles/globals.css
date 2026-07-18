@@ -1,6 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
+/* ============================================================
+   COLOR PALETTE — SINGLE SOURCE OF TRUTH
+   ============================================================
+   Every color used anywhere on the site is defined ONCE here.
+   Components reference these via var(--token-name) — they never
+   hardcode hex values. To change the site's colors, edit ONLY
+   this block; every page/component updates automatically.
+
+   Where these colors came from: Randy's WordPress site had no
+   real color scheme (default black-on-white theme), so this
+   palette was pulled from his own published book covers instead
+   — confirmed with Randy on 2026-07-17.
+
+   - Paper / Ink   : warm cream + warm charcoal, for a comfortable
+                      book-page reading feel (per the design brief).
+   - Gold (primary): deep teal, sampled from the cover of
+                      "Misreading Scripture with Western Eyes",
+                      his best-known book. Used for links, buttons,
+                      and primary accents. (Named "gold" only
+                      because that was the original variable name
+                      inherited from the base project — it holds
+                      teal, not gold. Safe to rename in a future
+                      pass if that's ever confusing.)
+   - Brick (2nd)   : muted terracotta, sampled from the cover of
+                      "Rediscovering Paul". Used sparingly — tag
+                      pills, hover states — never as a primary color.
+
+   RGB-channel variables (e.g. --gold-rgb) exist ONLY so that
+   rgba(var(--gold-rgb), 0.2) works for translucent variants —
+   they must always match the hex value directly above them.
+   ============================================================ */
 @theme {
   --color-ink: #1c1a17;
   --color-paper: #f6f1e6;
@@ -11,17 +42,32 @@
 }
 
 :root {
+  /* Ink — body text */
   --ink: #1c1a17;
+  --ink-rgb: 28,26,23;
   --ink-mid: #2a2620;
+
+  /* Paper — backgrounds */
   --paper: #f6f1e6;
+  --paper-rgb: 246,241,230;
   --paper-dark: #ede4d1;
+
+  /* Lead — secondary/muted text */
   --lead: #3f3a33;
   --lead-light: #6b6258;
+
+  /* Gold (= teal) — primary accent: links, buttons, headings */
   --gold: #0f5c73;
+  --gold-rgb: 15,92,115;
   --gold-light: #17798f;
+  --gold-light-rgb: 23,121,143;
+
+  /* Brick — secondary accent: tags, hover states only */
   --brick: #a8402f;
+  --brick-rgb: 168,64,47;
   --brick-light: #c0533f;
-  --rule: rgba(28,26,23,0.12);
+
+  --rule: rgba(var(--ink-rgb), 0.12);
   --nav-height: 76px;
 }
 
@@ -74,9 +120,9 @@ a { text-decoration: none; color: inherit; transition: color 0.2s ease; }
   font-size: 0.75rem;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  background: rgba(168,64,47,0.1);
+  background: rgba(var(--brick-rgb),0.1);
   color: var(--brick);
-  border: 1px solid rgba(168,64,47,0.25);
+  border: 1px solid rgba(var(--brick-rgb),0.25);
 }
 
 /* ── NAV ── */

@@ -9,6 +9,7 @@ export interface CardItem {
   slug?: string
   category?: string
   content_type?: 'external' | 'native'
+  content_html?: string
 }
 
 export type JournalismCategory = 'bible-culture' | 'family-faith'

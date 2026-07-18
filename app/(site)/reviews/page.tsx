@@ -65,7 +65,7 @@ export default async function ReviewsPage() {
               fontSize: '0.68rem',
               letterSpacing: '0.24em',
               textTransform: 'uppercase',
-              color: 'rgba(15,92,115,0.9)',
+              color: 'rgba(var(--gold-rgb),0.9)',
               fontFamily: '"Inter", sans-serif',
               marginBottom: '1.25rem',
             }}
@@ -123,7 +123,7 @@ export default async function ReviewsPage() {
       {/* CTA */}
       <section
         style={{
-          background: '#f6f1e6',
+          background: 'var(--paper)',
           borderTop: '1px solid rgba(0,0,0,0.07)',
           padding: 'clamp(4rem,8vw,5.5rem) 0',
           textAlign: 'center',

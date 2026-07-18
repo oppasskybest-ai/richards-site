@@ -37,7 +37,7 @@ export default function ContactForm() {
   const inputStyle: React.CSSProperties = {
     width: '100%', padding: '0.9rem 1rem', fontSize: '0.88rem',
     fontFamily: '"Inter", sans-serif', fontWeight: 300,
-    background: 'white', color: '#1c1a17',
+    background: 'white', color: 'var(--ink)',
     border: '1px solid rgba(0,0,0,0.18)', borderRadius: '2px',
     outline: 'none', marginBottom: '1rem',
   }
@@ -45,7 +45,7 @@ export default function ContactForm() {
   if (status === 'success') {
     return (
       <div style={{ padding: '3rem 0' }}>
-        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.4rem', color: '#1c1a17', marginBottom: '0.75rem' }}>
+        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.4rem', color: 'var(--ink)', marginBottom: '0.75rem' }}>
           Message sent.
         </p>
         <p style={{ color: '#6b6b6b', fontSize: '0.88rem' }}>
@@ -94,7 +94,7 @@ export default function ContactForm() {
 
       <button onClick={handleSubmit} disabled={status === 'loading'}
         style={{
-          padding: '0.9rem 2.5rem', background: '#1c1a17', color: 'white', border: 'none',
+          padding: '0.9rem 2.5rem', background: 'var(--ink)', color: 'white', border: 'none',
           fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase',
           fontFamily: '"Inter", sans-serif', fontWeight: 500, cursor: 'pointer',
           borderRadius: '2px', transition: 'background 0.2s ease',

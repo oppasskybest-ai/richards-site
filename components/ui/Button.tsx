@@ -33,18 +33,18 @@ const BASE: React.CSSProperties = {
 
 const VARIANTS: Record<ButtonVariant, React.CSSProperties> = {
   primary: {
-    background: '#0f5c73',
+    background: 'var(--gold)',
     color: 'white',
-    border: '1px solid #0f5c73',
+    border: '1px solid var(--gold)',
   },
   secondary: {
-    background: '#1c1a17',
+    background: 'var(--ink)',
     color: 'white',
-    border: '1px solid #1c1a17',
+    border: '1px solid var(--ink)',
   },
   ghost: {
     background: 'transparent',
-    color: '#1c1a17',
+    color: 'var(--ink)',
     border: '1px solid rgba(0,0,0,0.25)',
   },
   danger: {

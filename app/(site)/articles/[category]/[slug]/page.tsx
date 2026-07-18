@@ -112,7 +112,7 @@ export default async function NativeArticlePage({ params }: Props) {
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <span style={{
               fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-              color: 'rgba(15,92,115,0.8)', fontFamily: '"Inter", sans-serif',
+              color: 'rgba(var(--gold-rgb),0.8)', fontFamily: '"Inter", sans-serif',
             }}>
               {publishDate}
             </span>
@@ -147,7 +147,7 @@ export default async function NativeArticlePage({ params }: Props) {
               padding: '1.25rem 1.5rem',
               background: 'white',
               border: '1px solid rgba(0,0,0,0.08)',
-              borderLeft: '4px solid #0f5c73',
+              borderLeft: '4px solid var(--gold)',
               borderRadius: '0 3px 3px 0',
               display: 'flex',
               alignItems: 'center',
@@ -155,10 +155,10 @@ export default async function NativeArticlePage({ params }: Props) {
               flexWrap: 'wrap',
             }}>
               <div style={{ flex: 1 }}>
-                <p style={{ fontSize: '0.65rem', color: '#0f5c73', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', marginBottom: '0.25rem' }}>
+                <p style={{ fontSize: '0.65rem', color: 'var(--gold)', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', marginBottom: '0.25rem' }}>
                   Attachment
                 </p>
-                <p style={{ fontSize: '0.9rem', color: '#1c1a17', fontFamily: '"Playfair Display", serif' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--ink)', fontFamily: '"Playfair Display", serif' }}>
                   Download PDF version of this article
                 </p>
               </div>
@@ -168,7 +168,7 @@ export default async function NativeArticlePage({ params }: Props) {
                 rel="noopener noreferrer"
                 style={{
                   padding: '0.75rem 1.5rem',
-                  background: '#0f5c73', color: 'white', borderRadius: '2px',
+                  background: 'var(--gold)', color: 'white', borderRadius: '2px',
                   fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase',
                   fontFamily: '"Inter", sans-serif', fontWeight: 500,
                   textDecoration: 'none', flexShrink: 0,
@@ -190,7 +190,7 @@ export default async function NativeArticlePage({ params }: Props) {
               href={`/articles/${category}`}
               style={{
                 fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase',
-                color: '#0f5c73', fontFamily: '"Inter", sans-serif', fontWeight: 500,
+                color: 'var(--gold)', fontFamily: '"Inter", sans-serif', fontWeight: 500,
                 textDecoration: 'none',
               }}
             >
@@ -225,22 +225,22 @@ export default async function NativeArticlePage({ params }: Props) {
         }
         .article-prose h2 {
           font-size: 1.6rem; font-weight: 400;
-          margin: 2rem 0 0.85rem; color: #1c1a17;
+          margin: 2rem 0 0.85rem; color: var(--ink);
           letter-spacing: -0.01em;
         }
         .article-prose h3 {
           font-size: 1.2rem; font-weight: 400;
-          margin: 1.75rem 0 0.75rem; color: #1c1a17;
+          margin: 1.75rem 0 0.75rem; color: var(--ink);
         }
         .article-prose p { margin-bottom: 1.25rem; }
-        .article-prose strong { color: #1c1a17; font-weight: 600; }
+        .article-prose strong { color: var(--ink); font-weight: 600; }
         .article-prose em { color: #3a3a3a; }
         .article-prose ul, .article-prose ol {
           padding-left: 1.5rem; margin-bottom: 1.25rem;
         }
         .article-prose li { margin-bottom: 0.4rem; }
         .article-prose blockquote {
-          border-left: 3px solid #0f5c73;
+          border-left: 3px solid var(--gold);
           margin: 1.75rem 0; padding: 0.5rem 0 0.5rem 1.5rem;
           color: #3a3a3a; font-style: italic; font-size: 1.08rem;
         }

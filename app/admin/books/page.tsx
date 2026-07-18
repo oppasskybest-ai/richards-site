@@ -21,7 +21,7 @@ const fieldStyle: React.CSSProperties = {
 }
 
 const labelStyle: React.CSSProperties = {
-  display: 'block', fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)',
+  display: 'block', fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)',
   letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.4rem',
 }
 
@@ -110,7 +110,7 @@ export default function AdminBooks() {
       {toast && (
         <div style={{
           position: 'fixed', top: '1.5rem', right: '1.5rem',
-          background: '#0f5c73', color: 'white', padding: '0.85rem 1.5rem',
+          background: 'var(--gold)', color: 'white', padding: '0.85rem 1.5rem',
           zIndex: 600, fontSize: '0.85rem', borderRadius: '2px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
         }}>
@@ -126,7 +126,7 @@ export default function AdminBooks() {
         </div>
         <button
           onClick={() => setEditing({ ...EMPTY })}
-          style={{ padding: '0.65rem 1.4rem', background: '#0f5c73', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}
+          style={{ padding: '0.65rem 1.4rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}
         >
           + Add Book
         </button>
@@ -145,7 +145,7 @@ export default function AdminBooks() {
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 {['Cover', 'Title', 'Year', 'Quotes', 'Order', ''].map((h) => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,92,115,0.6)', fontWeight: 400 }}>{h}</th>
+                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(var(--gold-rgb),0.6)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -179,7 +179,7 @@ export default function AdminBooks() {
                     <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>{book.slug}</p>
                   </td>
 
-                  <td style={{ padding: '0.85rem 1rem', fontSize: '0.78rem', color: 'rgba(15,92,115,0.7)', whiteSpace: 'nowrap' }}>{book.year}</td>
+                  <td style={{ padding: '0.85rem 1rem', fontSize: '0.78rem', color: 'rgba(var(--gold-rgb),0.7)', whiteSpace: 'nowrap' }}>{book.year}</td>
 
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)', whiteSpace: 'nowrap' }}>
                     {(book.quotes?.length || 0)} quote{(book.quotes?.length || 0) !== 1 ? 's' : ''}
@@ -188,7 +188,7 @@ export default function AdminBooks() {
                   <td style={{ padding: '0.85rem 1rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)' }}>{book.order_index}</td>
 
                   <td style={{ padding: '0.85rem 1rem', whiteSpace: 'nowrap' }}>
-                    <button onClick={() => setEditing(book)} style={{ background: 'none', border: 'none', color: '#17798f', fontSize: '0.72rem', cursor: 'pointer', marginRight: '0.75rem' }}>Edit</button>
+                    <button onClick={() => setEditing(book)} style={{ background: 'none', border: 'none', color: 'var(--gold-light)', fontSize: '0.72rem', cursor: 'pointer', marginRight: '0.75rem' }}>Edit</button>
                     <button onClick={() => del(book.id, book.title)} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.6)', fontSize: '0.72rem', cursor: 'pointer' }}>Delete</button>
                   </td>
                 </tr>
@@ -281,7 +281,7 @@ export default function AdminBooks() {
               <button
                 type="button"
                 onClick={addQuote}
-                style={{ background: 'none', border: '1px solid rgba(15,92,115,0.4)', color: '#0f5c73', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0.35rem 0.75rem', cursor: 'pointer', borderRadius: '2px' }}
+                style={{ background: 'none', border: '1px solid rgba(var(--gold-rgb),0.4)', color: 'var(--gold)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0.35rem 0.75rem', cursor: 'pointer', borderRadius: '2px' }}
               >
                 + Add Quote
               </button>
@@ -330,7 +330,7 @@ export default function AdminBooks() {
             <button
               onClick={save}
               disabled={saving || !editing.title}
-              style={{ padding: '0.65rem 1.5rem', background: '#0f5c73', color: 'white', border: 'none', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: saving ? 'not-allowed' : 'pointer', borderRadius: '2px', opacity: saving ? 0.7 : 1 }}
+              style={{ padding: '0.65rem 1.5rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: saving ? 'not-allowed' : 'pointer', borderRadius: '2px', opacity: saving ? 0.7 : 1 }}
             >
               {saving ? 'Saving…' : 'Save Book'}
             </button>

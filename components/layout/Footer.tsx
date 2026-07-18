@@ -4,7 +4,7 @@ import Link from 'next/link'
 export default function Footer() {
   const year = new Date().getFullYear()
   return (
-    <footer style={{ background: '#0a0a0a', borderTop: '1px solid rgba(15,92,115,0.15)', padding: 'clamp(3.5rem,7vw,5rem) 0 2.5rem' }}>
+    <footer style={{ background: '#0a0a0a', borderTop: '1px solid rgba(var(--gold-rgb),0.15)', padding: 'clamp(3.5rem,7vw,5rem) 0 2.5rem' }}>
       <div className="container-wide">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
 
@@ -13,7 +13,7 @@ export default function Footer() {
             <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.2rem', color: 'white', marginBottom: '0.4rem', fontWeight: 400 }}>
               E. Randolph Richards
             </p>
-            <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.8)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.5rem', fontFamily: '"Inter", sans-serif' }}>
+            <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.8)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.5rem', fontFamily: '"Inter", sans-serif' }}>
               Biblical Thoughts
             </p>
             <p style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.42)', lineHeight: 1.8 }}>
@@ -23,7 +23,7 @@ export default function Footer() {
 
           {/* ARTICLES */}
           <div>
-            <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>
+            <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>
               Articles
             </p>
             {[
@@ -39,7 +39,7 @@ export default function Footer() {
 
           {/* THE BOOKS */}
           <div>
-            <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>
+            <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>
               Books
             </p>
             {[
@@ -56,7 +56,7 @@ export default function Footer() {
 
           {/* GET IN TOUCH */}
           <div>
-            <p style={{ fontSize: '0.62rem', color: 'rgba(15,92,115,0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>
+            <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>
               Get in Touch
             </p>
             <p style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.42)', lineHeight: 1.8, marginBottom: '0.6rem' }}>

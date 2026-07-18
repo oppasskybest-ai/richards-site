@@ -38,10 +38,10 @@ export default function BookCard({ book, featured = false }: Props) {
 
         {/* INFO */}
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: '0.65rem', color: '#0f5c73', letterSpacing: '0.15em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', marginBottom: '0.4rem' }}>
+          <p style={{ fontSize: '0.65rem', color: 'var(--gold)', letterSpacing: '0.15em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', marginBottom: '0.4rem' }}>
             {book.year}
           </p>
-          <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 400, fontSize: featured ? '1.4rem' : '1.1rem', lineHeight: 1.2, marginBottom: '0.4rem', color: '#1c1a17' }}>
+          <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 400, fontSize: featured ? '1.4rem' : '1.1rem', lineHeight: 1.2, marginBottom: '0.4rem', color: 'var(--ink)' }}>
             {book.title}
           </h3>
           {book.subtitle && (
@@ -55,7 +55,7 @@ export default function BookCard({ book, featured = false }: Props) {
             </p>
           )}
           {featured && book.quotes[0] && (
-            <blockquote style={{ borderLeft: '2px solid #0f5c73', paddingLeft: '0.75rem', marginBottom: '1rem' }}>
+            <blockquote style={{ borderLeft: '2px solid var(--gold)', paddingLeft: '0.75rem', marginBottom: '1rem' }}>
               <p style={{ fontSize: '0.8rem', color: '#6b6b6b', lineHeight: 1.6, fontStyle: 'italic' }}>
                 &ldquo;{book.quotes[0].quote.slice(0, 120)}{book.quotes[0].quote.length > 120 ? '…' : ''}&rdquo;
               </p>
@@ -64,7 +64,7 @@ export default function BookCard({ book, featured = false }: Props) {
               </cite>
             </blockquote>
           )}
-          <span style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#0f5c73', fontFamily: '"Inter", sans-serif', fontWeight: 500 }}>
+          <span style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', fontWeight: 500 }}>
             Learn more →
           </span>
         </div>

@@ -47,7 +47,7 @@ export default function Sidebar({ onLogout }: SidebarProps) {
         </p>
         <p style={{
           fontSize: '0.58rem',
-          color: 'rgba(15,92,115,0.6)',
+          color: 'rgba(var(--gold-rgb),0.6)',
           letterSpacing: '0.14em', textTransform: 'uppercase',
         }}>
           Admin Panel
@@ -79,7 +79,7 @@ export default function Sidebar({ onLogout }: SidebarProps) {
                 fontFamily: '"Inter", sans-serif',
                 transition: 'background 0.15s ease, color 0.15s ease',
                 color: active ? '#e8c989' : 'rgba(255,255,255,0.55)',
-                background: active ? 'rgba(15,92,115,0.12)' : 'transparent',
+                background: active ? 'rgba(var(--gold-rgb),0.12)' : 'transparent',
               }}
               onMouseEnter={(e) => {
                 if (!active) {

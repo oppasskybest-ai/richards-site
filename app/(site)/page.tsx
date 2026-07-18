@@ -129,7 +129,7 @@ export default async function HomePage() {
             width: '600px',
             height: '600px',
             background:
-              'radial-gradient(circle, rgba(15,92,115,0.08) 0%, transparent 70%)',
+              'radial-gradient(circle, rgba(var(--gold-rgb),0.08) 0%, transparent 70%)',
             pointerEvents: 'none',
             zIndex: 1,
           }}
@@ -160,7 +160,7 @@ export default async function HomePage() {
             style={{
               width: '1px',
               height: '56px',
-              background: 'rgba(15,92,115,0.25)',
+              background: 'rgba(var(--gold-rgb),0.25)',
               overflow: 'hidden',
               position: 'relative',
             }}
@@ -170,7 +170,7 @@ export default async function HomePage() {
               style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'rgba(15,92,115,0.6)',
+                background: 'rgba(var(--gold-rgb),0.6)',
               }}
             />
           </div>
@@ -215,7 +215,7 @@ export default async function HomePage() {
                     fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
                     fontWeight: 400,
                     marginBottom: '1.25rem',
-                    color: '#1c1a17',
+                    color: 'var(--ink)',
                     letterSpacing: '-0.01em',
                   }}
                 >
@@ -261,7 +261,7 @@ export default async function HomePage() {
                     fontSize: '0.72rem',
                     letterSpacing: '0.14em',
                     textTransform: 'uppercase',
-                    color: '#0f5c73',
+                    color: 'var(--gold)',
                     fontFamily: '"Inter", sans-serif',
                     fontWeight: 500,
                   }}
@@ -342,7 +342,7 @@ export default async function HomePage() {
                   fontSize: '0.72rem',
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
-                  color: '#0f5c73',
+                  color: 'var(--gold)',
                   fontFamily: '"Inter", sans-serif',
                   fontWeight: 500,
                 }}
@@ -362,13 +362,13 @@ export default async function HomePage() {
               <HomeExpandStack
                 cards={featuredArticles.slice(0, 3)}
                 label="Featured"
-                accent="#0f5c73"
+                accent="var(--gold)"
                 bgColor="rgba(8,18,32,0.97)"
               />
               <HomeExpandStack
                 cards={featuredArticles.slice(0, 4)}
                 label="From the Archive"
-                accent="#0f5c73"
+                accent="var(--gold)"
                 bgColor="rgba(14,8,30,0.97)"
               />
             </div>
@@ -394,7 +394,7 @@ export default async function HomePage() {
             right: 0,
             height: '1px',
             background:
-              'linear-gradient(90deg, transparent, rgba(15,92,115,0.4), transparent)',
+              'linear-gradient(90deg, transparent, rgba(var(--gold-rgb),0.4), transparent)',
             pointerEvents: 'none',
           }}
         />
@@ -477,7 +477,7 @@ export default async function HomePage() {
                       <p
                         style={{
                           fontSize: '0.62rem',
-                          color: 'rgba(15,92,115,0.75)',
+                          color: 'rgba(var(--gold-rgb),0.75)',
                           letterSpacing: '0.16em',
                           textTransform: 'uppercase',
                           fontFamily: '"Inter", sans-serif',
@@ -523,7 +523,7 @@ export default async function HomePage() {
                 fontSize: '0.72rem',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: '#0f5c73',
+                color: 'var(--gold)',
                 fontFamily: '"Inter", sans-serif',
                 fontWeight: 500,
               }}
@@ -548,7 +548,7 @@ export default async function HomePage() {
             <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
               <p
                 style={{
-                  color: '#0f5c73',
+                  color: 'var(--gold)',
                   fontSize: '0.7rem',
                   letterSpacing: '0.22em',
                   textTransform: 'uppercase',
@@ -581,7 +581,7 @@ export default async function HomePage() {
       <section
         id="subscribe"
         style={{
-          background: '#f6f1e6',
+          background: 'var(--paper)',
           borderTop: '1px solid rgba(0,0,0,0.07)',
           padding: 'clamp(4rem,8vw,6rem) 0',
           scrollMarginTop: 'var(--nav-height)',

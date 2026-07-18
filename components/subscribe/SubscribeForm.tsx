@@ -61,7 +61,7 @@ export default function SubscribeForm({ dark = false, showPreferences = false, o
   const inputStyle = {
     flex: 1, padding: '0.9rem 1.1rem', fontSize: '0.85rem', fontFamily: '"Inter", sans-serif',
     background: dark ? 'rgba(255,255,255,0.08)' : 'white',
-    color: dark ? 'white' : '#1c1a17',
+    color: dark ? 'white' : 'var(--ink)',
     border: dark ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(0,0,0,0.2)',
     borderRadius: '2px', outline: 'none',
   }
@@ -112,7 +112,7 @@ export default function SubscribeForm({ dark = false, showPreferences = false, o
       <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
         <button onClick={handleSubmit} disabled={status === 'loading' || !email}
           style={{
-            padding: '0.9rem 1.75rem', background: '#0f5c73', color: 'white', border: 'none',
+            padding: '0.9rem 1.75rem', background: 'var(--gold)', color: 'white', border: 'none',
             fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase',
             fontFamily: '"Inter", sans-serif', fontWeight: 500, cursor: 'pointer',
             borderRadius: '2px', transition: 'background 0.2s ease',
