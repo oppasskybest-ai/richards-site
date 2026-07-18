@@ -1,0 +1,176 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import ClientImage from '@/components/ui/ClientImage'
+import BioTypewriter from '@/components/home/BioTypewriter'
+import ScrollReveal from '@/components/home/ScrollReveal'
+import PublicationBadge from '@/components/ui/PublicationBadge'
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: "E. Randolph Richards, Ph.D., is a retired Provost and Research Professor of New Testament at Palm Beach Atlantic University. Author of Misreading Scripture with Western Eyes, Rediscovering Paul, and other books.",
+}
+
+const MEDIA = [
+  'The Stone Chapel Podcast', 'The Clarity Podcast', 'Moody Radio',
+]
+
+export default function AboutPage() {
+  return (
+    <>
+      {/* HERO — parallax */}
+      <section
+        className="page-hero"
+        style={{
+          backgroundImage:
+            "url('/assets/images/portraits/speaking-photo.jpg')",
+          minHeight: '60vh',
+        }}
+      >
+        <div className="container-wide" style={{ zIndex: 2, textAlign: 'center' }}>
+          <p
+            className="animate-fade-in"
+            style={{
+              fontSize: '0.68rem',
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: 'rgba(15,92,115,0.9)',
+              fontFamily: '"Inter", sans-serif',
+              marginBottom: '1.25rem',
+            }}
+          >
+            About
+          </p>
+          <h1
+            className="animate-fade-up delay-100"
+            style={{
+              fontFamily: '"Playfair Display", serif',
+              fontSize: 'clamp(3rem, 7vw, 6rem)',
+              fontWeight: 400,
+              color: 'white',
+              lineHeight: 1.06,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            E. Randolph Richards
+          </h1>
+          <div className="gold-divider" style={{ margin: '1.5rem auto' }} />
+          <p
+            className="animate-fade-up delay-200"
+            style={{
+              fontFamily: '"Playfair Display", serif',
+              fontSize: 'clamp(1rem, 2vw, 1.35rem)',
+              color: 'rgba(255,255,255,0.55)',
+              fontStyle: 'italic',
+            }}
+          >
+            Professor. Author. Provost.
+          </p>
+        </div>
+      </section>
+
+      {/* BIO */}
+      <section style={{ background: 'white', padding: 'clamp(4rem,8vw,7rem) 0' }}>
+        <div className="container-wide">
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1fr)', gap: 'clamp(2.5rem,6vw,5rem)', alignItems: 'start' }} className="about-bio-grid">
+            <div>
+              <ScrollReveal>
+                <div className="rule-line" style={{ marginBottom: '1.75rem' }} />
+                <BioTypewriter />
+              </ScrollReveal>
+
+              <ScrollReveal delay={100}>
+                <p style={{ lineHeight: 1.9, color: '#3a3a3a', marginBottom: '1.35rem', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
+                  I&apos;m Randy Richards. I&apos;ve been teaching the New Testament since 1986 — first at a state
+                  university, then for several years as a missionary and seminary teacher in Indonesia, and since
+                  2006 at Palm Beach Atlantic University, where I later served as Dean and then as Provost and
+                  Chief Academic Officer for sixteen years before returning, happily, to the classroom.
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delay={200}>
+                <p style={{ lineHeight: 1.9, color: '#3a3a3a', marginBottom: '1.35rem', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
+                  My wife, Stacia, and I have been together for over forty years, from the jungles of Indonesia to
+                  rice fields in Arkansas to the beaches of South Florida. We have two grown sons, and now
+                  grandchildren, who are frankly the best part of most weeks.
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delay={300}>
+                <p style={{ lineHeight: 1.9, color: '#3a3a3a', marginBottom: '1.35rem', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
+                  Most of my writing — <em>Misreading Scripture with Western Eyes</em>, <em>Rediscovering Paul</em>,
+                  and the rest — comes back to one idea: Scripture was written in a time and culture very different
+                  from ours, and it&apos;s easy to read our own assumptions into the text without noticing we&apos;ve
+                  done it.
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delay={400}>
+                <p style={{ lineHeight: 1.9, color: '#3a3a3a', marginBottom: '2.5rem', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
+                  This site is where I keep the books, the articles, and the occasional podcast conversation — mostly
+                  for students and colleagues who&apos;d rather find it here than dig through my Academia.edu page.
+                </p>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                  <Link href="/books" className="btn-gold" style={{ padding: '0.9rem 2rem', fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', fontWeight: 500, borderRadius: '2px', display: 'inline-block' }}>
+                    The Books
+                  </Link>
+                  <Link href="/articles" style={{ padding: '0.9rem 2rem', background: 'transparent', color: '#1c1a17', fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', fontWeight: 400, borderRadius: '2px', border: '1px solid rgba(0,0,0,0.2)', display: 'inline-block', transition: 'all 0.2s ease' }}>
+                    Read the Articles
+                  </Link>
+                </div>
+              </ScrollReveal>
+            </div>
+
+            {/* PORTRAIT */}
+            <ScrollReveal>
+              <div style={{ position: 'sticky', top: 'calc(var(--nav-height) + 2rem)' }}>
+                <div className="img-reveal" style={{ width: '100%', maxWidth: '320px', aspectRatio: '3/4', background: '#e8e4db', borderRadius: '3px', overflow: 'hidden', boxShadow: '16px 24px 80px rgba(0,0,0,0.14)' }}>
+                  <ClientImage src="/assets/images/portraits/speaking-photo.jpg" alt="E. Randolph Richards" fill style={{ objectFit: 'cover' }} />
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* PUBLICATIONS */}
+      <section style={{ background: 'var(--paper)', padding: 'clamp(4rem,7vw,5.5rem) 0', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <div className="container-wide">
+          <ScrollReveal>
+            <div className="rule-line" style={{ marginBottom: '1.5rem' }} />
+            <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 400, marginBottom: '2.5rem', letterSpacing: '-0.01em' }}>
+              As heard on
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={100}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
+              {MEDIA.map((pub) => (
+                <PublicationBadge key={pub} name={pub} />
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* AGENT */}
+      <section style={{ background: 'white', padding: 'clamp(4rem,7vw,5.5rem) 0', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <div className="container-wide">
+          <ScrollReveal>
+            <div className="rule-line" style={{ marginBottom: '1.5rem' }} />
+            <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 400, marginBottom: '2rem', letterSpacing: '-0.01em' }}>
+              Speaking &amp; inquiries
+            </h2>
+            <div style={{ background: 'var(--paper)', border: '1px solid rgba(0,0,0,0.08)', borderLeft: '3px solid var(--gold)', padding: '2rem 2.5rem', maxWidth: '440px', borderRadius: '0 3px 3px 0' }}>
+              <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.15rem', color: '#1c1a17', marginBottom: '0.25rem', fontWeight: 400 }}>E. Randolph Richards</p>
+              <p style={{ fontSize: '0.82rem', color: '#0f5c73', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif', letterSpacing: '0.06em' }}>Palm Beach Atlantic University</p>
+              <p style={{ fontSize: '0.88rem', color: '#3a3a3a', lineHeight: 1.85 }}>
+                For speaking requests or general questions, use the contact form below —<br />
+                messages go straight to my inbox.<br />
+                <Link href="/contact" style={{ color: '#0f5c73', fontWeight: 400 }}>Go to Contact →</Link>
+              </p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+    </>
+  )
+}
