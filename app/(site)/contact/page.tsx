@@ -13,7 +13,7 @@ export default function ContactPage() {
         className="page-hero"
         style={{
           backgroundImage:
-            "url('/assets/images/articles/jfbl9593.jpg')",
+            "url('/assets/images/portraits/grandkids-2025.jpg')",
           minHeight: '50vh',
         }}
       >
@@ -52,7 +52,7 @@ export default function ContactPage() {
       <section
         className="section-bg-image"
         style={{
-          backgroundImage: "url('/assets/images/articles/photo-1639678343.jpg')",
+          backgroundImage: "url('/assets/images/portraits/img_1958.jpg')",
           padding: 'clamp(5rem,10vw,7rem) 0',
         }}
       >

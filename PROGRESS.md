@@ -10,6 +10,25 @@ missing.
 
 ---
 
+# STATUS AT A GLANCE (2026-07-19, even later same day)
+
+Session 6: found and fixed a real, sitewide bug -- not a design taste
+disagreement. Every dark hero/section across the ENTIRE site (homepage x4,
+Articles index, Articles category pages, article detail fallback, Events
+x2, Contact x2, Books hero) was pointing at image files that don't exist
+on disk -- some leftover from the original unrelated "duff-site" template
+this project was cloned from (one literally named `the-firm.jpg`). With no
+fallback background-color set anywhere, a 404'd background image means
+the section renders on plain white, and white text on white = invisible.
+That's what looked like "colors that don't fit, not readable" -- it wasn't
+a color choice, it was broken references the whole time. All fixed with
+real photos, thoughtfully placed per section (not the same one image
+repeated everywhere), plus a defensive fallback background-color added so
+this specific failure mode can't happen silently again. Full detail in
+"SESSION 6" below.
+
+---
+
 # STATUS AT A GLANCE (2026-07-19, later same day)
 
 Session 5: comments overhaul, real Amazon book data, and a Supabase Storage
@@ -514,7 +533,95 @@ every admin form for rich-editor and image-upload coverage:
 
 ---
 
-# KNOWN GAPS -- numbered, so they're easy to reference and cross off
+# SESSION 6 (2026-07-19, even later same day)
+
+Randy pushed back hard, correctly, on two things: (1) the "scroll-driven
+full-bleed photo" redesign discussed several messages ago had never
+actually been built -- he was right, that conversation ended on a mockup
+and the thread moved to content work and never came back to it; and (2)
+"the colors aren't even fitting the design, not readable by human." This
+session addressed both directly, in order.
+
+## 1. The redesign mechanism already existed -- it just had no working images
+Before writing new code, checked what `.page-hero` / `.section-bg-image`
+in `styles/globals.css` actually do: `background-attachment: fixed` +
+a dark `::before` overlay + one `backgroundImage` per section. That IS
+the "backdrop switches per section while you scroll, text stays legible"
+effect Randy asked for -- it was already built, correctly, sometime before
+this session. So this was not a rebuild from zero.
+
+## 2. The real bug: broken image paths, sitewide, with no fallback color
+Audited every `/assets/images/...` path referenced anywhere in
+`app/`, `components/`, `lib/` against what actually exists on disk.
+Found 7 broken references, used in 12 different places across the site:
+- `unsplash-image-cl1vms3jlue.jpg` -- homepage hero, article detail
+  fallback, category page fallback, Books page CTA
+- `photo-1639678343.jpg` -- homepage "Recent Work", Events CTA, Contact
+- `screen-shot-2020-05-07-at-3.34.10-pm.png` -- Articles index hero
+- `jfbl9593.jpg` -- Events hero, Contact hero
+- `the-firm.jpg` -- **the Books page hero.** This filename doesn't match
+  any of Randy's books because it isn't one -- it's a leftover reference
+  from "duff-site," the unrelated template this project started from.
+  Concrete evidence the base template was never fully swapped out, not
+  just a vibe.
+- `misc/og-default.jpg` and `misc/apple-touch-icon.png` -- sitewide
+  metadata (social share preview image, favicon), also missing.
+
+None of `.page-hero` / `.section-bg-image` had a fallback
+`background-color`. A 404'd background image doesn't paint anything --
+the section falls through to the plain page background (white), and
+white headline text on white = invisible. That is exactly what Randy
+saw and flagged. It was never a palette decision to defend.
+
+## 3. What was fixed
+- All 12 broken references replaced with real photos -- not the same one
+  image copy-pasted everywhere; each section got a photo chosen for what
+  it's introducing (hero -> speaking-photo.jpg, warmer/personal sections
+  -> grandkids-2025.jpg or img_1958.jpg, the Books sections -> the real
+  napkin-sketch photo that's literally the origin story of one of his
+  books).
+- Added `background-color: #0d0d0d` as a fallback on both `.page-hero`
+  and `.section-bg-image` in `styles/globals.css` -- defense in depth, so
+  a future broken path degrades to a dark section with visible text
+  instead of silently going invisible again.
+- Added a mobile media query (`max-width: 768px, hover: none`) that
+  switches `background-attachment` from `fixed` to `scroll` -- fixed
+  backgrounds are unreliable on iOS Safari and can cause scroll jank on
+  touch devices generally; this wasn't reported as broken but was a real
+  latent mobile bug found while in this code.
+- Generated real `misc/og-default.jpg` (1200x630, real photo + name/title
+  overlay) and `misc/apple-touch-icon.png` (monogram) so social link
+  previews and the browser tab icon are no longer broken either.
+- Fixed two more hardcoded-count staleness bugs matching the "four
+  categories" bug from Session 4: the homepage said "All Five Books"
+  (now dynamic, `{BOOKS.length}`).
+
+## 4. Real photo inventory used this session (all from `sorted-assets.zip`,
+matched to their original blog post/page via the scraped HTML's
+`data-permalink` attribute, not guessed from filenames)
+- `speaking-photo.jpg`, `grandkids-2025.jpg` -- already in the project.
+- `img_1958.jpg` -- confirmed via HTML context as the featured photo for
+  "Praying Them In Rather Than Out" (iPhone 7, 2021). Optimized in place
+  from 1MB down to 272KB; a separate cropped copy also wired directly
+  into that article's `image` field.
+- `napkins-that-started-individualist-eyes.jpg` -- the real napkin-sketch
+  photo from the Books page's "most great books start on napkins" story.
+  Only available at 526x701 (no higher-res version exists in the scrape)
+  -- used behind a heavy dark overlay so the lower resolution isn't
+  visible at display size, not stretched as a bright, sharp hero.
+- `richards-arms-crossed-smallest-size1ebf4.jpg`,
+  `dsc001002dff.jpg`, `ecc75302-dd1f-4ade-9831-0d83f7f45512.jpg` -- wired
+  directly into the `image` field of "4th of July in Philippi," "A
+  Handshake Means Nothing?," and "The Reckless Love of God" respectively
+  -- these were each that specific post's real original featured image,
+  confirmed via `data-permalink` in the scraped HTML, not reused
+  generically.
+- Per Randy's instruction, book cover images were intentionally left out
+  of this pass -- they stay on book pages only.
+
+---
+
+
 
 1. ~~Podcasts admin CRUD~~ -- DONE (see Session 4 addendum
    below). `/admin/podcasts` tab, API routes, sidebar link, and seed-button

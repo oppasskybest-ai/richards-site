@@ -19,7 +19,7 @@ export default async function JournalismPage() {
       <section
         className="page-hero"
         style={{
-          backgroundImage: "url('/assets/images/articles/screen-shot-2020-05-07-at-3.34.10-pm.png')",
+          backgroundImage: "url('/assets/images/portraits/speaking-photo.jpg')",
           minHeight: '55vh',
         }}
       >

@@ -54,7 +54,7 @@ export default async function EventsPage() {
         className="page-hero"
         style={{
           backgroundImage:
-            "url('/assets/images/articles/jfbl9593.jpg')",
+            "url('/assets/images/portraits/speaking-photo.jpg')",
           minHeight: '55vh',
         }}
       >
@@ -302,7 +302,7 @@ export default async function EventsPage() {
         <section
           className="section-bg-image"
           style={{
-            backgroundImage: "url('/assets/images/articles/photo-1639678343.jpg')",
+            backgroundImage: "url('/assets/images/portraits/grandkids-2025.jpg')",
             padding: 'clamp(4rem,8vw,6rem) 0',
           }}
         >

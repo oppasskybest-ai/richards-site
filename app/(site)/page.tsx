@@ -102,7 +102,7 @@ export default async function HomePage() {
         className="page-hero"
         style={{
           backgroundImage:
-            "url('/assets/images/articles/unsplash-image-cl1vms3jlue.jpg')",
+            "url('/assets/images/portraits/speaking-photo.jpg')",
         }}
       >
         {/* GRID TEXTURE OVERLAY */}
@@ -303,7 +303,7 @@ export default async function HomePage() {
         className="section-bg-image"
         style={{
           backgroundImage:
-            "url('/assets/images/articles/photo-1639678343.jpg')",
+            "url('/assets/images/portraits/grandkids-2025.jpg')",
           padding: 'clamp(5rem,10vw,7rem) 0',
         }}
       >
@@ -381,7 +381,7 @@ export default async function HomePage() {
         className="section-bg-image"
         style={{
           backgroundImage:
-            "url('/assets/images/articles/speaking-photo.jpg')",
+            "url('/assets/images/portraits/napkins-that-started-individualist-eyes.jpg')",
           padding: 'clamp(5rem,10vw,7rem) 0',
         }}
       >
@@ -528,7 +528,7 @@ export default async function HomePage() {
                 fontWeight: 500,
               }}
             >
-              All Five Books →
+              All {BOOKS.length} Books →
             </Link>
           </ScrollReveal>
         </div>
@@ -539,7 +539,7 @@ export default async function HomePage() {
         className="section-bg-image"
         style={{
           backgroundImage:
-            "url('/assets/images/articles/1024px-pure-mathematics-formulae-blackboard.jpg')",
+            "url('/assets/images/portraits/img_1958.jpg')",
           padding: 'clamp(5rem,10vw,7rem) 0',
         }}
       >

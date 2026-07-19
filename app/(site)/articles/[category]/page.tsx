@@ -50,7 +50,7 @@ export default async function CategoryPage({ params }: Props) {
     getAllBooks(),
   ])
   const label = CATEGORY_LABELS[slug]
-  const heroBg = CATEGORY_BG[slug] || '/assets/images/articles/unsplash-image-cl1vms3jlue.jpg'
+  const heroBg = CATEGORY_BG[slug] || '/assets/images/portraits/speaking-photo.jpg'
 
   const featuredBook =
     slug === 'bible-culture' ? allBooks.find((b) => b.slug === 'misreading-scripture-with-western-eyes')

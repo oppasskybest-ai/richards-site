@@ -66,7 +66,7 @@ export default async function NativeArticlePage({ params }: Props) {
         style={{
           backgroundImage: article.image
             ? `url('${article.image}')`
-            : "url('/assets/images/articles/unsplash-image-cl1vms3jlue.jpg')",
+            : "url('/assets/images/portraits/speaking-photo.jpg')",
           minHeight: '55vh',
         }}
       >

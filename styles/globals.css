@@ -327,12 +327,21 @@ a { text-decoration: none; color: inherit; transition: color 0.2s ease; }
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #0d0d0d; /* fallback if the image ever 404s -- prevents white-on-white text */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   overflow: hidden;
   padding-top: var(--nav-height);
   box-sizing: border-box;
+}
+@media (max-width: 768px), (hover: none) {
+  /* background-attachment: fixed is unreliable on iOS Safari and can cause
+     scroll jank on touch devices generally -- fall back to a normal
+     scrolling background below the breakpoint instead of fighting it. */
+  .page-hero, .section-bg-image {
+    background-attachment: scroll;
+  }
 }
 .page-hero::before {
   content: '';
@@ -346,6 +355,7 @@ a { text-decoration: none; color: inherit; transition: color 0.2s ease; }
 /* ── PARALLAX SECTION BG ── */
 .section-bg-image {
   position: relative;
+  background-color: #0d0d0d; /* fallback if the image ever 404s */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
