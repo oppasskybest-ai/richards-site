@@ -21,9 +21,19 @@ creates every table, index, and security policy in one run.
      anything with `NEXT_PUBLIC_` in front, never commit it. It has full
      read/write access to every table, bypassing all security rules below.
 4. Log into `/admin`, go to **Settings**, click **Run Seed**. This loads
-   the 4 real books and 10 real articles that already live in
-   `lib/config/books.ts` and `lib/config/articles.ts`. See section 4 below
-   for exactly what this does and why it's safe to click more than once.
+   the real books, articles, and podcasts that already live in
+   `lib/config/`. See section 4 below for exactly what this does and why
+   it's safe to click more than once.
+5. **Create the image upload bucket** — this step is easy to miss because
+   nothing prompts you for it. Every "upload image" button in the admin
+   panel (article cover images, the rich text editor's inline image
+   button, book covers, etc.) uploads to a Supabase Storage bucket that
+   must be named exactly `article-images`. It is not created automatically.
+   Go to **Storage** in the Supabase dashboard → **New bucket** → name it
+   `article-images` → toggle **Public bucket: ON** → Create. Then, back in
+   **SQL Editor**, run the two `storage.objects` policies at the bottom of
+   `supabase-schema.sql` (under "MIGRATIONS"). Until this bucket exists,
+   every image upload in the admin panel will fail.
 
 ---
 
@@ -31,13 +41,14 @@ creates every table, index, and security policy in one run.
 
 | Table              | What it's for                                            | Falls back to static config if empty? |
 |---------------------|-----------------------------------------------------------|----------------------------------------|
-| `books`             | The 4 books, editable at `/admin/books`                   | Yes — `lib/config/books.ts`            |
-| `articles`          | The 10 articles, editable at `/admin/articles`             | Yes — `lib/config/articles.ts`         |
+| `books`             | 14 real books/editions, editable at `/admin/books`         | Yes — `lib/config/books.ts`            |
+| `articles`          | 32 real articles, editable at `/admin/articles`             | Yes — `lib/config/articles.ts`         |
+| `podcasts`          | 9 real podcast appearances, editable at `/admin/podcasts`   | Yes — `lib/config/podcasts.ts`         |
 | `events`            | Conferences/talks, editable at `/admin/events`             | No                                      |
 | `subscribers`       | Email signups from the site footer/popup                   | No                                      |
 | `contact_messages`  | Submissions from `/contact` (also emailed via Resend)       | No                                      |
 | `settings`          | A few site-wide text fields (currently barely used)         | No                                      |
-| `comments`          | Comments on native articles                                 | No                                      |
+| `comments`          | Comments on native articles — nested to any depth via `parent_id`, post live immediately (no pre-approval), deletable at `/admin/comments`. Randy can reply in-thread from the admin panel, badged "Randy" on the public page. | No |
 | `reviews`           | Homepage/Endorsements testimonials                          | No                                      |
 | `book_reviews`      | Reader reviews shown on each book's page                    | No                                      |
 

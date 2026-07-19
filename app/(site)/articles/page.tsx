@@ -45,7 +45,7 @@ export default async function JournalismPage() {
             lineHeight: 1.7, maxWidth: '480px', margin: '0 auto',
             fontFamily: '"Inter", sans-serif', fontWeight: 300,
           }}>
-            {articles.length} pieces across four categories.
+            {articles.length} pieces across two categories.
           </p>
         </div>
       </section>

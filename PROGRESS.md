@@ -10,10 +10,27 @@ missing.
 
 ---
 
-# STATUS AT A GLANCE (2026-07-18)
+# STATUS AT A GLANCE (2026-07-19, later same day)
 
-Rebrand + recolor pass complete. Podcasts content type still needs to be
-built from scratch -- that's the biggest real gap before this is launchable.
+Session 5: comments overhaul, real Amazon book data, and a Supabase Storage
+gap Randy caught by asking why he was never told to create an image bucket
+(he was right -- it's a required manual step that was never documented).
+Full detail in "SESSION 5" below. Two real setup actions now required on
+Randy's end before any of this is fully live -- see the "SUPABASE ACTION
+ITEMS" callout right under the Session 5 heading.
+
+---
+
+Session 4: content-parity pass. Randy sent the real scraped site
+(sorted-assets.zip) and flagged, correctly, that Sessions 1-3 had reskinned
+the site but left it largely empty -- placeholder endorsements, no CV page,
+no Podcasts, only 10 of 32+ real blog posts (as excerpts, not full text),
+and only 4 of his 12 real/forthcoming books. All of that is now fixed with
+real, word-for-word content recovered from the scrape. See "SESSION 4" below.
+Remaining real gap: Podcasts has a public page + data layer but no admin
+CRUD tab yet (see gap #1). A new visual direction (full-bleed scroll-driven
+photo backgrounds) was requested and is designed but not yet built into the
+codebase -- see gap #13.
 
 ---
 
@@ -282,70 +299,291 @@ pre-existing patterns in code that wasn't touched, still non-blocking for
 
 ---
 
+# SESSION 4 (2026-07-19) — content parity from the real scraped site
 
+Randy sent two files: `richards-site.zip` (this project) and
+`sorted-assets.zip` (an httrack scrape of the live randolphrichards.com --
+465 files in `html/pages/`, mostly scraper-garbage-named, ~90% 404 pages,
+but a real subset of full, live pages). This session mined that scrape for
+actual content instead of working from screenshots, and used it to close
+the gaps Session 3 had explicitly flagged rather than guessing.
 
-1. Podcasts -- doesn't exist yet. No Supabase table, no admin tab, no
-   public page. This is one of the 4 required content types in the master
-   prompt and one of the 3 things Randy said he cares about. This is the
-   next thing to build, not a copy/text fix. The Navbar currently has a
-   TODO comment where this needs to slot in.
-2. CV page -- his real live nav has one, this project doesn't yet.
-3. Full article text -- only teaser excerpts exist for all 10 seeded
-   posts (now correctly stored as content_html on native articles -- the
-   seed button will insert them properly, see Session 2 audit above).
-   Either pull full text from the 465-page richards-backup HTML clone
-   (most of those files have scraper-garbage names like GET__10744.html
-   and need to be matched to real posts first -- many are likely 404s per
-   the earlier scrape check) or have Randy paste in the full text via
-   /admin/articles.
-4. Ambiguous book cover images -- a few files in the scrape
-   (101ce-dtwmisreadingpaul.jpg, two Amazon-thumbnail-style covers,
-   john-wbc-by-beasley-murray.jpg) weren't confidently identifiable and
-   were NOT used, rather than guessing. Worth asking Randy directly -- he
-   may have more books than the 4 currently listed (e.g. Misreading
-   Scripture with Individualist Eyes, Paul Behaving Badly).
-5. Endorsements / testimonials -- currently a single honest placeholder,
-   both on the homepage and the Endorsements page. Needs real blurbs from
-   Randy (back cover copy, a colleague's note, etc.) -- do not fill with
-   invented quotes.
-6. Buy links -- the 4 books point to plausible-looking IVP/Amazon URLs
-   that have not been individually verified against the live retailer
-   pages. Double-check before launch.
-7. Media/podcast logo files -- PublicationBadge references logo filenames
+**How the content was recovered.** Each scraped HTML file's
+`<meta property="og:url">` tag still points at the real live URL (httrack
+rewrites `rel=canonical` to a local filename, but leaves `og:url` alone) --
+that's what made matching possible. Script: parse every file in
+`html/pages/`, keep only ones with a real `og:url`, dedupe by URL keeping
+the largest `entry-content` block, strip WordPress block-editor cruft
+(wrapper divs, `data-*`/`class` attributes, comment markers) and trailing
+share-button/comment-form HTML, unescape entities. Full methodology is
+reproducible; nothing here was retyped by hand from a screenshot.
+
+**1. Full article text — 32 real posts recovered (not 10 excerpts).**
+`lib/config/articles.ts` rewritten from scratch. Every entry has real,
+complete `content_html` (word-for-word from the scrape), a real date, and
+a slug matching the live site's actual permalink exactly (e.g.
+`/2016/07/21/a-scroll-with-seven-seals/`) for link parity. 22 posts that
+existed on the live site but were never in this project at all are now
+included (e.g. "Redefining Marriage?", "666: The Mark of the Beast",
+"Render Unto Caesar", "The Antichrist", "Living in Trump's America").
+Categories (Bible & Culture / Family & Faith) are still an editorial split
+-- the original site never tagged posts by category -- documented as such
+in the file's header comment.
+
+**2. CV page — built from scratch.** `randolphrichards.com/cv/` is a real,
+substantial nav item (full publication list: major/refereed publications,
+refereed/invited presentations, educational administrative experience,
+honors) that this project's nav didn't have at all. Recovered the full
+text, cleaned it, wrote it to `lib/config/cv.ts` (`CV_HTML`, ~20KB, verbatim),
+and built `app/(site)/cv/page.tsx` using the same hero + prose pattern as
+About/Endorsements. Added to Navbar and Footer.
+
+**3. Podcasts — built from scratch.** The 4th required content type from
+the master prompt, previously nonexistent (Navbar had a TODO comment where
+it should go). Recovered 9 real podcast/media appearances from
+`randolphrichards.com/videos/` (his live site's actual "Podcasts" nav
+label) -- Theology in the Raw, The Clarity Podcast, Lanier Theological
+Library, Stone Chapel Podcast, Discover the Word series, etc. Built:
+- `types/podcasts.ts`, `lib/config/podcasts.ts` (real static data)
+- `lib/data/podcasts.ts` -- Supabase-first with static fallback, same
+  pattern as `lib/data/books.ts`
+- `app/(site)/podcasts/page.tsx` -- public card grid, links straight out
+  to each episode (no embeds, so nothing to fail gracefully from)
+- `podcasts` table + RLS policies added to `supabase-schema.sql`
+- Added to Navbar and Footer.
+**Not done when this was first written, added later the same session:**
+an `/admin/podcasts` CRUD tab. Now built: `app/admin/podcasts/page.tsx`
+(list/add/edit/delete, same pattern as `/admin/events`), API routes at
+`app/api/admin/podcasts/route.ts` + `[id]/route.ts`, sidebar link in
+`components/admin/Sidebar.tsx`, and the "Run Seed" button
+(`app/api/admin/seed/route.ts`) now also seeds the 9 static podcasts into
+Supabase (deduped by URL, since podcasts have no natural slug column).
+
+**4. Endorsements — the fabricated single placeholder replaced with all 6
+real quotes**, word-for-word from `randolphrichards.com/endorsements/`
+(Kathy Skinner, Jon Stubblefield, Del Gann, Kelly Hardin, Johnny Ross,
+Gregg Cudworth). `app/(site)/reviews/page.tsx` fallback array rewritten;
+page heading changed from "Reader Reviews" to "What People Are Saying" to
+match the real site's tone.
+
+**5. Books — 4 titles expanded to 12 (10 finished + 2 forthcoming), all
+pulled from Randy's real CV** (not invented): added Misreading Scripture
+with Individualist Eyes, Paul Behaving Badly, the 1st edition of
+Rediscovering Paul, Paul and First-Century Letter Writing, The Secretary in
+the Letters of Paul, the forthcoming John WBC commentary, Inscriptions/
+Papyri/Other Artifacts, and Rediscovering the New Testament.
+- 6 covers matched with real confidence to actual files in the scrape
+  (filename clearly matched title, e.g. `cover-wunt.png` ->
+  The Secretary in the Letters of Paul, a WUNT-series book).
+- 4 titles had only ambiguous candidates in the scrape (an unlabeled
+  `book-cover.jpg` and two Amazon-thumbnail-style files, all uploaded in
+  the same Feb-2015 batch, that could plausibly be any of several
+  pre-2015 titles). Rather than guess and risk a wrong cover on a
+  published book, generated clearly-labeled "COVER PENDING" placeholder
+  images for those 4 (`public/assets/images/books/placeholder-*.jpg`).
+  Same call Session 1 made on a smaller scale (see old gap #4) --
+  extended consistently rather than reversed under time pressure.
+- Reordered the array so the 3 books surfaced on the homepage
+  ("topBooks", first 3 in `BOOKS`) are the ones with confirmed real
+  covers, not a placeholder.
+
+**6. Small bugs fixed while in this code:**
+- `app/(site)/articles/page.tsx` said "pieces across four categories" when
+  the site only has two -- pre-existing bug from the duff-site rebrand,
+  fixed to "two categories."
+- Confirmed the `/articles/[category]` pages have no article cap (only the
+  homepage-style "Recent additions" grid on `/articles` caps at 12 by
+  design, as a preview) -- so all 32 posts are actually reachable, not
+  silently truncated.
+
+---
+
+# SESSION 5 (2026-07-19, later same day)
+
+## >>> SUPABASE ACTION ITEMS -- required, not optional <<<
+Two things only Randy can do (dashboard access, not code):
+
+1. **Create the image upload bucket.** Every "upload image" button in the
+   admin panel (article cover, rich-text inline images, book covers, event
+   images) has always pointed at a Supabase Storage bucket named exactly
+   `article-images`. That bucket was never created and, until this
+   session, was never documented anywhere either -- Randy asked directly
+   why nothing told him to do this, and he was right, it should have.
+   Fixed: **SUPABASE.md** now has this as an explicit step 5, with exact
+   settings (Dashboard -> Storage -> New bucket -> name it `article-images`
+   -> Public bucket: ON), plus the two `storage.objects` RLS policies to
+   run afterward (bottom of `supabase-schema.sql`, under "MIGRATIONS").
+   Until this bucket exists, every image upload in the admin panel fails.
+2. **Run the new migration statements.** Since Randy's Supabase project
+   already existed before this session (tables already created from an
+   earlier version of this schema), the updated `create table` statements
+   in `supabase-schema.sql` won't retroactively apply to it. The
+   "MIGRATIONS" section at the very bottom of `supabase-schema.sql` has
+   the safe, idempotent `ALTER TABLE` statements to bring an existing
+   database up to date: comments defaulting to auto-approved, the new
+   `is_owner_reply` column, the `podcasts` table (if gap #1 from Session 4
+   wasn't run yet), and the storage policies from item 1. Paste that whole
+   section into the Supabase SQL Editor and run it once.
+
+No other Supabase changes are needed beyond those two -- everything else
+(tables, RLS policies, the `podcasts` table from Session 4) was already
+covered by what Randy set up before this session.
+
+## What changed
+
+**1. Comments -- no more pre-approval, real threading, owner replies.**
+Randy asked directly why comments needed approval before showing, and
+wanted true nested reply-to-reply threading (not just one level), plus a
+way to reply as himself from the admin panel. All three:
+- `comments.status` now defaults to `approved` in the schema; the public
+  POST route (`app/api/public/comments/route.ts`) inserts as `approved`
+  instead of `pending` -- comments appear immediately, no moderation gate.
+  Randy can still delete anything after the fact from `/admin/comments`.
+- `components/journalism/ArticleComments.tsx` was rewritten from a
+  one-level-deep reply list into a real recursive tree (`CommentThread`
+  component calling itself) -- replies can have replies indefinitely, not
+  capped at one level. Visual indent caps at 3 levels so deep threads
+  don't run off-screen, but the underlying nesting has no depth limit.
+  New comments append to the UI immediately rather than waiting on a
+  refetch.
+- New route `app/api/admin/comments/reply/route.ts` lets Randy post a
+  reply in-thread from `/admin/comments`, badged `is_owner_reply: true` --
+  shows as a gold "Randy" badge on the public page and "Your reply" in the
+  admin list. `app/admin/comments/page.tsx` got a "Reply as yourself" box
+  per comment to drive this.
+- Schema: added `is_owner_reply boolean default false` to `comments`.
+  `parent_id` already existed from an earlier session -- it just wasn't
+  being used for anything beyond one level, and the frontend didn't
+  support the depth.
+
+**2. Real Amazon book data -- descriptions, buy links, and correct
+attribution.** Randy sent 9 screenshots of each book's real Amazon
+listing (`book1_bio.png`...`book9_bio.png`), a PDF of buy URLs
+(`all_amazon_books.pdf`), and 9 high-resolution cover images
+(`high_resolution_image.zip`, `book1.png`...`book9.png`, matched 1:1 to
+the bio screenshots by number -- confirmed correct with Randy directly).
+`lib/config/books.ts` rewritten again:
+- Every description is now the real, official Amazon/publisher jacket
+  copy, word-for-word from the screenshots -- not a paraphrase.
+- Real Kindle buy links wired in for every title that had one.
+- The 9 high-res covers were properly compressed (PIL, resized to 900px
+  wide, real JPEG re-encode, not just a renamed PNG) and placed at
+  `public/assets/images/books/*-hires.jpg` -- file sizes dropped from
+  1-3MB raw PNGs to 68-315KB real JPEGs.
+- **Attribution fix, specifically requested:** "Reading Romans with
+  Eastern Eyes" is by Jackson Wu -- Randy only wrote the foreword. Adding
+  it as a normal "his book" entry would misattribute someone else's work
+  to him. Added a `role: 'foreword' | 'translation' | 'author'` field to
+  `BookData` (types/books.ts). Foreword and translation editions (the
+  German edition of Western Eyes) now render in a visually separate "Other
+  Editions & Contributions" section on the Books page with an explicit
+  colored badge ("Foreword only" / "Translated edition"), and the book
+  detail page's JSON-LD structured data now credits Jackson Wu as
+  `author` and Randy as `contributor` (role: Foreword) for that title --
+  fixed so Google's search results don't misattribute authorship either.
+- **Two-section Books page**, matching the real site's original structure
+  (`/books/` vs `/books-im-working-on/`): `app/(site)/books/page.tsx` now
+  splits `BOOKS` into `mainBooks` (finished, authored -- the big parallax
+  showcase), `workingOnBooks` (`workingOn: true` -- forthcoming titles, a
+  simpler card-grid section), and `otherEditions` (foreword/translation).
+- Fixed a latent bug while in this file: the "Buy on Amazon" button
+  rendered even when `buyUrl` was empty (dead link) for books with no
+  purchase link yet (the 1991 monograph, 1st-edition Rediscovering Paul,
+  forthcoming titles) -- now hidden when there's no real URL.
+- Hero heading changed from a hardcoded "Five books." to a dynamic
+  `{mainBooks.length} books.` so it can't silently go stale again the way
+  the "four categories" bug did in Session 4.
+
+**3. Storage bucket gap -- found via Randy's own question, not proactively
+caught.** Randy asked directly: "have not seen anything pointing me to
+create an image bucket in supabase." Correct -- there wasn't. Audited
+every admin form for rich-editor and image-upload coverage:
+- Articles: real Tiptap rich editor (bold/italic/headings/lists/
+  blockquote/undo-redo) + inline image button + cover image upload, all
+  confirmed wired to the `article-images` bucket.
+- Books: cover image upload, confirmed wired.
+- Events: cover image upload, confirmed wired.
+- Podcasts: intentionally has no image field -- each entry links out to
+  its own episode/video, which already has its own artwork on the source
+  platform (Spotify, YouTube, etc.) -- not a gap.
+- The actual gap was narrower than "rich editor missing": the editor and
+  upload UI were always real and functional. What was missing was the
+  bucket itself and any documentation telling Randy to create it. Fixed
+  in `SUPABASE.md` (new step 5) and `supabase-schema.sql` (MIGRATIONS
+  section) -- see the action items at the top of this section.
+
+---
+
+# KNOWN GAPS -- numbered, so they're easy to reference and cross off
+
+1. ~~Podcasts admin CRUD~~ -- DONE (see Session 4 addendum
+   below). `/admin/podcasts` tab, API routes, sidebar link, and seed-button
+   support all added.
+2. ~~Ambiguous book cover images~~ -- MOSTLY DONE. Session 5's real
+   high-res covers resolved 3 of the 4 (Individualist Eyes, Paul Behaving
+   Badly, and Paul and First-Century Letter Writing now have real
+   confirmed covers). Only "Rediscovering Paul (1st edition)" still uses
+   a placeholder -- reasonable, since it's superseded by the 2nd edition
+   and may not be worth a separate cover at all. Also still placeholder:
+   the 2 forthcoming/under-contract titles and "Inscriptions, Papyri, and
+   Other Artifacts" (no cover art exists yet for these because they're
+   unpublished or Randy hasn't sent one).
+3. ~~Buy links~~ -- MOSTLY DONE. Session 5 replaced every guessed link
+   with real Kindle URLs from Randy's own Amazon Author Central page.
+   Still correctly empty: the 2 forthcoming/under-contract titles and the
+   1991 WUNT monograph (out of print, confirmed via Amazon listing itself
+   showing "Currently unavailable").
+   Double-check the rest before launch.
+4. Media/podcast logo files -- PublicationBadge references logo filenames
    (e.g. stone-chapel-podcast.svg) that don't exist yet as actual assets.
-   It gracefully falls back to plain text in the meantime, so nothing is
-   broken, but logos would look better once added.
-8. Supabase not actually provisioned in this pass -- supabase-schema.sql
-   is now the single, complete schema file (includes the articles
-   content_type/content_html columns and the books quotes column that
-   used to live in separate migration files). Ready to run, but no live
-   Supabase project has been connected yet. .env values are still
-   placeholders. After running the schema, use the "Run Seed" button in
-   Admin -> Settings to load the 4 books + 10 articles -- don't run any
-   old SQL seed files, there aren't any anymore, that's now the one path.
-9. Only reviewed the content visible in the one PDF screenshot (page 1 of
-   his blog) plus image-map.txt -- the rest of the 465-page HTML scrape
-   hasn't been sorted for additional usable blog history yet.
-10. Scope trim partially done. Broadcast/newsletter automation was removed
-    in Session 3 (see above) -- that was the biggest one. Still remaining,
-    per the master prompt's budget rules: 5-star book reviews with a
-    submission form, an events/conferences system, Goodreads RSS parsing.
-    All of it currently works -- nothing is broken -- but it should be
-    reviewed against the $500/zero-cost budget and trimmed before final
-    handoff, per Rule 1 and Rule 2 in the master prompt. Flagging rather
-    than deleting, since removal is a scope decision Randy should confirm,
-    not something to assume.
-11. No live QA yet -- mobile pass, full link check, a real end-to-end test
-    of the contact form actually landing in Randy's Gmail, and a CSV
-    export test all still need to happen once this is deployed somewhere.
-12. `npm run lint` reports 17 pre-existing `react-hooks/set-state-in-effect`
-    warnings (see Session 2 audit) -- all "fetch on mount" patterns
-    inherited from the original duff-site code, now flagged by a stricter
-    rule in the current eslint-config-next. They don't block the build,
-    but worth cleaning up eventually for code health.
+   Falls back to plain text gracefully, but logos would look better once
+   added.
+5. Supabase not actually provisioned -- supabase-schema.sql is the single,
+   complete schema file (now includes the `podcasts` table from this
+   session). Ready to run, but no live Supabase project has been connected
+   yet; .env values are still placeholders. After running the schema, use
+   the "Run Seed" button in Admin -> Settings to load books + articles --
+   podcasts will need a manual seed or the admin tab from gap #1, since the
+   seed route (`app/api/admin/seed/route.ts`) wasn't extended to podcasts
+   this session.
+6. Real images still needed for most article cards and several homepage
+   photo sections -- Randy said he has real image files and will upload
+   them; only book covers and the two portrait photos already in
+   `sorted-assets.zip` have been placed so far. Article cards currently
+   show a placeholder.
+7. New visual direction requested, not yet built. Randy asked for a
+   different design language than the current one: full-bleed background
+   photography per section that switches (crossfade or parallax, TBD) as
+   the user scrolls, with text staying fixed/legible via a gradient overlay
+   -- more cinematic/editorial, less "card grid on a page." This is a real
+   visual redesign, not a copy fix, and hasn't been started in code yet.
+   Needs Randy's real photos first (see gap #6) and a decision on
+   crossfade vs. parallax scroll behavior before implementation.
+8. Scope trim partially done (see Session 3). Still remaining, per the
+   master prompt's budget rules: 5-star book reviews with a submission
+   form, an events/conferences system, Goodreads RSS parsing. All of it
+   currently works -- nothing is broken -- but it should be reviewed
+   against the $500/zero-cost budget and trimmed before final handoff, per
+   Rule 1 and Rule 2 in the master prompt. Flagging rather than deleting,
+   since removal is a scope decision Randy should confirm.
+9. No live QA yet -- mobile pass, full link check, a real end-to-end test
+   of the contact form actually landing in Randy's Gmail, and a CSV export
+   test all still need to happen once this is deployed somewhere.
+10. `npm run lint` reports 17 pre-existing `react-hooks/set-state-in-effect`
+    warnings (see Session 2 audit), unchanged this session -- "fetch on
+    mount" patterns inherited from the original duff-site code. Don't
+    block the build, worth cleaning up eventually.
+11. Article category split (Bible & Culture / Family & Faith) for the 22
+    newly-added posts is an editorial judgment call made this session, not
+    scraped data -- the live site never tagged posts by category. Worth a
+    quick sanity check from Randy since a couple (e.g. "4th of July in
+    Philippi") are borderline.
 
 ---
 
 ## NEXT STEP
-Build the Podcasts content type (Supabase table + admin tab + public grid
-page with graceful embed fallback, per master prompt Content Scope item 4).
+Get real images from Randy (headshots, book covers, church/speaking photos
+-- he said he has these ready) and start the full-bleed scroll-driven
+photo redesign (gap #6/#7) once he confirms crossfade vs. parallax. Also
+worth a quick pass asking Randy to confirm the 4 ambiguous book covers
+(gap #2).

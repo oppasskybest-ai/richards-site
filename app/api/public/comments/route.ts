@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const { data, error } = await supabaseAdmin
       .from('comments')
-      .select('id, author_name, body, parent_id, created_at')
+      .select('id, author_name, body, parent_id, created_at, is_owner_reply')
       .eq('article_id', article_id)
       .eq('status', 'approved')
       .order('created_at', { ascending: true })
@@ -41,17 +41,17 @@ export async function POST(req: NextRequest) {
     if (artErr || !article) return NextResponse.json({ error: 'Article not found.' }, { status: 404 })
     if (!article.comments_enabled) return NextResponse.json({ error: 'Comments are disabled for this article.' }, { status: 403 })
 
-    const { error } = await supabaseAdmin.from('comments').insert({
+    const { data, error } = await supabaseAdmin.from('comments').insert({
       article_id,
       author_name: author_name.trim().slice(0, 80),
       author_email: author_email?.trim().slice(0, 120) || null,
       body: body.trim().slice(0, 2000),
       parent_id: parent_id || null,
-      status: 'pending',
-    })
+      status: 'approved',
+    }).select('id, author_name, body, parent_id, created_at, is_owner_reply').single()
 
     if (error) throw error
-    return NextResponse.json({ ok: true, message: 'Comment submitted and awaiting approval.' })
+    return NextResponse.json({ ok: true, comment: data })
   } catch (err) {
     console.error('[POST /api/public/comments]', err)
     return NextResponse.json({ error: 'Failed to submit comment.' }, { status: 500 })

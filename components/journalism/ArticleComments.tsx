@@ -7,6 +7,7 @@ interface Comment {
   body: string
   parent_id: string | null
   created_at: string
+  is_owner_reply?: boolean
 }
 
 interface Props {
@@ -21,18 +22,16 @@ function getInitials(name: string) {
   return name.trim().split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
 }
 
+const inputStyle: React.CSSProperties = {
+  width: '100%', padding: '0.75rem 1rem', border: '1px solid rgba(0,0,0,0.15)',
+  borderRadius: '2px', fontSize: '0.9rem', fontFamily: '"Inter", sans-serif',
+  background: 'white', color: 'var(--ink)', outline: 'none', boxSizing: 'border-box',
+}
+
 export default function ArticleComments({ articleId }: Props) {
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
-  const [replyTo, setReplyTo] = useState<string | null>(null)
-
-  // Form state
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [body, setBody] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState('')
+  const [replyTo, setReplyTo] = useState<string | null>(null) // null = top-level form
 
   const loadComments = useCallback(async () => {
     try {
@@ -48,39 +47,23 @@ export default function ArticleComments({ articleId }: Props) {
 
   useEffect(() => { loadComments() }, [loadComments])
 
-  const submit = async () => {
-    setError('')
-    if (!name.trim() || !body.trim()) {
-      setError('Name and comment are required.')
-      return
-    }
-    setSubmitting(true)
-    try {
-      const res = await fetch('/api/public/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ article_id: articleId, author_name: name, author_email: email, body, parent_id: replyTo }),
-      })
-      const d = await res.json()
-      if (!res.ok) { setError(d.error || 'Failed to submit.'); return }
-      setSubmitted(true)
-      setName(''); setEmail(''); setBody(''); setReplyTo(null)
-    } catch {
-      setError('Network error. Please try again.')
-    } finally {
-      setSubmitting(false)
-    }
+  const submitComment = async (name: string, email: string, body: string, parentId: string | null) => {
+    const res = await fetch('/api/public/comments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ article_id: articleId, author_name: name, author_email: email, body, parent_id: parentId }),
+    })
+    const d = await res.json()
+    if (!res.ok) return { ok: false, error: d.error || 'Failed to submit.' }
+    // Comments show immediately -- append locally instead of waiting on a refetch
+    if (d.comment) setComments(prev => [...prev, d.comment])
+    setReplyTo(null)
+    return { ok: true }
   }
 
-  // Nest replies under their parent
-  const topLevel = comments.filter(c => !c.parent_id)
-  const replies = (parentId: string) => comments.filter(c => c.parent_id === parentId)
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%', padding: '0.75rem 1rem', border: '1px solid rgba(0,0,0,0.15)',
-    borderRadius: '2px', fontSize: '0.9rem', fontFamily: '"Inter", sans-serif',
-    background: 'white', color: 'var(--ink)', outline: 'none', boxSizing: 'border-box',
-  }
+  // Build a real tree so replies-to-replies nest to any depth, not just one level.
+  const childrenOf = (parentId: string | null) => comments.filter(c => (c.parent_id || null) === parentId)
+  const topLevel = childrenOf(null)
 
   return (
     <section style={{ marginTop: '4rem', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '3rem' }}>
@@ -88,56 +71,18 @@ export default function ArticleComments({ articleId }: Props) {
         {loading ? 'Comments' : `${comments.length} Comment${comments.length !== 1 ? 's' : ''}`}
       </h2>
 
-      {/* COMMENT LIST */}
       {!loading && topLevel.length > 0 && (
         <div style={{ marginBottom: '3rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {topLevel.map(c => (
-            <div key={c.id}>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                {/* Avatar */}
-                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: `hsl(${c.author_name.charCodeAt(0) * 13 % 360},42%,52%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.75rem', fontWeight: 600, fontFamily: '"Inter", sans-serif', flexShrink: 0 }}>
-                  {getInitials(c.author_name)}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'baseline', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.88rem', color: 'var(--ink)' }}>{c.author_name}</span>
-                    <span style={{ fontSize: '0.75rem', color: '#aaa', fontFamily: '"Inter", sans-serif' }}>{formatDate(c.created_at)}</span>
-                  </div>
-                  <p style={{ lineHeight: 1.8, color: '#3a3a3a', fontSize: '0.93rem', marginBottom: '0.5rem' }}>{c.body}</p>
-                  <button onClick={() => setReplyTo(replyTo === c.id ? null : c.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', padding: 0, letterSpacing: '0.06em' }}>
-                    {replyTo === c.id ? 'Cancel reply' : '↩ Reply'}
-                  </button>
-
-                  {/* Inline reply form */}
-                  {replyTo === c.id && !submitted && (
-                    <div style={{ marginTop: '1rem', paddingLeft: '1rem', borderLeft: '2px solid var(--gold)' }}>
-                      <ReplyForm name={name} email={email} body={body} error={error} submitting={submitting}
-                        onName={setName} onEmail={setEmail} onBody={setBody} onSubmit={submit} inputStyle={inputStyle} />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Replies */}
-              {replies(c.id).length > 0 && (
-                <div style={{ marginLeft: '3.25rem', marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderLeft: '2px solid rgba(0,0,0,0.07)', paddingLeft: '1.25rem' }}>
-                  {replies(c.id).map(r => (
-                    <div key={r.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: `hsl(${r.author_name.charCodeAt(0) * 13 % 360},42%,52%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.65rem', fontWeight: 600, flexShrink: 0 }}>
-                        {getInitials(r.author_name)}
-                      </div>
-                      <div>
-                        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'baseline', marginBottom: '0.3rem', flexWrap: 'wrap' }}>
-                          <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.82rem', color: 'var(--ink)' }}>{r.author_name}</span>
-                          <span style={{ fontSize: '0.72rem', color: '#aaa', fontFamily: '"Inter", sans-serif' }}>{formatDate(r.created_at)}</span>
-                        </div>
-                        <p style={{ lineHeight: 1.8, color: '#3a3a3a', fontSize: '0.88rem' }}>{r.body}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <CommentThread
+              key={c.id}
+              comment={c}
+              depth={0}
+              childrenOf={childrenOf}
+              replyTo={replyTo}
+              setReplyTo={setReplyTo}
+              submitComment={submitComment}
+            />
           ))}
         </div>
       )}
@@ -148,53 +93,127 @@ export default function ArticleComments({ articleId }: Props) {
         </p>
       )}
 
-      {/* MAIN FORM — shown when not replying inline */}
-      {!replyTo && (
+      {/* MAIN FORM — always visible for a fresh top-level comment */}
+      {replyTo === null && (
         <div style={{ background: 'var(--paper)', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '3px', padding: 'clamp(1.5rem,4vw,2.5rem)' }}>
           <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.25rem', fontWeight: 400, marginBottom: '1.5rem' }}>
             Leave a comment
           </h3>
-          {submitted ? (
-            <div style={{ background: 'rgba(var(--gold-rgb),0.08)', border: '1px solid rgba(var(--gold-rgb),0.3)', borderRadius: '2px', padding: '1.25rem 1.5rem' }}>
-              <p style={{ color: 'var(--gold)', fontFamily: '"Inter", sans-serif', fontSize: '0.9rem', fontWeight: 500 }}>
-                ✓ Thank you — your comment has been submitted and is awaiting approval.
-              </p>
-            </div>
-          ) : (
-            <ReplyForm name={name} email={email} body={body} error={error} submitting={submitting}
-              onName={setName} onEmail={setEmail} onBody={setBody} onSubmit={submit} inputStyle={inputStyle} />
-          )}
+          <ReplyForm onSubmit={(n, e, b) => submitComment(n, e, b, null)} />
         </div>
       )}
     </section>
   )
 }
 
-function ReplyForm({ name, email, body, error, submitting, onName, onEmail, onBody, onSubmit, inputStyle }: {
-  name: string; email: string; body: string; error: string; submitting: boolean
-  onName: (v: string) => void; onEmail: (v: string) => void; onBody: (v: string) => void
-  onSubmit: () => void; inputStyle: React.CSSProperties
+// Recursive — renders a comment plus all of its descendants at any depth.
+function CommentThread({
+  comment, depth, childrenOf, replyTo, setReplyTo, submitComment,
+}: {
+  comment: Comment
+  depth: number
+  childrenOf: (parentId: string | null) => Comment[]
+  replyTo: string | null
+  setReplyTo: (id: string | null) => void
+  submitComment: (name: string, email: string, body: string, parentId: string | null) => Promise<{ ok: boolean; error?: string }>
 }) {
+  const kids = childrenOf(comment.id)
+  const avatarSize = depth === 0 ? 40 : 32
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+        <div style={{
+          width: `${avatarSize}px`, height: `${avatarSize}px`, borderRadius: '50%', flexShrink: 0,
+          background: comment.is_owner_reply ? 'var(--gold)' : `hsl(${comment.author_name.charCodeAt(0) * 13 % 360},42%,52%)`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white',
+          fontSize: depth === 0 ? '0.75rem' : '0.65rem', fontWeight: 600, fontFamily: '"Inter", sans-serif',
+        }}>
+          {getInitials(comment.author_name)}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'baseline', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+            <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: depth === 0 ? '0.88rem' : '0.82rem', color: 'var(--ink)' }}>
+              {comment.author_name}
+            </span>
+            {comment.is_owner_reply && (
+              <span style={{ fontSize: '0.62rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'white', background: 'var(--gold)', padding: '0.12rem 0.5rem', borderRadius: '2px' }}>
+                Randy
+              </span>
+            )}
+            <span style={{ fontSize: '0.75rem', color: '#aaa', fontFamily: '"Inter", sans-serif' }}>{formatDate(comment.created_at)}</span>
+          </div>
+          <p style={{ lineHeight: 1.8, color: '#3a3a3a', fontSize: depth === 0 ? '0.93rem' : '0.88rem', marginBottom: '0.5rem' }}>{comment.body}</p>
+          <button onClick={() => setReplyTo(replyTo === comment.id ? null : comment.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', padding: 0, letterSpacing: '0.06em' }}>
+            {replyTo === comment.id ? 'Cancel reply' : '↩ Reply'}
+          </button>
+
+          {replyTo === comment.id && (
+            <div style={{ marginTop: '1rem', paddingLeft: '1rem', borderLeft: '2px solid var(--gold)' }}>
+              <ReplyForm onSubmit={(n, e, b) => submitComment(n, e, b, comment.id)} />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Descendants — indent grows with depth but is capped so deep threads don't run off-screen */}
+      {kids.length > 0 && (
+        <div style={{
+          marginLeft: `clamp(${Math.min(depth + 1, 3) * 0.9}rem, ${Math.min(depth + 1, 3) * 3}vw, ${Math.min(depth + 1, 3) * 3.25}rem)`,
+          marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1.25rem',
+          borderLeft: '2px solid rgba(0,0,0,0.07)', paddingLeft: '1.25rem',
+        }}>
+          {kids.map(k => (
+            <CommentThread
+              key={k.id}
+              comment={k}
+              depth={depth + 1}
+              childrenOf={childrenOf}
+              replyTo={replyTo}
+              setReplyTo={setReplyTo}
+              submitComment={submitComment}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ReplyForm({ onSubmit }: { onSubmit: (name: string, email: string, body: string) => Promise<{ ok: boolean; error?: string }> }) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [body, setBody] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async () => {
+    setError('')
+    if (!name.trim() || !body.trim()) { setError('Name and comment are required.'); return }
+    setSubmitting(true)
+    const result = await onSubmit(name, email, body)
+    setSubmitting(false)
+    if (!result.ok) { setError(result.error || 'Failed to submit.'); return }
+    setName(''); setEmail(''); setBody('')
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <input value={name} onChange={e => onName(e.target.value)} placeholder="Your name *" style={inputStyle} maxLength={80} />
-        <input value={email} onChange={e => onEmail(e.target.value)} placeholder="Email (optional, not shown)" type="email" style={inputStyle} maxLength={120} />
+        <input value={name} onChange={e => setName(e.target.value)} placeholder="Your name *" style={inputStyle} maxLength={80} />
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email (optional, not shown)" type="email" style={inputStyle} maxLength={120} />
       </div>
-      <textarea value={body} onChange={e => onBody(e.target.value)} placeholder="Write your comment..." rows={5}
-        style={{ ...inputStyle, resize: 'vertical', minHeight: '120px' }} maxLength={2000} />
+      <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Write your comment..." rows={4}
+        style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }} maxLength={2000} />
       {error && <p style={{ color: '#c0392b', fontSize: '0.82rem', fontFamily: '"Inter", sans-serif' }}>{error}</p>}
-      <button onClick={onSubmit} disabled={submitting} style={{
+      <button onClick={handleSubmit} disabled={submitting} style={{
         alignSelf: 'flex-start', padding: '0.8rem 2rem', background: submitting ? '#888' : 'var(--gold)',
         color: 'white', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
         fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase',
         fontFamily: '"Inter", sans-serif', fontWeight: 500, borderRadius: '2px',
       }}>
-        {submitting ? 'Submitting…' : 'Post Comment'}
+        {submitting ? 'Posting…' : 'Post Comment'}
       </button>
-      <p style={{ fontSize: '0.72rem', color: '#999', fontFamily: '"Inter", sans-serif' }}>
-        Comments are reviewed before appearing publicly.
-      </p>
     </div>
   )
 }

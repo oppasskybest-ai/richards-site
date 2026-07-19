@@ -121,6 +121,24 @@ create table if not exists events (
 create index if not exists events_date_idx on events(event_date desc);
 create index if not exists events_status_idx on events(status);
 
+-- Podcasts / media appearances -- one of the 4 required content types in
+-- richards-master-prompt.md. Table exists and lib/data/podcasts.ts reads
+-- from it (falling back to lib/config/podcasts.ts if empty), but there is
+-- no /admin/podcasts CRUD tab yet -- see PROGRESS.md.
+create table if not exists podcasts (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  source text not null,
+  description text,
+  url text not null,
+  embed_url text,
+  date date,
+  order_index integer default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+create index if not exists podcasts_order_idx on podcasts(order_index);
+
 create table if not exists settings (
   id uuid primary key default gen_random_uuid(),
   site_title text default 'Biblical Thoughts',
@@ -146,12 +164,19 @@ create table if not exists comments (
   author_name text not null,
   author_email text,
   body text not null,
-  status text not null default 'pending' check (status in ('pending','approved','rejected')),
+  -- Comments show immediately (no pre-moderation) -- Randy asked for this
+  -- explicitly rather than the original pending-approval-first flow.
+  -- He can still delete/reject anything from /admin/comments after the fact.
+  status text not null default 'approved' check (status in ('pending','approved','rejected')),
   parent_id uuid references comments(id) on delete cascade,
+  -- true when this row was posted by Randy himself replying in the admin
+  -- panel, not a public commenter -- lets the frontend badge it distinctly.
+  is_owner_reply boolean not null default false,
   created_at timestamptz default now()
 );
 create index if not exists comments_article_id_idx on comments(article_id);
 create index if not exists comments_status_idx on comments(status);
+create index if not exists comments_parent_id_idx on comments(parent_id);
 
 
 -- ============================================================
@@ -203,6 +228,7 @@ alter table contact_messages enable row level security;
 alter table articles enable row level security;
 alter table books enable row level security;
 alter table events enable row level security;
+alter table podcasts enable row level security;
 alter table settings enable row level security;
 alter table comments enable row level security;
 alter table reviews enable row level security;
@@ -216,6 +242,7 @@ create policy "public_insert_contact" on contact_messages for insert to anon wit
 create policy "public_read_articles" on articles for select to anon using (status = 'published');
 create policy "public_read_books" on books for select to anon using (true);
 create policy "public_read_events" on events for select to anon using (status != 'cancelled');
+create policy "public_read_podcasts" on podcasts for select to anon using (true);
 create policy "public_read_comments" on comments for select using (status = 'approved');
 create policy "public_read_reviews" on reviews for select using (status = 'approved');
 create policy "public_read_book_reviews" on book_reviews for select using (status = 'approved');
@@ -226,7 +253,57 @@ create policy "service_all_contact" on contact_messages for all to service_role 
 create policy "service_all_articles" on articles for all to service_role using (true) with check (true);
 create policy "service_all_books" on books for all to service_role using (true) with check (true);
 create policy "service_all_events" on events for all to service_role using (true) with check (true);
+create policy "service_all_podcasts" on podcasts for all to service_role using (true) with check (true);
 create policy "service_all_settings" on settings for all to service_role using (true) with check (true);
 create policy "service_all_comments" on comments for all using (true);
 create policy "service_all_reviews" on reviews for all using (true);
 create policy "service_all_book_reviews" on book_reviews for all using (true);
+
+
+-- ============================================================
+-- MIGRATIONS -- run these ONLY if your database was already created
+-- from an earlier version of this file (safe/idempotent to re-run).
+-- If you're setting up Supabase fresh, ignore this section -- the
+-- CREATE TABLE statements above already include everything.
+-- ============================================================
+
+-- Comments no longer require pre-approval before showing publicly.
+alter table comments alter column status set default 'approved';
+alter table comments add column if not exists is_owner_reply boolean not null default false;
+create index if not exists comments_parent_id_idx on comments(parent_id);
+
+-- Podcasts table + policies, if you ran the schema before Session 4 added it.
+create table if not exists podcasts (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  source text not null,
+  description text,
+  url text not null,
+  embed_url text,
+  date date,
+  order_index integer default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+create index if not exists podcasts_order_idx on podcasts(order_index);
+alter table podcasts enable row level security;
+drop policy if exists "public_read_podcasts" on podcasts;
+create policy "public_read_podcasts" on podcasts for select to anon using (true);
+drop policy if exists "service_all_podcasts" on podcasts;
+create policy "service_all_podcasts" on podcasts for all to service_role using (true) with check (true);
+
+-- Image uploads: RichTextEditor and ImageUpload (used across every admin
+-- form -- articles, books, events, podcasts) POST to /api/admin/upload,
+-- which uploads into a Supabase Storage bucket named EXACTLY "article-images".
+-- That bucket does not exist by default and can't be created with plain SQL
+-- in most Supabase projects -- create it once from:
+--   Dashboard -> Storage -> New bucket -> name it "article-images" exactly
+--   -> Public bucket: ON
+-- Until that bucket exists, every image upload in the admin panel will fail
+-- silently or with a storage error -- this is not a code bug, it's a required
+-- one-time manual setup step. Once the bucket exists, run this:
+--
+-- create policy "public_read_article_images" on storage.objects for select
+--   to public using (bucket_id = 'article-images');
+-- create policy "service_write_article_images" on storage.objects for all
+--   to service_role using (bucket_id = 'article-images') with check (bucket_id = 'article-images');

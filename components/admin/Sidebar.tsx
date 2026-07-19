@@ -9,6 +9,7 @@ const NAV = [
   { label: 'Reviews',     href: '/admin/reviews',       icon: '★' },
   { label: 'Books',       href: '/admin/books',         icon: '▣' },
   { label: 'Events',      href: '/admin/events',        icon: '◆' },
+  { label: 'Podcasts',    href: '/admin/podcasts',      icon: '♫' },
   { label: 'Subscribers', href: '/admin/subscribers',   icon: '◎' },
   { label: 'Messages',    href: '/admin/messages',      icon: '◇' },
   { label: 'Settings',    href: '/admin/settings',      icon: '⚙' },

@@ -44,12 +44,17 @@ export default async function BookPage({ params }: Props) {
   const goodreadsBooks = await getGoodreadsBooks()
   const goodreadsMatch = matchBookToGoodreads(goodreadsBooks, book.title)
 
-  // JSON-LD structured data — helps Google show rich results (cover, author, rating) in search
+  // JSON-LD structured data — helps Google show rich results (cover, author, rating) in search.
+  // IMPORTANT: for role === 'foreword', Randy is NOT the author — misattributing
+  // authorship in structured data would misrepresent someone else's book.
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Book',
     name: book.title,
-    author: { '@type': 'Person', name: 'E. Randolph Richards' },
+    ...(book.role === 'foreword'
+      ? { author: { '@type': 'Person', name: book.authorsLine?.replace(/^by\s+/i, '').split('—')[0].trim() || 'Unknown' },
+          contributor: { '@type': 'Person', name: 'E. Randolph Richards', description: 'Foreword' } }
+      : { author: { '@type': 'Person', name: 'E. Randolph Richards' } }),
     datePublished: book.year,
     description: book.description.slice(0, 500),
     image: `https://randolphrichards.com${book.coverImage}`,
@@ -123,6 +128,16 @@ export default async function BookPage({ params }: Props) {
             }}>
               {book.year}
             </p>
+            {book.role === 'foreword' && (
+              <span style={{ display: 'inline-block', fontSize: '0.6rem', color: 'white', background: '#a8402f', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '0.3rem 0.7rem', marginBottom: '0.9rem', borderRadius: '2px' }}>
+                Foreword only — not one of Randy&rsquo;s own books
+              </span>
+            )}
+            {book.role === 'translation' && (
+              <span style={{ display: 'inline-block', fontSize: '0.6rem', color: 'white', background: '#0f5c73', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '0.3rem 0.7rem', marginBottom: '0.9rem', borderRadius: '2px' }}>
+                Translated edition
+              </span>
+            )}
             <h1 style={{
               fontFamily: '"Playfair Display", serif',
               fontSize: 'clamp(2.4rem, 5vw, 4.5rem)',
@@ -132,6 +147,11 @@ export default async function BookPage({ params }: Props) {
             }}>
               {book.title}
             </h1>
+            {book.authorsLine && (
+              <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                {book.authorsLine}
+              </p>
+            )}
             {book.subtitle && (
               <p style={{
                 fontSize: 'clamp(0.9rem, 1.3vw, 1.05rem)',

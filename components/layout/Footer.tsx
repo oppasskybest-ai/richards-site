@@ -54,6 +54,23 @@ export default function Footer() {
             ))}
           </div>
 
+          {/* MORE */}
+          <div>
+            <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>
+              More
+            </p>
+            {[
+              { label: 'Podcasts', href: '/podcasts' },
+              { label: 'Conferences', href: '/events' },
+              { label: 'Endorsements', href: '/reviews' },
+              { label: 'CV', href: '/cv' },
+            ].map((l) => (
+              <Link key={l.label} href={l.href} className="footer-link" style={{ display: 'block', color: 'rgba(255,255,255,0.48)', fontSize: '0.84rem', marginBottom: '0.55rem' }}>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+
           {/* GET IN TOUCH */}
           <div>
             <p style={{ fontSize: '0.62rem', color: 'rgba(var(--gold-rgb),0.7)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem', fontFamily: '"Inter", sans-serif' }}>

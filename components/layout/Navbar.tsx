@@ -14,11 +14,11 @@ const NAV_LINKS = [
       { label: 'Family & Faith', href: '/articles/family-faith' },
     ],
   },
+  { label: 'Podcasts', href: '/podcasts' },
   { label: 'Conferences', href: '/events' },
+  { label: 'Endorsements', href: '/reviews' },
+  { label: 'CV', href: '/cv' },
   { label: 'Contact', href: '/contact' },
-  // TODO: Podcasts is one of the 4 required content types in the master prompt
-  // and has no feature here yet (no table, no admin tab, no public page).
-  // See PROGRESS.md — this needs to be built before launch.
 ]
 
 export default function Navbar() {

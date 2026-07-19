@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase/server'
 import { isAuthenticated } from '@/lib/auth/session'
 import { SEED_ARTICLES } from '@/lib/config/articles'
 import { BOOKS as STATIC_BOOKS } from '@/lib/config/books'
+import { PODCASTS as STATIC_PODCASTS } from '@/lib/config/podcasts'
 
 export async function POST(req: NextRequest) {
   if (!isAuthenticated(req)) {
@@ -12,6 +13,7 @@ export async function POST(req: NextRequest) {
   const results = {
     articles: { inserted: 0, skipped: 0, errors: 0 },
     books:    { inserted: 0, skipped: 0, errors: 0 },
+    podcasts: { inserted: 0, skipped: 0, errors: 0 },
   }
 
   // ── SEED ARTICLES ──────────────────────────────────────────────────────────
@@ -42,6 +44,7 @@ export async function POST(req: NextRequest) {
       status:       'published',
       content_type: article.content_type || 'external',
       content_html: article.content_type === 'native' ? (article.content_html || '') : null,
+      comments_enabled: article.comments_enabled ?? true,
     }
 
     const { error } = await supabaseAdmin.from('articles').insert(payload)
@@ -91,9 +94,45 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // ── SEED PODCASTS ──────────────────────────────────────────────────────────
+  // No natural slug column on this table -- dedupe by url instead, since
+  // every real entry links to a distinct episode.
+  const { data: existingPodcasts } = await supabaseAdmin
+    .from('podcasts')
+    .select('url')
+
+  const existingPodcastUrls = new Set((existingPodcasts || []).map((p: { url: string }) => p.url))
+
+  for (let i = 0; i < STATIC_PODCASTS.length; i++) {
+    const podcast = STATIC_PODCASTS[i]
+
+    if (existingPodcastUrls.has(podcast.url)) {
+      results.podcasts.skipped++
+      continue
+    }
+
+    const payload = {
+      title:       podcast.title,
+      source:      podcast.source,
+      description: podcast.description || '',
+      url:         podcast.url,
+      embed_url:   podcast.embedUrl || null,
+      date:        podcast.date || null,
+      order_index: i + 1,
+    }
+
+    const { error } = await supabaseAdmin.from('podcasts').insert(payload)
+    if (error) {
+      console.error('[seed podcasts]', podcast.id, error.message)
+      results.podcasts.errors++
+    } else {
+      results.podcasts.inserted++
+    }
+  }
+
   return NextResponse.json({
     success: true,
-    message: `Seeded ${results.articles.inserted} articles (${results.articles.skipped} already existed, ${results.articles.errors} errors) and ${results.books.inserted} books (${results.books.skipped} already existed, ${results.books.errors} errors).`,
+    message: `Seeded ${results.articles.inserted} articles (${results.articles.skipped} already existed, ${results.articles.errors} errors), ${results.books.inserted} books (${results.books.skipped} already existed, ${results.books.errors} errors), and ${results.podcasts.inserted} podcasts (${results.podcasts.skipped} already existed, ${results.podcasts.errors} errors).`,
     results,
   })
 }

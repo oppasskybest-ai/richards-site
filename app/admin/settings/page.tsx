@@ -10,7 +10,7 @@ function SeedSection() {
 
   const handleSeed = async () => {
     if (!confirm(
-      '⚠️ SEED DATA\n\nThis will insert all static articles and books into the database.\n\nArticles/books already in the database (by slug) will be SKIPPED — your admin edits are safe.\n\nRun the seed?'
+      '⚠️ SEED DATA\n\nThis will insert all static articles, books, and podcasts into the database.\n\nAnything already in the database (by slug/url) will be SKIPPED — your admin edits are safe.\n\nRun the seed?'
     )) return
 
     setSeeding(true)

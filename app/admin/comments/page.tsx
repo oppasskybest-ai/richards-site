@@ -4,10 +4,12 @@ import { useAuthFetch } from '@/lib/hooks/useAuthFetch'
 
 interface CommentRow {
   id: string
+  article_id: string
   author_name: string
   author_email: string | null
   body: string
   status: 'pending' | 'approved' | 'rejected'
+  is_owner_reply?: boolean
   created_at: string
   articles?: { title: string; category: string; slug: string }
 }
@@ -20,8 +22,11 @@ export default function AdminComments() {
   const authFetch = useAuthFetch()
   const [comments, setComments] = useState<CommentRow[]>([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<'pending' | 'approved' | 'rejected'>('pending')
+  const [tab, setTab] = useState<'pending' | 'approved' | 'rejected'>('approved')
   const [error, setError] = useState('')
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  const [replyBody, setReplyBody] = useState('')
+  const [replySending, setReplySending] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -55,6 +60,20 @@ export default function AdminComments() {
     if (res.ok) load()
   }
 
+  const sendReply = async (comment: CommentRow) => {
+    if (!replyBody.trim()) return
+    setReplySending(true)
+    try {
+      const res = await authFetch('/api/admin/comments/reply', {
+        method: 'POST',
+        body: JSON.stringify({ article_id: comment.article_id, parent_id: comment.id, body: replyBody }),
+      })
+      if (res.ok) { setReplyingTo(null); setReplyBody(''); load() }
+    } finally {
+      setReplySending(false)
+    }
+  }
+
   const tabs: Array<{ key: typeof tab; label: string }> = [
     { key: 'pending', label: 'Pending' },
     { key: 'approved', label: 'Approved' },
@@ -65,7 +84,10 @@ export default function AdminComments() {
     <div style={{ padding: '2.5rem' }}>
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.8rem', color: 'white', fontWeight: 400, marginBottom: '0.25rem' }}>Comments</h1>
-        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Moderate comments left on native articles.</p>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>
+          Comments post live immediately — no approval needed. Delete anything
+          you don&rsquo;t want up, or reply in-thread as yourself.
+        </p>
       </div>
 
       {/* TABS */}
@@ -99,6 +121,11 @@ export default function AdminComments() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.6rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div>
                   <span style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem', marginRight: '0.6rem' }}>{c.author_name}</span>
+                  {c.is_owner_reply && (
+                    <span style={{ fontSize: '0.6rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0d0d0d', background: 'var(--gold)', padding: '0.12rem 0.5rem', borderRadius: '2px', marginRight: '0.6rem' }}>
+                      Your reply
+                    </span>
+                  )}
                   {c.author_email && <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.78rem' }}>{c.author_email}</span>}
                 </div>
                 <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem' }}>{formatDate(c.created_at)}</span>
@@ -112,7 +139,12 @@ export default function AdminComments() {
 
               <p style={{ color: 'rgba(255,255,255,0.78)', fontSize: '0.88rem', lineHeight: 1.65, marginBottom: '1rem' }}>{c.body}</p>
 
-              <div style={{ display: 'flex', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                {!c.is_owner_reply && (
+                  <button onClick={() => { setReplyingTo(replyingTo === c.id ? null : c.id); setReplyBody('') }} style={{ padding: '0.45rem 1rem', background: 'rgba(var(--gold-rgb),0.12)', color: 'var(--gold-light)', border: '1px solid rgba(var(--gold-rgb),0.3)', borderRadius: '2px', fontSize: '0.75rem', cursor: 'pointer' }}>
+                    {replyingTo === c.id ? 'Cancel' : 'Reply as yourself'}
+                  </button>
+                )}
                 {tab !== 'approved' && (
                   <button onClick={() => moderate(c.id, 'approved')} style={{ padding: '0.45rem 1rem', background: 'rgba(46,204,113,0.15)', color: '#2ecc71', border: '1px solid rgba(46,204,113,0.3)', borderRadius: '2px', fontSize: '0.75rem', cursor: 'pointer' }}>
                     Approve
@@ -127,6 +159,17 @@ export default function AdminComments() {
                   Delete
                 </button>
               </div>
+
+              {replyingTo === c.id && (
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  <textarea value={replyBody} onChange={(e) => setReplyBody(e.target.value)} placeholder="Write your reply — posts immediately, badged as yours…" rows={3}
+                    style={{ width: '100%', padding: '0.7rem 0.9rem', background: '#0d0d0d', border: '1px solid rgba(255,255,255,0.12)', color: 'white', fontSize: '0.85rem', borderRadius: '2px', resize: 'vertical', boxSizing: 'border-box', marginBottom: '0.6rem' }} />
+                  <button onClick={() => sendReply(c)} disabled={replySending || !replyBody.trim()}
+                    style={{ padding: '0.5rem 1.2rem', background: 'var(--gold)', color: 'white', border: 'none', fontSize: '0.72rem', letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px', opacity: replySending ? 0.6 : 1 }}>
+                    {replySending ? 'Posting…' : 'Post Reply'}
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
