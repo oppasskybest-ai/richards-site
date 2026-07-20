@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { getAllPodcasts } from '@/lib/data/podcasts'
+import { getEmbedInfo } from '@/lib/utils/podcastEmbed'
+import ClientImage from '@/components/ui/ClientImage'
 
 export const metadata: Metadata = {
   title: 'Podcasts',
@@ -57,8 +59,8 @@ export default async function PodcastsPage() {
               fontFamily: '"Inter", sans-serif',
             }}
           >
-            Conversations on Scripture, culture, and the books, from a few of
-            the shows Randy has joined.
+            Conversations on Scripture, culture, and the books — a few play
+            right here, the rest open where they were recorded.
           </p>
         </div>
       </section>
@@ -69,76 +71,73 @@ export default async function PodcastsPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '1.75rem',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '2rem',
+              alignItems: 'start',
             }}
           >
-            {podcasts.map((p) => (
-              <a
-                key={p.id}
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'block',
-                  background: 'white',
-                  border: '1px solid rgba(0,0,0,0.08)',
-                  borderLeft: '3px solid var(--gold)',
-                  padding: '1.75rem',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  transition: 'box-shadow 0.2s ease',
-                }}
-                className="podcast-card"
-              >
-                <p
+            {podcasts.map((p) => {
+              const embed = getEmbedInfo(p.url)
+              const previewImage = p.image || embed?.thumbnail
+
+              return (
+                <div
+                  key={p.id}
                   style={{
-                    fontSize: '0.62rem',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: 'var(--gold)',
-                    fontFamily: '"Inter", sans-serif',
-                    marginBottom: '0.6rem',
+                    background: 'white',
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    borderTop: '3px solid var(--gold)',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 16px rgba(0,0,0,0.04)',
                   }}
                 >
-                  {p.source}
-                </p>
-                <h3
-                  style={{
-                    fontFamily: '"Playfair Display", serif',
-                    fontWeight: 400,
-                    fontSize: '1.15rem',
-                    lineHeight: 1.3,
-                    marginBottom: '0.6rem',
-                    color: 'var(--ink)',
-                  }}
-                >
-                  {p.title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: '0.85rem',
-                    color: '#5a5a5a',
-                    lineHeight: 1.65,
-                    marginBottom: '1rem',
-                  }}
-                >
-                  {p.description}
-                </p>
-                <span
-                  style={{
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    color: 'var(--gold)',
-                    fontFamily: '"Inter", sans-serif',
-                    fontWeight: 500,
-                  }}
-                >
-                  Listen / watch →
-                </span>
-              </a>
-            ))}
+                  {/* PLAYABLE EMBED — plays directly on the page */}
+                  {embed ? (
+                    <div style={{ position: 'relative', width: '100%', aspectRatio: embed.aspectRatio, background: '#000' }}>
+                      <iframe
+                        src={embed.embedUrl}
+                        title={p.title}
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                      />
+                    </div>
+                  ) : previewImage ? (
+                    <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ display: 'block', position: 'relative', width: '100%', aspectRatio: '16/9', background: '#111' }}>
+                      <ClientImage src={previewImage} alt={p.title} fill sizes="(max-width: 700px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(255,255,255,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 0, height: 0, borderTop: '9px solid transparent', borderBottom: '9px solid transparent', borderLeft: '14px solid var(--gold)', marginLeft: '3px' }} />
+                        </div>
+                      </div>
+                    </a>
+                  ) : null}
+
+                  <div style={{ padding: '1.5rem' }}>
+                    <p style={{ fontSize: '0.62rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '0.6rem' }}>
+                      {p.source}
+                    </p>
+                    <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 400, fontSize: '1.1rem', lineHeight: 1.3, marginBottom: '0.6rem', color: 'var(--ink)' }}>
+                      {p.title}
+                    </h3>
+                    <p style={{ fontSize: '0.83rem', color: '#5a5a5a', lineHeight: 1.6, marginBottom: embed ? 0 : '1rem' }}>
+                      {p.description}
+                    </p>
+                    {!embed && (
+                      <a
+                        href={p.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', fontWeight: 500, textDecoration: 'none' }}
+                      >
+                        Listen / watch →
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

@@ -112,6 +112,97 @@ a { text-decoration: none; color: inherit; transition: color 0.2s ease; }
 
 /* ── DESIGN TOKENS ── */
 .rule-line { width: 48px; height: 2px; background: var(--gold); }
+
+.drop-cap::first-letter {
+  font-family: "Playfair Display", serif;
+  font-size: 4.2rem;
+  font-weight: 600;
+  float: left;
+  line-height: 0.8;
+  padding: 0.1rem 0.5rem 0 0;
+  color: var(--gold);
+}
+
+/* Article body typography -- this had NO styling at all before, meaning
+   every real article and the CV page rendered in raw browser defaults
+   (default blue links, no rhythm, no blockquote treatment). This is the
+   actual reading experience for the site's real content, so it matters
+   more than most page chrome. */
+.article-prose {
+  font-family: "Georgia", "Iowan Old Style", serif;
+  font-size: clamp(1.02rem, 1.3vw, 1.14rem);
+  line-height: 1.85;
+  color: #2b2b28;
+}
+.article-prose > p,
+.article-prose > ul,
+.article-prose > ol,
+.article-prose > blockquote {
+  margin-bottom: 1.65em;
+}
+.article-prose h2 {
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  color: var(--ink);
+  margin: 2.2em 0 0.75em;
+  line-height: 1.3;
+}
+.article-prose h3 {
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  font-size: clamp(1.15rem, 1.9vw, 1.4rem);
+  color: var(--ink);
+  margin: 1.9em 0 0.65em;
+  line-height: 1.35;
+}
+.article-prose strong { color: var(--ink); font-weight: 600; }
+.article-prose em { font-style: italic; }
+.article-prose a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--gold-rgb), 0.35);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s ease;
+}
+.article-prose a:hover { text-decoration-color: var(--gold); }
+.article-prose blockquote {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 1.15em;
+  line-height: 1.6;
+  color: var(--ink);
+  border-left: 3px solid var(--gold);
+  padding: 0.2em 0 0.2em 1.5em;
+  margin: 2em 0;
+}
+.article-prose ul, .article-prose ol {
+  padding-left: 1.4em;
+}
+.article-prose li { margin-bottom: 0.5em; }
+.article-prose hr {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.12);
+  margin: 2.5em 0;
+}
+.article-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 3px;
+  margin: 1.5em 0;
+}
+.article-prose figure { margin: 1.5em 0; }
+.article-prose figcaption {
+  font-family: "Inter", sans-serif;
+  font-size: 0.78rem;
+  color: #8a8a8a;
+  text-align: center;
+  margin-top: 0.5em;
+}
+/* Some scraped posts wrap the whole thing in one outer <p> with no real
+   paragraph breaks (WordPress quirk) -- keep line-height generous enough
+   that dense unbroken text is still readable. */
+.article-prose > p:first-of-type { margin-top: 0; }
 .gold-text { color: var(--gold); }
 .brick-text { color: var(--brick); }
 .brick-bg { background: var(--brick); }

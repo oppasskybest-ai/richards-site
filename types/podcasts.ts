@@ -5,6 +5,7 @@ export interface PodcastData {
   description: string
   url: string
   embedUrl?: string
+  image?: string
   date?: string
   orderIndex?: number
 }

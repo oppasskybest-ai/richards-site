@@ -1,12 +1,36 @@
 import type { Metadata } from 'next'
 import { CV_HTML } from '@/lib/config/cv'
+import CVSections from '@/components/cv/CVSections'
 
 export const metadata: Metadata = {
   title: 'CV',
   description: 'Full curriculum vitae of E. Randolph Richards, Ph.D. -- publications, presentations, and administrative experience.',
 }
 
+function slugifySection(title: string) {
+  return title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
+}
+
+// A CV is a reference document people jump around in, not read start to
+// finish -- reusing the same linear article-prose treatment (built for
+// blog posts) didn't serve it well. Split the single CV_HTML blob into
+// real sections at each <h2>, so a table of contents + distinct section
+// numbering is possible, instead of one long undifferentiated scroll.
+function parseSections(html: string) {
+  const parts = html.split(/(?=<h2>)/)
+  return parts
+    .filter((p) => p.trim())
+    .map((part) => {
+      const match = part.match(/^<h2>([^<]*)<\/h2>/)
+      const title = match ? match[1] : 'Overview'
+      const body = match ? part.slice(match[0].length) : part
+      return { title, id: slugifySection(title), body }
+    })
+}
+
 export default function CVPage() {
+  const sections = parseSections(CV_HTML)
+
   return (
     <>
       {/* HERO — parallax, matches About/Endorsements pattern */}
@@ -45,13 +69,23 @@ export default function CVPage() {
             CV
           </h1>
           <div className="gold-divider" style={{ margin: '1.5rem auto' }} />
+          <p
+            className="animate-fade-up delay-200"
+            style={{
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: 'clamp(0.85rem, 1.2vw, 0.95rem)',
+              fontFamily: '"Inter", sans-serif',
+            }}
+          >
+            {sections.length} sections — publications, presentations, and administrative experience
+          </p>
         </div>
       </section>
 
-      {/* FULL CV — paper bg, same article-prose typography as Articles */}
-      <section style={{ background: '#f8f6f1', padding: 'clamp(4rem,8vw,6rem) 0' }}>
-        <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 clamp(1.25rem,5vw,4rem)' }}>
-          <div className="article-prose" dangerouslySetInnerHTML={{ __html: CV_HTML }} />
+      {/* FULL CV — sidebar table of contents + numbered sections */}
+      <section style={{ background: '#f8f6f1', padding: 'clamp(3rem,7vw,5rem) 0' }}>
+        <div className="container-wide">
+          <CVSections sections={sections} />
         </div>
       </section>
     </>

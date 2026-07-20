@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 const MEDIA = [
-  'The Stone Chapel Podcast', 'The Clarity Podcast', 'Moody Radio',
+  'The Stone Chapel Podcast', 'The Clarity Podcast',
 ]
 
 export default function AboutPage() {
@@ -79,7 +79,7 @@ export default function AboutPage() {
               </ScrollReveal>
 
               <ScrollReveal delay={100}>
-                <p style={{ lineHeight: 1.9, color: '#3a3a3a', marginBottom: '1.35rem', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
+                <p className="drop-cap" style={{ lineHeight: 1.9, color: '#3a3a3a', marginBottom: '1.35rem', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
                   I&apos;m Randy Richards. I&apos;ve been teaching the New Testament since 1986 — first at a state
                   university, then for several years as a missionary and seminary teacher in Indonesia, and since
                   2006 at Palm Beach Atlantic University, where I later served as Dean and then as Provost and
@@ -95,12 +95,30 @@ export default function AboutPage() {
                 </p>
               </ScrollReveal>
 
+              {/* PULL QUOTE — editorial break, matches the treatment used on Endorsements */}
+              <ScrollReveal delay={250}>
+                <blockquote style={{
+                  margin: '2.5rem 0',
+                  padding: '0.25rem 0 0.25rem 1.75rem',
+                  borderLeft: '3px solid var(--gold)',
+                }}>
+                  <p style={{
+                    fontFamily: '"Playfair Display", serif',
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(1.15rem, 2vw, 1.5rem)',
+                    lineHeight: 1.55,
+                    color: 'var(--ink)',
+                  }}>
+                    &ldquo;Scripture was written in a time and culture very different from ours — it&apos;s easy to
+                    read our own assumptions into the text without noticing we&apos;ve done it.&rdquo;
+                  </p>
+                </blockquote>
+              </ScrollReveal>
+
               <ScrollReveal delay={300}>
                 <p style={{ lineHeight: 1.9, color: '#3a3a3a', marginBottom: '1.35rem', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
                   Most of my writing — <em>Misreading Scripture with Western Eyes</em>, <em>Rediscovering Paul</em>,
-                  and the rest — comes back to one idea: Scripture was written in a time and culture very different
-                  from ours, and it&apos;s easy to read our own assumptions into the text without noticing we&apos;ve
-                  done it.
+                  and the rest — comes back to that one idea.
                 </p>
               </ScrollReveal>
 
@@ -131,6 +149,46 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* CAREER TIMELINE — a distinct editorial element, built from real
+          dates in his CV, not a layout reused from elsewhere on the site */}
+      <section style={{ background: '#0d0d0d', padding: 'clamp(3.5rem,6vw,5rem) 0' }}>
+        <div className="container-wide">
+          <ScrollReveal>
+            <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '2.5rem', textAlign: 'center' }}>
+              Thirty-eight Years Teaching the New Testament
+            </p>
+          </ScrollReveal>
+          <div className="about-timeline" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            gap: '1.5rem',
+            position: 'relative',
+          }}>
+            <div style={{ position: 'absolute', top: '9px', left: '5%', right: '5%', height: '1px', background: 'rgba(255,255,255,0.12)' }} />
+            {[
+              { year: '1986', label: 'Begins teaching the New Testament, at a state university' },
+              { year: '1990s', label: 'Missionary and seminary teacher in Indonesia' },
+              { year: '2006', label: 'Joins Palm Beach Atlantic University' },
+              { year: '2017\u201322', label: 'Provost and Chief Academic Officer, sixteen years in administration total' },
+              { year: '2022', label: 'Returns to the classroom as Research Professor of New Testament' },
+            ].map((t) => (
+              <div key={t.year} style={{ position: 'relative', paddingTop: '1.75rem' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '18px', height: '18px', borderRadius: '50%', background: '#0d0d0d', border: '2px solid var(--gold)' }} />
+                <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.15rem', color: 'white', marginBottom: '0.5rem' }}>{t.year}</p>
+                <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, fontFamily: '"Inter", sans-serif' }}>{t.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <style>{`
+        @media (max-width: 820px) {
+          .about-timeline { grid-template-columns: 1fr 1fr !important; }
+          .about-timeline > div:first-child { display: none; }
+        }
+      `}</style>
 
       {/* PUBLICATIONS */}
       <section style={{ background: 'var(--paper)', padding: 'clamp(4rem,7vw,5.5rem) 0', borderTop: '1px solid rgba(0,0,0,0.07)' }}>

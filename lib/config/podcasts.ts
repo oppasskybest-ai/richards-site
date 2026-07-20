@@ -58,6 +58,7 @@ export const PODCASTS: PodcastData[] = [
     source: 'Discover the Word',
     description: `Randy Richards and co-author Brandon O'Brien discuss how our cultural lenses can cause us to misinterpret the writings of the apostle Paul -- and what to do about it.`,
     url: 'https://discovertheword.org/series/misreading-paul/',
+    image: '/assets/images/podcasts/misreading-paul-series.jpg',
   },
   {
     id: 'misreading-scripture-western-eyes-series',

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ScrollReveal from '@/components/home/ScrollReveal'
-import HomepageReviews from '@/components/home/HomepageReviews'
 import { supabaseAdmin } from '@/lib/supabase/server'
 
 export const revalidate = 60
@@ -113,16 +112,77 @@ export default async function ReviewsPage() {
         </div>
       </section>
 
-      {/* REVIEWS GRID */}
-      <section
-        style={{
-          padding: 'clamp(5rem,10vw,7rem) 0',
-        }}
-      >
+      {/* REVIEWS GRID — purpose-built for this light page (the dark-mode
+          homepage carousel component was being reused here before, which is
+          why the text was nearly invisible: white-on-cream, not white-on-dark) */}
+      <section style={{ padding: 'clamp(5rem,10vw,7rem) 0', background: 'var(--paper)' }}>
         <div className="container-wide">
-          <ScrollReveal>
-            <HomepageReviews reviews={reviews} />
-          </ScrollReveal>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '2rem',
+          }}>
+            {reviews.map((r, i) => (
+              <ScrollReveal key={r.id} delay={i * 60}>
+                <div style={{
+                  background: 'white',
+                  border: '1px solid rgba(0,0,0,0.08)',
+                  borderTop: '3px solid var(--gold)',
+                  padding: 'clamp(1.75rem,3vw,2.25rem)',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  boxShadow: '0 2px 16px rgba(0,0,0,0.04)',
+                }}>
+                  <span style={{
+                    fontFamily: '"Playfair Display", serif',
+                    fontSize: '3rem',
+                    lineHeight: 1,
+                    color: 'rgba(var(--gold-rgb),0.25)',
+                    marginBottom: '0.5rem',
+                  }}>
+                    &ldquo;
+                  </span>
+                  <div style={{ marginBottom: '0.9rem' }}>
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <span key={s} style={{ fontSize: '0.85rem', color: s < r.rating ? 'var(--gold)' : 'rgba(0,0,0,0.12)' }}>★</span>
+                    ))}
+                  </div>
+                  <p style={{
+                    fontFamily: '"Playfair Display", serif',
+                    fontStyle: 'italic',
+                    fontSize: '1.02rem',
+                    lineHeight: 1.7,
+                    color: 'var(--ink)',
+                    marginBottom: '1.5rem',
+                    flex: 1,
+                  }}>
+                    {r.quote}
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+                    <div style={{
+                      width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0,
+                      background: `hsl(${r.name.charCodeAt(0) * 11 % 360}, 42%, 40%)`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'white', fontSize: '0.75rem', fontWeight: 600, fontFamily: '"Inter", sans-serif',
+                    }}>
+                      {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <p style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: '0.85rem', color: 'var(--ink)', margin: 0 }}>
+                        {r.name}
+                      </p>
+                      {r.location && (
+                        <p style={{ fontFamily: '"Inter", sans-serif', fontSize: '0.72rem', color: '#999', margin: 0 }}>
+                          {r.location}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 

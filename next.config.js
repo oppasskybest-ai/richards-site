@@ -8,6 +8,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'm.media-amazon.com' },
       { protocol: 'https', hostname: '*.squarespace.com' },
       { protocol: 'https', hostname: 'static1.squarespace.com' },
+      { protocol: 'https', hostname: 'img.youtube.com' },
     ],
     formats: ['image/avif', 'image/webp'],
   },

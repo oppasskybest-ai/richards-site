@@ -48,11 +48,12 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* FORM SECTION — dark parallax bg */}
+      {/* FORM SECTION — solid ink gradient, not another fixed photo directly
+          stacked under the hero (two consecutive fixed-attachment photo
+          sections with no visual break was reading as a collision/overlap) */}
       <section
-        className="section-bg-image"
         style={{
-          backgroundImage: "url('/assets/images/portraits/img_1958.jpg')",
+          background: 'linear-gradient(160deg, #14171c 0%, #0a0c10 100%)',
           padding: 'clamp(5rem,10vw,7rem) 0',
         }}
       >

@@ -4,12 +4,43 @@ import Link from 'next/link'
 import { supabaseAdmin } from '@/lib/supabase/server'
 import { CATEGORY_LABELS, JournalismCategory } from '@/types/journalism'
 import type { Article } from '@/types/database'
+import { SEED_ARTICLES } from '@/lib/config/articles'
 import ArticleComments from '@/components/journalism/ArticleComments'
 
 export const revalidate = 60
 
 interface Props {
   params: Promise<{ category: string; slug: string }>
+}
+
+// Falls back to the real static article content (lib/config/articles.ts)
+// when Supabase has nothing for this slug -- either because it hasn't been
+// seeded yet, or a specific row was deleted/edited away. Without this,
+// every single article 404s until someone clicks "Run Seed" in
+// /admin/settings, which is a trap: the article text is real and already
+// in the codebase, there's no reason a missing DB row should 404 it.
+function getStaticArticle(category: string, slug: string): Article | null {
+  const found = SEED_ARTICLES.find((a) => a.slug === slug && a.category === category)
+  if (!found) return null
+  return {
+    id: found.id,
+    title: found.title,
+    slug: found.slug || found.id,
+    publication: found.publication,
+    category: found.category,
+    url: found.url || '',
+    date: found.date || '',
+    excerpt: found.excerpt || '',
+    image: found.image || '',
+    featured: found.featured ?? false,
+    status: 'published',
+    content_type: found.content_type || 'native',
+    content_html: found.content_html || null,
+    pdf_url: null,
+    comments_enabled: found.comments_enabled ?? true,
+    created_at: found.date || '',
+    updated_at: found.date || '',
+  }
 }
 
 async function getArticle(category: string, slug: string): Promise<Article | null> {
@@ -22,11 +53,11 @@ async function getArticle(category: string, slug: string): Promise<Article | nul
       .eq('content_type', 'native')
       .eq('status', 'published')
       .single()
-    if (error || !data) return null
-    return data as Article
+    if (!error && data) return data as Article
   } catch {
-    return null
+    // Supabase unreachable -- fall through to static content below
   }
+  return getStaticArticle(category, slug)
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -77,7 +108,7 @@ export default async function NativeArticlePage({ params }: Props) {
           {/* BREADCRUMB */}
           <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <Link href="/articles" style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', textDecoration: 'none' }}>
-              Journalism
+              Articles
             </Link>
             <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.65rem' }}>›</span>
             <Link href={`/articles/${category}`} style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: '"Inter", sans-serif', textDecoration: 'none' }}>
@@ -210,7 +241,14 @@ export default async function NativeArticlePage({ params }: Props) {
 
           {/* COMMENTS — only shown when enabled on this article */}
           {article.comments_enabled && (
-            <ArticleComments articleId={article.id} />
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(article.id) ? (
+              <ArticleComments articleId={article.id} />
+            ) : (
+              <p style={{ marginTop: '4rem', paddingTop: '3rem', borderTop: '1px solid rgba(0,0,0,0.08)', color: '#999', fontSize: '0.85rem', fontFamily: '"Inter", sans-serif' }}>
+                Comments open once this article is synced to the database — run
+                &ldquo;Run Seed&rdquo; in Admin → Settings to enable them here.
+              </p>
+            )
           )}
         </div>
       </section>

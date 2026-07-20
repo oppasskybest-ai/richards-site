@@ -10,6 +10,24 @@ missing.
 
 ---
 
+# STATUS AT A GLANCE (2026-07-20)
+
+Session 7: a large "make it actually work and look different everywhere"
+pass, in response to Randy sending 10 screenshots of real, live pages and
+flagging that most of the site beyond the homepage/Books had never been
+touched. Found and fixed a real functional bug (every article 404'd),
+found and fixed two leftover-template naming bugs ("Journalism" instead of
+"Articles," in a page title, a breadcrumb, and an SEO description), found
+that article body text had zero typography styling at all (raw browser
+defaults), found and removed fabricated "as heard on" media names that
+don't appear anywhere in the real scraped site, matched 14 more real
+photos to their exact original posts, gave About/Articles/Category pages
+genuinely distinct layouts instead of reusing the same card grid
+everywhere, and built real playable YouTube/Vimeo/Spotify embeds on the
+Podcasts page. Full detail in "SESSION 7" below.
+
+---
+
 # STATUS AT A GLANCE (2026-07-19, even later same day)
 
 Session 6: found and fixed a real, sitewide bug -- not a design taste
@@ -694,3 +712,175 @@ Get real images from Randy (headshots, book covers, church/speaking photos
 photo redesign (gap #6/#7) once he confirms crossfade vs. parallax. Also
 worth a quick pass asking Randy to confirm the 4 ambiguous book covers
 (gap #2).
+
+---
+
+# SESSION 7 (2026-07-20)
+
+Randy sent 10 real screenshots (with visible URLs) of the live Vercel
+deploy and a reference site (Henry Mintzberg's, for how video embeds
+should work) and pushed back hard: the "complete redesign" conversation
+had only ever touched the homepage and Books, everything else was
+untouched, and several pages had real functional problems, not just style
+issues. Went through his list in order.
+
+## 1. Article detail pages 404'd for everyone -- real bug, not a Supabase gap
+`getArticle()` queried Supabase only, with zero fallback. Since Supabase
+either isn't seeded or a given row doesn't exist there yet, every one of
+the 32 real articles' detail pages returned `notFound()`. Fixed with a
+static fallback to `lib/config/articles.ts`, same pattern already used for
+books/podcasts. Also guarded comments so a static-fallback article (which
+has a slug, not a real database UUID) can't attempt to submit a comment
+that would fail -- shows an honest "comments open once this article is
+synced" note instead in that specific case.
+
+## 2. ~80% of articles had no image -- confirmed and fixed properly
+28 of 32 articles pointed at `/assets/images/articles/placeholder.jpg`,
+which never existed. Matched 14 more real photos from the scrape to their
+exact original posts, same rigorous method as before (each image's real
+`data-permalink` in the scraped HTML, not filename guessing) -- the
+antichrist illustration for "The Antichrist," the Roman coin for "Render
+Unto Caesar," the mosque photo for "Thank God for the Mosque Down the
+Street," etc. For the remaining 14 with no real photo anywhere in the
+scrape, set `image: ''` instead of a broken path -- `ArticleCard` already
+had a nice gradient-fallback design built in for this exact case, it just
+never triggered because the broken placeholder path was truthy.
+
+## 3. Conferences page said "no events" -- real data existed, wasn't wired
+Added `lib/config/events.ts` with Randy's real keynote history (Mid-Winter
+Bible Conference, Abide Conference, Network of Biblical Storytellers, ETS
+Far West, Concordia) as a fallback when Supabase is empty, matching the
+pattern used everywhere else. Note: exact days weren't in the source data
+(only month/year), so dates are approximated to the 1st of the month --
+flagged in the data file itself.
+
+## 4. Endorsements page was nearly unreadable -- root cause found
+The dark-mode-only `HomepageReviews` carousel component (white text at
+low opacity, built for a dark section) was being reused on this page,
+which sits on a light cream background. White-on-cream at 20-35% opacity
+is why it looked broken. Replaced with a purpose-built light-theme card
+grid (ink text, gold top-border accent, large italic pull-quote styling).
+
+## 5. Contact page "collision" -- two stacked fixed-photo sections, no break
+Not a scroll-timing coincidence -- two different `background-attachment:
+fixed` photo sections were stacked directly on top of each other with no
+visual separator, which reads as a collision especially mid-scroll.
+Replaced the second section's photo background with a solid ink gradient
+so there's a clean, intentional break between the hero and the form.
+
+## 6. "As heard on" -- partly fabricated, and broken even for the real ones
+Checked all 3 listed media names against the real scraped site: "The
+Stone Chapel Podcast" and "The Clarity Podcast" are real (they're in
+`lib/config/podcasts.ts`, pulled from the actual old site). "Moody Radio"
+appears nowhere in the scrape -- invented by an earlier session, removed.
+Separately, `PublicationBadge` had every name mapped to a logo SVG file
+that doesn't exist, which is why even the 2 real ones rendered as blank
+boxes instead of falling back to text (the text fallback only triggers
+for names NOT in the logo map, which none of them were). Cleared the map
+since no real logo assets exist yet.
+
+## 7. Foreground redesign, started for real (not homepage/Books this time)
+- **About page**: added a drop-cap opening paragraph, a pull-quote break
+  using his own bio text, and a real career timeline strip (1986 -> 2022)
+  built from actual CV dates -- none of this layout is reused elsewhere.
+- **Articles listing page**: fixed a leftover-template bug -- the page
+  title and hero both literally said "Journalism" (from the original
+  portfolio template this project started from, never swapped). Rebuilt
+  the layout: one large featured piece treated editorially, then the rest
+  as tight list-rows -- distinct from the card grid used on the homepage.
+- **Category pages**: replaced the plain card grid with an alternating
+  zigzag layout (image/text sides swap every row) -- a third distinct
+  browsing pattern, so the archive, a category, and the homepage all
+  actually look different from each other now.
+- **Article body typography**: found that `.article-prose` -- the class
+  wrapping every single article's actual text, and the CV page -- had
+  *zero* CSS anywhere in the codebase. Every real article has been
+  rendering in raw unstyled browser defaults (default blue links, no
+  paragraph rhythm, no blockquote treatment) this whole time. Added real
+  editorial typography: serif body text, styled blockquotes, gold
+  underlined links, proper heading scale. This affects the actual reading
+  experience of all 32 articles, so arguably the highest-value single fix
+  in this session even though it wasn't explicitly called out in Randy's
+  list.
+- Also fixed the same "Journalism" leftover in the article detail page's
+  breadcrumb and in the category page's SEO description.
+
+## 8. Podcasts -- real playable embeds, matching the Henry Mintzberg reference
+Built `lib/utils/podcastEmbed.ts`: detects YouTube, Vimeo, and Spotify
+episode URLs and returns a real embeddable iframe src (YouTube also gets
+an automatic thumbnail via `img.youtube.com`, no asset needed). 3 of the 9
+real podcast entries now play directly on the page instead of just
+linking out. The other 6 (Apple Podcasts, Libsyn, a publisher's article
+page, Discover the Word series pages) don't have a generic, reliable
+embed pattern from a URL alone, so they correctly stay as "opens in a new
+tab" cards -- with a real preview image where one exists (found and wired
+in the one real podcast banner image in the scrape, for "Misreading Paul:
+Podcast Series").
+- Added `image` field to the podcast type/schema/admin form so future
+  entries can have a manual preview image too.
+- **Caught before it shipped broken**: `img.youtube.com` wasn't in
+  `next.config.js`'s allowed image domains -- would have thrown a runtime
+  error the first time a YouTube thumbnail tried to load. Added it.
+
+## Not done this session (explicitly deferred, not forgotten)
+- CV page style polish (Randy said "ok, but a better style would be
+  preferable" -- lowest priority in his list, not started).
+- Blog vs. "Articles" naming -- answered as a recommendation (keep
+  Articles), not changed, since it wasn't a clear instruction either way.
+
+---
+
+## NEXT STEP
+CV page polish, then a final pass confirming every page's foreground now
+reads as genuinely different from the others (About / Articles archive /
+category / homepage / Endorsements / Podcasts / Conferences / Contact),
+not just re-skinned versions of the same template section.
+
+---
+
+# SESSION 7 ADDENDUM — CV page polish (2026-07-20)
+
+Randy's last item: "the cv pages look ok but a better style would be more
+preferable." Reused article-prose typography (fixed earlier this session)
+but that alone treats a CV like a blog post -- one long linear scroll,
+which isn't how anyone actually reads a CV (they jump to the section they
+care about). Rebuilt properly:
+- `app/(site)/cv/page.tsx` now parses `CV_HTML` into its 7 real sections
+  at each `<h2>` (Major Publications, Refereed Publications, Refereed
+  Presentations, Selected Presentations by Invitation, Educational
+  Administrative Experience, Most Recent Honors and Awards, Ministerial
+  Involvement) instead of rendering it as one undifferentiated blob.
+- New `components/cv/CVSections.tsx`: sticky table-of-contents sidebar
+  with scroll-based active-section highlighting (IntersectionObserver),
+  numbered section headers, collapses to horizontal pill-tabs on mobile.
+- No content was changed, only how it's organized and navigated -- still
+  the same real, word-for-word CV text.
+
+## NEXT STEP (updated)
+All items from Randy's 10-screenshot list are now addressed. Next real
+step is Randy's own review pass -- redeploy, click through every page,
+and flag anything that still doesn't look right, since several of these
+fixes (Endorsements contrast, Contact collision) were diagnosed from
+static screenshots, not a live/interactive check.
+
+---
+
+# SESSION 7 ADDENDUM — CV page
+
+The last remaining item from Randy's list. A CV is a reference document
+people jump around in, not read start to finish -- reusing the generic
+`.article-prose` linear treatment (built for blog posts) didn't serve it
+well even after that typography got real styling.
+
+Rebuilt properly: `lib/config/cv.ts`'s single `CV_HTML` blob is now parsed
+server-side (`app/(site)/cv/page.tsx`) into 7 real sections at each
+`<h2>` (Major Publications, Refereed Publications, Refereed Presentations,
+Selected Presentations and Publications by Invitation, Educational
+Administrative Experience, Most Recent Honors and Awards, Ministerial
+Involvement). New `components/cv/CVSections.tsx` renders a sticky
+table-of-contents sidebar with scroll-based active-section highlighting
+(IntersectionObserver), numbered section headers, and jump-to-section
+anchor links -- collapses to a horizontal pill nav on mobile instead of a
+sidebar. No content was changed, only how it's organized and navigated.
+
+This closes out every item from Randy's 10-screenshot list.

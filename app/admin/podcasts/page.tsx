@@ -3,12 +3,13 @@ import { useState, useEffect, useCallback } from 'react'
 import { useAdmin } from '../layout'
 import { useAuthFetch } from '@/lib/hooks/useAuthFetch'
 import Modal from '@/components/ui/Modal'
+import ImageUpload from '@/components/admin/ImageUpload'
 import type { PodcastData } from '@/types/podcasts'
 
 type PodcastRow = Partial<PodcastData> & { order_index?: number }
 
 const EMPTY: PodcastRow = {
-  title: '', source: '', description: '', url: '', embedUrl: '', date: '', order_index: 0,
+  title: '', source: '', description: '', url: '', embedUrl: '', image: '', date: '', order_index: 0,
 }
 
 const fieldStyle: React.CSSProperties = {
@@ -23,7 +24,7 @@ const labelStyle: React.CSSProperties = {
 }
 
 export default function AdminPodcasts() {
-  useAdmin()
+  const { token } = useAdmin()
   const authFetch = useAuthFetch()
 
   const [podcasts, setPodcasts] = useState<PodcastRow[]>([])
@@ -162,6 +163,16 @@ export default function AdminPodcasts() {
             <div style={{ gridColumn: '1/-1' }}>
               <label style={labelStyle}>Listen / Watch URL *</label>
               <input style={fieldStyle} type="url" value={editing.url ?? ''} onChange={(e) => setEditing(v => ({ ...v, url: e.target.value }))} placeholder="https://…" />
+            </div>
+
+            <div style={{ gridColumn: '1/-1' }}>
+              <ImageUpload
+                value={editing.image ?? ''}
+                onChange={(url) => setEditing(v => ({ ...v, image: url }))}
+                bucket="article-images"
+                label="Preview Image (optional — YouTube/Vimeo/Spotify links get an automatic preview instead)"
+                token={token}
+              />
             </div>
 
             <div style={{ gridColumn: '1/-1' }}>

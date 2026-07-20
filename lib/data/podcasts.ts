@@ -16,6 +16,7 @@ function toPodcastData(row: Record<string, unknown>): PodcastData {
     description: (row.description as string) || '',
     url: row.url as string,
     embedUrl: (row.embed_url as string) || undefined,
+    image: (row.image as string) || undefined,
     date: (row.date as string) || undefined,
   }
 }

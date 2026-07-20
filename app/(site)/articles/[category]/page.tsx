@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import ClientImage from '@/components/ui/ClientImage'
-import ArticleCard from '@/components/journalism/ArticleCard'
 import CategoryFilter from '@/components/journalism/CategoryFilter'
 import { getArticlesByCategory } from '@/lib/data/articles'
 import { getAllBooks } from '@/lib/data/books'
@@ -36,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!CATEGORY_SLUGS.includes(slug)) return {}
   return {
     title: CATEGORY_LABELS[slug],
-    description: `Journalism by E. Randolph Richards — ${CATEGORY_LABELS[slug]}`,
+    description: `Articles by E. Randolph Richards — ${CATEGORY_LABELS[slug]}`,
   }
 }
 
@@ -180,16 +179,69 @@ export default async function CategoryPage({ params }: Props) {
             </div>
           )}
 
-          {/* ARTICLES GRID */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: '1.25rem',
-          }}>
-            {articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
+          {/* ARTICLES — alternating zigzag spreads, not a card grid */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(2.5rem,5vw,3.5rem)' }}>
+            {articles.map((article, i) => {
+              const href = article.content_type === 'native' && article.slug
+                ? `/articles/${article.category}/${article.slug}`
+                : (article.url || '#')
+              const reversed = i % 2 === 1
+              return (
+                <Link
+                  key={article.id}
+                  href={href}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.3fr)',
+                    gap: 'clamp(1.5rem,4vw,3rem)',
+                    alignItems: 'center',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    paddingBottom: 'clamp(2.5rem,5vw,3.5rem)',
+                    borderBottom: i < articles.length - 1 ? '1px solid rgba(0,0,0,0.08)' : 'none',
+                  }}
+                  className="category-article-row"
+                >
+                  <div
+                    style={{
+                      position: 'relative', aspectRatio: '5/4', overflow: 'hidden',
+                      borderRadius: '3px', background: 'var(--paper-dark)',
+                      order: reversed ? 2 : 1,
+                    }}
+                  >
+                    {article.image ? (
+                      <ClientImage src={article.image} alt={article.title} fill sizes="(max-width: 700px) 100vw, 40vw" style={{ objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, hsl(${(article.title.charCodeAt(0) * 7) % 360}, 45%, 52%), hsl(${(article.title.charCodeAt(0) * 7 + 60) % 360}, 55%, 42%))` }} />
+                    )}
+                  </div>
+                  <div style={{ order: reversed ? 1 : 2 }}>
+                    <p style={{ fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '0.75rem' }}>
+                      {article.date ? new Date(article.date).getFullYear() : ''}
+                    </p>
+                    <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 400, fontSize: 'clamp(1.2rem,2.2vw,1.6rem)', lineHeight: 1.28, color: 'var(--ink)', marginBottom: '0.85rem' }}>
+                      {article.title}
+                    </h3>
+                    {article.excerpt && (
+                      <p style={{ fontSize: '0.9rem', color: '#6b6b6b', lineHeight: 1.75, marginBottom: '1rem' }}>
+                        {article.excerpt}
+                      </p>
+                    )}
+                    <span style={{ fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink)', fontFamily: '"Inter", sans-serif', fontWeight: 500, borderBottom: '1px solid var(--gold)', paddingBottom: '2px' }}>
+                      Read the piece
+                    </span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
+
+          <style>{`
+            @media (max-width: 700px) {
+              .category-article-row { grid-template-columns: 1fr !important; }
+              .category-article-row > div { order: 1 !important; }
+            }
+          `}</style>
 
           {articles.length === 0 && (
             <div style={{ textAlign: 'center', padding: '5rem 0' }}>

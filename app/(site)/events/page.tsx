@@ -4,6 +4,7 @@ import ScrollReveal from '@/components/home/ScrollReveal'
 import SubscribeForm from '@/components/subscribe/SubscribeForm'
 import { supabaseAdmin } from '@/lib/supabase/server'
 import type { Event } from '@/types/database'
+import { STATIC_EVENTS } from '@/lib/config/events'
 
 export const metadata: Metadata = {
   title: 'Conferences',
@@ -30,16 +31,23 @@ async function getEvents(): Promise<{ upcoming: Event[]; past: Event[] }> {
       .select('*')
       .neq('status', 'cancelled')
       .order('event_date', { ascending: true })
-    if (error || !data) return { upcoming: [], past: [] }
+
+    // Real conference history exists (see lib/config/events.ts) -- don't
+    // show "no events" just because Supabase hasn't been seeded yet.
+    const rows = (!error && data && data.length > 0) ? data : STATIC_EVENTS
 
     const today = new Date().toISOString().slice(0, 10)
-    const upcoming = data.filter((e: Event) => e.event_date >= today)
-    const past = data
+    const upcoming = rows.filter((e: Event) => e.event_date >= today)
+    const past = rows
       .filter((e: Event) => e.event_date < today)
       .reverse()
     return { upcoming, past }
   } catch {
-    return { upcoming: [], past: [] }
+    const today = new Date().toISOString().slice(0, 10)
+    return {
+      upcoming: STATIC_EVENTS.filter((e) => e.event_date >= today),
+      past: STATIC_EVENTS.filter((e) => e.event_date < today).reverse(),
+    }
   }
 }
 

@@ -1,16 +1,15 @@
 import ClientImage from '@/components/ui/ClientImage'
 
-// Maps publication display name -> logo filename (if/when a real logo is added)
-// To upgrade any publication to its real logo: drop the file at the path below
-// and it will automatically be used instead of the text badge. See PROGRESS.md
-// for the full list of expected filenames and where to source each one.
-const LOGO_FILE: Record<string, string> = {
-  'The Stone Chapel Podcast': 'stone-chapel-podcast.svg',
-  'The Clarity Podcast': 'clarity-podcast.svg',
-  'Moody Radio': 'moody-radio.svg',
-  'Christianity Today': 'christianity-today.svg',
-  'The Gospel Coalition': 'gospel-coalition.svg',
-}
+// Maps publication display name -> logo filename, ONLY once a real logo file
+// actually exists at that path. Left empty for now -- no real logo assets
+// exist yet (checked: public/assets/publications/ doesn't exist). Every
+// entry here used to point at a nonexistent SVG, which is why these
+// rendered as blank boxes instead of falling back to text -- the fallback
+// only triggers for names NOT in this map, so a "real-looking but missing"
+// entry silently broke instead of degrading gracefully.
+// To add a real logo: drop the file at public/assets/publications/<file>.svg
+// and add an entry here.
+const LOGO_FILE: Record<string, string> = {}
 
 interface Props {
   name: string
