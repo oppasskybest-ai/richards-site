@@ -93,7 +93,7 @@ export default function AdminEvents() {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.8rem', color: 'white', fontWeight: 400, marginBottom: '0.25rem' }}>Events</h1>
+          <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.8rem', color: 'white', fontWeight: 400, marginBottom: '0.25rem' }}>Conferences</h1>
           <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)' }}>{events.length} total</p>
         </div>
         <button onClick={() => setEditing({ ...EMPTY })}

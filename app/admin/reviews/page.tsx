@@ -72,7 +72,7 @@ export default function AdminReviews() {
   return (
     <div style={{ padding: '2.5rem' }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.8rem', color: 'white', fontWeight: 400, marginBottom: '0.25rem' }}>Reviews</h1>
+        <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.8rem', color: 'white', fontWeight: 400, marginBottom: '0.25rem' }}>Endorsements</h1>
         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Moderate reviews submitted from the homepage. Approved reviews appear publicly.</p>
       </div>
 

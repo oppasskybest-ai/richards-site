@@ -6,7 +6,6 @@ interface Stats {
   subscribers: number
   articles: number
   messages: number
-  broadcasts: number
   events: number
 }
 
@@ -22,7 +21,7 @@ function StatCard({ label, value, icon }: { label: string; value: number | strin
 
 export default function AdminDashboard() {
   const { token } = useAdmin()
-  const [stats, setStats] = useState<Stats>({ subscribers: 0, articles: 0, messages: 0, broadcasts: 0, events: 0 })
+  const [stats, setStats] = useState<Stats>({ subscribers: 0, articles: 0, messages: 0, events: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -31,14 +30,12 @@ export default function AdminDashboard() {
       fetch('/api/admin/subscribers?page=1', { headers }).then(r => r.json()),
       fetch('/api/admin/articles?page=1', { headers }).then(r => r.json()),
       fetch('/api/admin/messages', { headers }).then(r => r.json()),
-      fetch('/api/admin/broadcasts', { headers }).then(r => r.json()),
       fetch('/api/admin/events', { headers }).then(r => r.json()),
-    ]).then(([subs, arts, msgs, broads, events]) => {
+    ]).then(([subs, arts, msgs, events]) => {
       setStats({
         subscribers: subs.total || 0,
         articles: arts.total || 0,
         messages: msgs.total || 0,
-        broadcasts: Array.isArray(broads) ? broads.length : 0,
         events: events.data?.length || 0,
       })
       setLoading(false)
@@ -59,8 +56,7 @@ export default function AdminDashboard() {
           <StatCard icon="◎" label="Active Subscribers" value={stats.subscribers} />
           <StatCard icon="✦" label="Articles" value={stats.articles} />
           <StatCard icon="◇" label="Contact Messages" value={stats.messages} />
-          <StatCard icon="⊕" label="Broadcasts Sent" value={stats.broadcasts} />
-          <StatCard icon="◆" label="Events" value={stats.events} />
+          <StatCard icon="◆" label="Conferences" value={stats.events} />
         </div>
       )}
 
@@ -70,10 +66,9 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           {[
             { label: 'Add Article', href: '/admin/articles' },
-            { label: 'New Broadcast', href: '/admin/broadcasts' },
             { label: 'View Messages', href: '/admin/messages' },
             { label: 'Manage Books', href: '/admin/books' },
-            { label: 'Manage Events', href: '/admin/events' },
+            { label: 'Manage Conferences', href: '/admin/events' },
           ].map((l) => (
             <a key={l.label} href={l.href} style={{ padding: '0.6rem 1.1rem', background: 'rgba(var(--gold-rgb),0.1)', border: '1px solid rgba(var(--gold-rgb),0.2)', color: 'var(--gold-light)', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px', textDecoration: 'none', transition: 'all 0.2s' }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(var(--gold-rgb),0.2)' }}

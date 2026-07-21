@@ -3,16 +3,17 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const NAV = [
-  { label: 'Dashboard',   href: '/admin',              icon: '◈' },
-  { label: 'Articles',    href: '/admin/articles',      icon: '✦' },
-  { label: 'Comments',    href: '/admin/comments',      icon: '✎' },
-  { label: 'Reviews',     href: '/admin/reviews',       icon: '★' },
-  { label: 'Books',       href: '/admin/books',         icon: '▣' },
-  { label: 'Events',      href: '/admin/events',        icon: '◆' },
-  { label: 'Podcasts',    href: '/admin/podcasts',      icon: '♫' },
-  { label: 'Subscribers', href: '/admin/subscribers',   icon: '◎' },
-  { label: 'Messages',    href: '/admin/messages',      icon: '◇' },
-  { label: 'Settings',    href: '/admin/settings',      icon: '⚙' },
+  { label: 'Dashboard',     href: '/admin',              icon: '◈' },
+  { label: 'Articles',      href: '/admin/articles',      icon: '✦' },
+  { label: 'Comments',      href: '/admin/comments',      icon: '✎' },
+  { label: 'Endorsements',  href: '/admin/reviews',       icon: '★' },
+  { label: 'Books',         href: '/admin/books',         icon: '▣' },
+  { label: 'Book Reviews',  href: '/admin/book-reviews',  icon: '❝' },
+  { label: 'Conferences',   href: '/admin/events',        icon: '◆' },
+  { label: 'Podcasts',      href: '/admin/podcasts',      icon: '♫' },
+  { label: 'Subscribers',   href: '/admin/subscribers',   icon: '◎' },
+  { label: 'Messages',      href: '/admin/messages',      icon: '◇' },
+  { label: 'Settings',      href: '/admin/settings',      icon: '⚙' },
 ]
 
 interface SidebarProps {

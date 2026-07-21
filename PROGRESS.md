@@ -10,9 +10,67 @@ missing.
 
 ---
 
-# STATUS AT A GLANCE (2026-07-21, later still, again)
+# STATUS AT A GLANCE (2026-07-21, evening)
 
-Session 11: Randy asked directly whether every article had actually been
+Session 12: Randy sent a screenshot of the admin dashboard and asked for
+a full audit -- which admin tab talks to which Supabase table, which
+front-end page actually reads it, and which of it is real vs leftover
+cruft from the original "duff-site" template clone.
+
+**Audit method:** traced every admin page's `authFetch` calls to their
+API routes, matched each route's `supabaseAdmin.from(...)` calls to the
+actual tables in `supabase-schema.sql`, and matched each table to the
+public page that reads it. Not guessed -- grepped and read line by line.
+
+**Findings:**
+- The 4 tabs in the original master-prompt scope (Articles, Books,
+  Podcasts, Subscribers) are all real, all wired end-to-end. No issue.
+- Comments, Reviews, Events, Messages were built later (outside the
+  original 4-tab scope) but are also real and fully wired -- not broken,
+  just extra. Randy is keeping these.
+- **Naming mismatch (Randy's core complaint):** the admin sidebar called
+  these tables "Events" and "Reviews," but the public nav displays the
+  exact same data as "Conferences" and "Endorsements." Same tables, two
+  names -- confusing, not a bug. **Fixed:** renamed both the sidebar
+  entries and the corresponding page `<h1>` headers to match the public
+  labels (`components/admin/Sidebar.tsx`, `app/admin/events/page.tsx`,
+  `app/admin/reviews/page.tsx`). URLs (`/admin/events`, `/admin/reviews`)
+  were left unchanged -- only the visible labels moved, so nothing else
+  in the codebase needed touching.
+- **Genuinely dead code, removed:** the Dashboard's "Broadcasts Sent"
+  stat card and "New Broadcast" quick-action button pointed at
+  `/api/admin/broadcasts` and `/admin/broadcasts` -- neither of which
+  exist anywhere in the codebase (no page, no route, no table). 100%
+  orphaned leftover from the original template's dashboard, and it
+  directly contradicted the master prompt's own "no automation, no send
+  functionality" rule. Removed both from `app/admin/page.tsx`; the stat
+  grid and quick-actions row were rebuilt without them.
+- **Real gap, filled:** `book_reviews` (per-book reader reviews shown on
+  book pages) had a live Supabase table and a front-end display
+  component, but zero admin management -- the only way to add one was to
+  edit Supabase directly. Built a proper admin tab for it:
+  - `app/api/admin/book-reviews/route.ts` (list, create)
+  - `app/api/admin/book-reviews/[id]/route.ts` (update, delete)
+  - `app/admin/book-reviews/page.tsx` -- full CRUD with a book picker
+    (populated live from `/api/admin/books`), rating, source, and status
+    fields, following the same modal-form pattern as the Books tab.
+  Unlike the homepage `reviews` (testimonials) table, `book_reviews` has
+  no public submission form -- Randy curates these himself from reviews
+  gathered elsewhere -- so this tab is direct add/edit/delete, not a
+  pending/approved moderation queue. Added to the sidebar right after
+  Books.
+- Confirmed the seed logic (Settings tab) is untouched by any of this
+  and still only targets Articles/Books/Podcasts as before.
+
+All new and edited files re-validated with `npx esbuild --bundle=false`.
+The dashboard's remaining stat/quick-action API calls (`/api/admin/
+messages`, `/api/admin/events`, `/api/admin/articles`, `/api/admin/
+subscribers`) were each checked against their actual route response
+shapes (`{ data, total }` etc) to confirm the dashboard reads real
+fields, not more of the same leftover-guesswork pattern that caused the
+broadcasts bug.
+
+
 checked for the same class of bug, not just the one example from the
 screenshot. Fair question -- it hadn't been. Did it properly this time:
 extracted every book-reference token that appears in the real seed
