@@ -18,17 +18,37 @@ function cleanVerseText(raw: string): string {
 }
 
 // Accepts refs like "John 3:16", "1 Thess. 5:3", "Rom 5:8", "Lk 24:21",
-// and ranges like "Phil 3:20-21" or "1 Thess 4:13-5:11".
+// and ranges like "Phil 3:20-21" (same-chapter verse range) or
+// "1 Thess 4:13-5:11" (cross-chapter range).
+//
+// The two range forms are only distinguishable by whether a colon follows
+// the number after the dash -- "14:1-3" is verses 1-3 of chapter 14,
+// while "4:13-5:11" is chapter 4 verse 13 through chapter 5 verse 11.
+// (Previously this was ambiguous: "14:1-3" was mis-parsed as chapter 14
+// down to chapter 3, which is an impossible range and silently returned
+// zero verses -- that's why some references failed to load.)
 function parseRef(ref: string) {
-  const m = ref.trim().match(/^(\d?\s?[A-Za-z]+)\.?\s+(\d+):(\d+)(?:-(\d+):?(\d+)?)?$/)
+  const m = ref.trim().match(/^(\d?\s?[A-Za-z]+)\.?\s+(\d+):(\d+)(?:-(\d+)(?::(\d+))?)?$/)
   if (!m) return null
-  const [, rawBook, chapStr, verseStr, endChapStr, endVerseStr] = m
+  const [, rawBook, chapStr, verseStr, secondNumStr, crossChapterVerseStr] = m
   const bookCode = normalizeBookName(rawBook.replace(/\s+/g, ''))
   if (!bookCode) return null
   const chapter = parseInt(chapStr, 10)
   const verse = parseInt(verseStr, 10)
-  const endChapter = endChapStr ? parseInt(endChapStr, 10) : chapter
-  const endVerse = endVerseStr ? parseInt(endVerseStr, 10) : (endChapStr ? undefined : verse)
+
+  let endChapter = chapter
+  let endVerse = verse
+  if (secondNumStr) {
+    if (crossChapterVerseStr) {
+      // "4:13-5:11" -- secondNumStr is the end chapter, crossChapterVerseStr the end verse
+      endChapter = parseInt(secondNumStr, 10)
+      endVerse = parseInt(crossChapterVerseStr, 10)
+    } else {
+      // "14:1-3" -- secondNumStr is just the end verse, same chapter
+      endVerse = parseInt(secondNumStr, 10)
+    }
+  }
+
   return { bookCode, chapter, verse, endChapter, endVerse }
 }
 

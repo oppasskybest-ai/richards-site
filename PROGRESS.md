@@ -10,6 +10,44 @@ missing.
 
 ---
 
+# STATUS AT A GLANCE (2026-07-21, later same day)
+
+Session 9: three fixes to the Bible-verse hover/click popover (built in
+Session 8), all reported by Randy from live use.
+
+1. **"Couldn't load this verse" -- real parsing bug, not a connection
+   issue.** `app/api/bible-verse/route.ts`'s reference parser couldn't
+   distinguish a same-chapter verse range ("14:1-3" = verses 1-3) from a
+   cross-chapter range ("4:13-5:11" = chapter 4 v13 through chapter 5
+   v11). It was reading "14:1-3" as "chapter 14 through chapter 3" -- an
+   impossible range -- so it silently matched zero verses and returned
+   404, which the UI shows as "Couldn't load this verse." This affected
+   any reference in the common `chapter:verse-verse` form (e.g. Jn
+   14:1-3), which is why Randy saw it on many references, not just one.
+   Fixed the parser to only treat the number after the dash as a chapter
+   if it's followed by a colon; otherwise it's an end verse in the same
+   chapter. Verified against single verse, same-chapter range, and
+   cross-chapter range cases. The KJV dataset itself was never the
+   problem -- it's fully local (`lib/data/bible-kjv.json`) and this was
+   working offline exactly as designed.
+2. **Long verses overflowing the popover.** `components/journalism/
+   BibleVerseInteractive.tsx` popover now has a fixed `max-height: 260px`
+   with internal scroll for long passages, instead of growing
+   unbounded. The reference label stays pinned to the top while
+   scrolling. Added a thin scrollbar styled to the site palette.
+3. **Low-contrast text on the dark popover.** The loading state, error
+   state, and "· KJV" label were set to 50% white opacity against the
+   near-black `--ink` background -- genuinely hard to read, as Randy
+   flagged. Bumped to ~70-80% opacity using the site's warm paper tone
+   (`--paper`) instead of flat white, and switched the verse text itself
+   from hardcoded `white` to `--paper` for consistency with the rest of
+   the palette.
+
+Both files re-validated with `npx esbuild --bundle=false` after the
+changes -- no syntax errors.
+
+---
+
 # STATUS AT A GLANCE (2026-07-20)
 
 Session 7: a large "make it actually work and look different everywhere"

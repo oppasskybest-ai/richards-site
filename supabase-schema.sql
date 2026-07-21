@@ -236,28 +236,63 @@ alter table reviews enable row level security;
 alter table book_reviews enable row level security;
 
 -- Public inserts (subscribe form, contact form)
+drop policy if exists "public_insert_subscribers" on subscribers;
 create policy "public_insert_subscribers" on subscribers for insert to anon with check (true);
+
+drop policy if exists "public_insert_contact" on contact_messages;
 create policy "public_insert_contact" on contact_messages for insert to anon with check (true);
 
 -- Public reads (published/approved content only)
+drop policy if exists "public_read_articles" on articles;
 create policy "public_read_articles" on articles for select to anon using (status = 'published');
+
+drop policy if exists "public_read_books" on books;
 create policy "public_read_books" on books for select to anon using (true);
+
+drop policy if exists "public_read_events" on events;
 create policy "public_read_events" on events for select to anon using (status != 'cancelled');
+
+drop policy if exists "public_read_podcasts" on podcasts;
 create policy "public_read_podcasts" on podcasts for select to anon using (true);
+
+drop policy if exists "public_read_comments" on comments;
 create policy "public_read_comments" on comments for select using (status = 'approved');
+
+drop policy if exists "public_read_reviews" on reviews;
 create policy "public_read_reviews" on reviews for select using (status = 'approved');
+
+drop policy if exists "public_read_book_reviews" on book_reviews;
 create policy "public_read_book_reviews" on book_reviews for select using (status = 'approved');
 
 -- Service role bypass (admin panel — all tables, all operations)
+drop policy if exists "service_all_subscribers" on subscribers;
 create policy "service_all_subscribers" on subscribers for all to service_role using (true) with check (true);
+
+drop policy if exists "service_all_contact" on contact_messages;
 create policy "service_all_contact" on contact_messages for all to service_role using (true) with check (true);
+
+drop policy if exists "service_all_articles" on articles;
 create policy "service_all_articles" on articles for all to service_role using (true) with check (true);
+
+drop policy if exists "service_all_books" on books;
 create policy "service_all_books" on books for all to service_role using (true) with check (true);
+
+drop policy if exists "service_all_events" on events;
 create policy "service_all_events" on events for all to service_role using (true) with check (true);
+
+drop policy if exists "service_all_podcasts" on podcasts;
 create policy "service_all_podcasts" on podcasts for all to service_role using (true) with check (true);
+
+drop policy if exists "service_all_settings" on settings;
 create policy "service_all_settings" on settings for all to service_role using (true) with check (true);
+
+drop policy if exists "service_all_comments" on comments;
 create policy "service_all_comments" on comments for all using (true);
+
+drop policy if exists "service_all_reviews" on reviews;
 create policy "service_all_reviews" on reviews for all using (true);
+
+drop policy if exists "service_all_book_reviews" on book_reviews;
 create policy "service_all_book_reviews" on book_reviews for all using (true);
 
 

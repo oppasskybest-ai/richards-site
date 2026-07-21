@@ -96,8 +96,10 @@ export default function BibleVerseInteractive({ children }: { children: React.Re
             top: popover.y,
             transform: 'translate(-50%, calc(-100% - 12px))',
             width: 'min(320px, 90vw)',
+            maxHeight: '260px',
+            overflowY: 'auto',
             background: 'var(--ink)',
-            color: 'white',
+            color: 'var(--paper)',
             borderRadius: '4px',
             padding: '1rem 1.15rem',
             boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
@@ -105,13 +107,13 @@ export default function BibleVerseInteractive({ children }: { children: React.Re
             fontFamily: '"Georgia", serif',
           }}
         >
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold-light)', fontFamily: '"Inter", sans-serif', marginBottom: '0.5rem' }}>
-            {popover.ref} <span style={{ opacity: 0.5 }}>· KJV</span>
+          <p style={{ position: 'sticky', top: '-1rem', margin: '-1rem -1.15rem 0.5rem', padding: '1rem 1.15rem 0.5rem', background: 'var(--ink)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold-light)', fontFamily: '"Inter", sans-serif' }}>
+            {popover.ref} <span style={{ color: 'rgba(var(--paper-rgb), 0.7)' }}>· KJV</span>
           </p>
-          {popover.loading && <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>Loading…</p>}
-          {popover.error && <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>Couldn&rsquo;t load this verse.</p>}
+          {popover.loading && <p style={{ fontSize: '0.85rem', color: 'rgba(var(--paper-rgb), 0.8)' }}>Loading…</p>}
+          {popover.error && <p style={{ fontSize: '0.85rem', color: 'rgba(var(--paper-rgb), 0.8)' }}>Couldn&rsquo;t load this verse.</p>}
           {popover.text && (
-            <p style={{ fontSize: '0.9rem', lineHeight: 1.6, fontStyle: 'italic' }}>{popover.text}</p>
+            <p style={{ fontSize: '0.9rem', lineHeight: 1.6, fontStyle: 'italic', color: 'var(--paper)' }}>{popover.text}</p>
           )}
           <div style={{
             position: 'absolute', bottom: '-6px', left: '50%', transform: 'translateX(-50%) rotate(45deg)',
@@ -129,6 +131,16 @@ export default function BibleVerseInteractive({ children }: { children: React.Re
         .bible-ref:hover, .bible-ref:focus {
           background: rgba(var(--gold-rgb), 0.12);
           outline: none;
+        }
+        div[style*="position: fixed"]::-webkit-scrollbar {
+          width: 6px;
+        }
+        div[style*="position: fixed"]::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        div[style*="position: fixed"]::-webkit-scrollbar-thumb {
+          background: rgba(var(--paper-rgb), 0.25);
+          border-radius: 3px;
         }
       `}</style>
     </div>
