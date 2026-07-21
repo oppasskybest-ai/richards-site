@@ -52,7 +52,10 @@ export function toCardItem(a: ArticleRow) {
 // pages, and the featured rail. Merging fixes that for good: adding one
 // new item can never again make the rest of the site's real content
 // disappear.
-function mergeBySlug<T extends { slug?: string; date?: string }>(dbItems: T[], seedItems: T[]): T[] {
+function mergeBySlug<A extends { slug?: string; date?: string }, B extends { slug?: string; date?: string }>(
+  dbItems: A[],
+  seedItems: B[]
+): (A | B)[] {
   const dbSlugs = new Set(dbItems.map((i) => i.slug))
   const missingFromDb = seedItems.filter((i) => !dbSlugs.has(i.slug))
   return [...dbItems, ...missingFromDb].sort((a, b) => (b.date || '').localeCompare(a.date || ''))

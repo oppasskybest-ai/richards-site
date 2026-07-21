@@ -10,7 +10,41 @@ missing.
 
 ---
 
-# STATUS AT A GLANCE (2026-07-21, night)
+# STATUS AT A GLANCE (2026-07-21, later that night)
+
+Session 14: the Session 13 merge fix broke the Vercel build. Type error
+in `lib/data/articles.ts`: `mergeBySlug` had a single generic `T` shared
+between both arguments, so TypeScript unified it to the stricter shape
+(from `toCardItem`'s output, where `slug`/`date` are required strings)
+and then rejected `SEED_ARTICLES` (`ArticleData[]`, where `slug` is
+optional) as an argument. This only surfaces with real dependencies
+installed -- my own check at the time used `esbuild` (syntax-only, no
+type inference) and a `tsc` run with `node_modules` stripped for
+zipping, which silently skips this class of error. Neither actually
+proves what Vercel proves.
+
+**Fix:** split `mergeBySlug` into two independent generic parameters
+(`<A, B>` instead of a single shared `<T>`), so each argument is checked
+against its own actual shape instead of being forced into one.
+
+**Also fixed properly this time:** installed real `node_modules` in the
+sandbox (`npm install`) and ran the literal `npm run build` command
+Vercel runs, not just `tsc --noEmit`, with placeholder env vars standing
+in for the Supabase/Resend secrets I don't have. That's the only way to
+actually catch what Vercel catches -- confirmed clean: all admin routes,
+book-reviews, events, podcasts, and every book/article page compile and
+prerender successfully. `node_modules`, `.next`, and the placeholder
+`.env.local` were removed before repackaging so none of that ships in
+the zip.
+
+Lesson for future sessions: `esbuild --bundle=false` only proves a file
+parses: it doesn't catch type errors across files, which is exactly what
+broke here. `tsc --noEmit -p .` needs real `node_modules` installed to
+mean anything -- run `npm install` first if it isn't already there. Where
+possible, `npm run build` is the real check, since it's the literal
+command Vercel runs.
+
+
 
 Session 13: Randy tested by adding a real book and a real native article
 through the admin panel, plus a garbage/test entry, and reported several
