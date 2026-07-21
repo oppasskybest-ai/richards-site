@@ -4,24 +4,25 @@
 // server-side on the HTML string, so it's careful to only match plain
 // reference-shaped text and never touch anything inside an existing tag
 // (href attributes, etc.) by processing text content between tags only.
+//
+// The recognized-book list is imported from bibleBooks.ts (BOOK_ALIASES)
+// rather than kept as a separate hardcoded list here. It used to be a
+// second, independent copy -- which is exactly how "Luk 2:20" went
+// unrecognized: the two lists disagreed on which abbreviations counted,
+// silently, with no error anywhere. Now there is exactly one list; adding
+// a new abbreviation there fixes both detection and lookup at once, and
+// any reference format Randy actually uses in a new article -- typed
+// through the admin panel, not just these hardcoded examples -- is
+// recognized consistently by both.
+
+import { BOOK_ALIASES } from './bibleBooks'
 
 const REF_PATTERN = /\b((?:[1-3]\s?)?[A-Za-z]{2,}\.?)\s+(\d{1,3}):(\d{1,3})(-(\d{1,3})?)?\b/g
 
-const KNOWN_BOOK_WORDS = new Set([
-  'gen','genesis','ex','exod','exodus','lev','leviticus','num','numbers','deut','deuteronomy',
-  'josh','joshua','judg','judges','ruth','sam','samuel','kgs','kings','chron','chronicles',
-  'ezra','neh','nehemiah','esth','esther','job','ps','psa','psalm','psalms','prov','proverbs',
-  'eccl','ecclesiastes','song','isa','isaiah','jer','jeremiah','lam','lamentations','ezek','ezekiel',
-  'dan','daniel','hos','hosea','joel','amos','obad','obadiah','jonah','jon','mic','micah','nah','nahum',
-  'hab','habakkuk','zeph','zephaniah','hag','haggai','zech','zechariah','mal','malachi',
-  'matt','mt','matthew','mark','mk','luke','lk','john','jn','jhn','acts','rom','romans',
-  'cor','corinthians','gal','galatians','eph','ephesians','phil','philippians','col','colossians',
-  'thess','thessalonians','th','tim','timothy','titus','tit','philem','philemon','heb','hebrews',
-  'jas','james','pet','peter','pt','jo','jude','rev','revelation',
-])
+const KNOWN_BOOK_WORDS = new Set(Object.keys(BOOK_ALIASES))
 
 function isKnownBook(word: string): boolean {
-  const clean = word.toLowerCase().replace(/[.\s]/g, '').replace(/^[1-3]/, '')
+  const clean = word.toLowerCase().replace(/[.\s]/g, '')
   return KNOWN_BOOK_WORDS.has(clean)
 }
 

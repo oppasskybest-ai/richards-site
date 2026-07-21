@@ -10,6 +10,35 @@ missing.
 
 ---
 
+# STATUS AT A GLANCE (2026-07-21, later still, again)
+
+Session 11: Randy asked directly whether every article had actually been
+checked for the same class of bug, not just the one example from the
+screenshot. Fair question -- it hadn't been. Did it properly this time:
+extracted every book-reference token that appears in the real seed
+content (`lib/config/articles.ts`, the actual article bodies) and ran
+each one through `normalizeBookName()` programmatically, rather than
+eyeballing it.
+
+Found 3 more real gaps, same failure mode as "Luk" -- all would have
+shown "Couldn't load this verse":
+- `1 Kg. 11:38` (1 Kings)
+- `Ja. 3:1` and `Ja. 4:1-2` (James)
+- `Jdg. 6:16` (Judges)
+
+All three added to `BOOK_ALIASES` in `lib/utils/bibleBooks.ts`.
+
+Also confirmed one non-match is correct, not a bug: `(m. Baba Bathra
+8:7)` on the prodigal son article is a citation of the Mishnah (a Talmud
+volume), not a Bible verse -- it should not, and does not, get wrapped
+as a bible-ref.
+
+Re-ran the scan after the fix: of 38 distinct book-tokens found across
+all real article content, 37 resolve correctly (everything real) and 1
+correctly does not match (Bathra, the non-Bible citation).
+
+---
+
 # STATUS AT A GLANCE (2026-07-21, later same day)
 
 Session 9: three fixes to the Bible-verse hover/click popover (built in
@@ -48,7 +77,39 @@ changes -- no syntax errors.
 
 ---
 
-# STATUS AT A GLANCE (2026-07-20)
+# STATUS AT A GLANCE (2026-07-21, later still)
+
+Session 10: Randy caught a real one from a live screenshot -- "Luk 2:20"
+in the DeWesternizing the Christmas Story article rendered as plain text,
+no dotted underline, no hover/click behavior at all.
+
+**Root cause:** two independent, hardcoded lists that had drifted apart.
+`lib/utils/wrapBibleRefs.ts` (decides which text *looks like* a
+reference, server-side, when an article renders) kept its own
+`KNOWN_BOOK_WORDS` set. `lib/utils/bibleBooks.ts` (`BOOK_ALIASES`, used
+by the verse-lookup API) kept a separate list. Neither had `"luk"` --
+only `"luke"` and `"lk"` -- so it silently failed the very first check,
+before ever reaching the parser fixed in Session 9. This was a second,
+different bug from the one Session 9 fixed, just with the same visible
+symptom (a reference not working).
+
+**Fix, not a patch:** rather than just adding "luk" to the one list that
+was missing it (which would leave the same two-lists-can-drift-apart
+structure in place for the next abbreviation), `wrapBibleRefs.ts` now
+imports `BOOK_ALIASES` from `bibleBooks.ts` directly and derives its
+known-book set from it, instead of keeping its own copy. There is now
+exactly one list of recognized book abbreviations in the whole codebase.
+Any abbreviation added there is automatically recognized by both
+detection and lookup -- so this class of bug (reference silently not
+picked up in a *new* article added later through the admin panel,
+because of a two-lists mismatch) cannot recur. Also filled out
+`BOOK_ALIASES` with several other common short forms that were missing
+alongside "luk" (mrk, joh, php, 2ti/1ti, phlm, jam, apoc, ecc, pss, pr).
+
+Verified against the exact case from Randy's screenshot: `wrapBibleRefs()`
+run on the real sentence now wraps `(Luk 2:20)` correctly, and
+`normalizeBookName("Luk")` resolves to the same code as `"Luke"`/`"Lk"`.
+Both files re-validated with `npx esbuild` after the change.
 
 Session 7: a large "make it actually work and look different everywhere"
 pass, in response to Randy sending 10 screenshots of real, live pages and
