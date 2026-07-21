@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import ClientImage from '@/components/ui/ClientImage'
-import HomeExpandStack from '@/components/home/HomeExpandStack'
 import SubscribeForm from '@/components/subscribe/SubscribeForm'
-import HeroTypewriter from '@/components/home/HeroTypewriter'
+import HeroIntro from '@/components/home/HeroIntro'
 import ScrollReveal from '@/components/home/ScrollReveal'
 import HomepageReviews from '@/components/home/HomepageReviews'
 import { BOOKS } from '@/lib/config/books'
@@ -139,7 +138,7 @@ export default async function HomePage() {
           className="container-wide"
           style={{ padding: '7rem clamp(1.25rem,5vw,4rem)', zIndex: 2 }}
         >
-          <HeroTypewriter />
+          <HeroIntro />
         </div>
 
         {/* SCROLL INDICATOR */}
@@ -356,22 +355,50 @@ export default async function HomePage() {
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '2.5rem',
+                gap: 'clamp(1.5rem,3vw,2.5rem)',
               }}
             >
-              <HomeExpandStack
-                cards={featuredArticles.slice(0, 3)}
-                label="Featured"
-                accent="var(--gold)"
-                bgColor="rgba(8,18,32,0.97)"
-              />
-              <HomeExpandStack
-                cards={featuredArticles.slice(0, 4)}
-                label="From the Archive"
-                accent="var(--gold)"
-                bgColor="rgba(14,8,30,0.97)"
-              />
+              {featuredArticles.slice(0, 6).map((article) => {
+                const href = article.content_type === 'native' && article.slug
+                  ? `/articles/${article.category}/${article.slug}`
+                  : (article.url || '#')
+                return (
+                  <Link
+                    key={article.id}
+                    href={href}
+                    style={{
+                      display: 'block',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      borderRadius: '3px',
+                      overflow: 'hidden',
+                      textDecoration: 'none',
+                      transition: 'border-color 0.2s ease, background 0.2s ease',
+                    }}
+                    className="recent-work-card"
+                  >
+                    <div style={{ position: 'relative', aspectRatio: '16/10', background: 'rgba(0,0,0,0.3)' }}>
+                      {article.image ? (
+                        <ClientImage src={article.image} alt={article.title} fill sizes="(max-width: 700px) 100vw, 30vw" style={{ objectFit: 'cover' }} />
+                      ) : (
+                        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, hsl(${(article.title.charCodeAt(0) * 7) % 360}, 35%, 22%), hsl(${(article.title.charCodeAt(0) * 7 + 60) % 360}, 40%, 16%))` }} />
+                      )}
+                    </div>
+                    <div style={{ padding: '1.35rem 1.5rem' }}>
+                      <p style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', fontFamily: '"Inter", sans-serif', marginBottom: '0.65rem' }}>
+                        {article.date ? new Date(article.date).getFullYear() : ''}
+                      </p>
+                      <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 400, fontSize: '1.05rem', lineHeight: 1.32, color: 'white' }}>
+                        {article.title}
+                      </h3>
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
+            <style>{`
+              .recent-work-card:hover { border-color: rgba(var(--gold-rgb),0.45) !important; background: rgba(255,255,255,0.07) !important; }
+            `}</style>
           </ScrollReveal>
         </div>
       </section>

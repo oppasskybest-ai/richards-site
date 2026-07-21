@@ -134,7 +134,7 @@ export default async function BookPage({ params }: Props) {
               </span>
             )}
             {book.role === 'translation' && (
-              <span style={{ display: 'inline-block', fontSize: '0.6rem', color: 'white', background: '#0f5c73', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '0.3rem 0.7rem', marginBottom: '0.9rem', borderRadius: '2px' }}>
+              <span style={{ display: 'inline-block', fontSize: '0.6rem', color: 'white', background: 'var(--gold)', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '0.3rem 0.7rem', marginBottom: '0.9rem', borderRadius: '2px' }}>
                 Translated edition
               </span>
             )}

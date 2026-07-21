@@ -9,7 +9,10 @@ import { CATEGORY_SLUGS, CATEGORY_LABELS, JournalismCategory } from '@/types/jou
 
 export const revalidate = 60
 
-interface Props { params: Promise<{ category: string }> }
+interface Props {
+  params: Promise<{ category: string }>
+  searchParams: Promise<{ page?: string }>
+}
 
 // Category intro paragraphs — exact text from the original randolphrichards.com
 const CATEGORY_INTRO: Record<string, string> = {
@@ -39,15 +42,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params, searchParams }: Props) {
   const { category } = await params
+  const { page: pageParam } = await searchParams
   const slug = category as JournalismCategory
   if (!CATEGORY_SLUGS.includes(slug)) notFound()
 
-  const [articles, allBooks] = await Promise.all([
+  const PER_PAGE = 10
+  const currentPage = Math.max(1, parseInt(pageParam || '1', 10) || 1)
+
+  const [allArticlesInCategory, allBooks] = await Promise.all([
     getArticlesByCategory(slug),
     getAllBooks(),
   ])
+
+  const totalPages = Math.max(1, Math.ceil(allArticlesInCategory.length / PER_PAGE))
+  const safePage = Math.min(currentPage, totalPages)
+  const articles = allArticlesInCategory.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE)
   const label = CATEGORY_LABELS[slug]
   const heroBg = CATEGORY_BG[slug] || '/assets/images/portraits/speaking-photo.jpg'
 
@@ -94,7 +105,7 @@ export default async function CategoryPage({ params }: Props) {
             fontFamily: '"Inter", sans-serif', fontWeight: 300,
             letterSpacing: '0.06em',
           }}>
-            {articles.length} piece{articles.length !== 1 ? 's' : ''}
+            {allArticlesInCategory.length} piece{allArticlesInCategory.length !== 1 ? 's' : ''}
           </p>
         </div>
       </section>
@@ -243,12 +254,66 @@ export default async function CategoryPage({ params }: Props) {
             }
           `}</style>
 
-          {articles.length === 0 && (
+          {allArticlesInCategory.length === 0 && (
             <div style={{ textAlign: 'center', padding: '5rem 0' }}>
               <p style={{ color: '#6b6b6b', fontSize: '0.9rem' }}>
                 No articles in this category yet.
               </p>
             </div>
+          )}
+
+          {/* PAGINATION — 10 per page, real prev/next + page numbers,
+              instead of the whole category growing on one endless page */}
+          {totalPages > 1 && (
+            <nav style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '3.5rem', flexWrap: 'wrap' }}>
+              <Link
+                href={safePage > 1 ? `/articles/${slug}?page=${safePage - 1}` : `/articles/${slug}?page=${safePage}`}
+                aria-disabled={safePage === 1}
+                style={{
+                  padding: '0.6rem 1.1rem', fontSize: '0.72rem', letterSpacing: '0.08em', textTransform: 'uppercase',
+                  fontFamily: '"Inter", sans-serif', textDecoration: 'none',
+                  color: safePage === 1 ? '#ccc' : 'var(--ink)',
+                  border: '1px solid rgba(0,0,0,0.12)', borderRadius: '2px',
+                  pointerEvents: safePage === 1 ? 'none' : 'auto',
+                }}
+              >
+                ← Prev
+              </Link>
+
+              {Array.from({ length: totalPages }).map((_, i) => {
+                const n = i + 1
+                return (
+                  <Link
+                    key={n}
+                    href={`/articles/${slug}?page=${n}`}
+                    style={{
+                      width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '0.8rem', fontFamily: '"Inter", sans-serif', textDecoration: 'none',
+                      color: n === safePage ? 'white' : 'var(--ink)',
+                      background: n === safePage ? 'var(--gold)' : 'transparent',
+                      border: n === safePage ? 'none' : '1px solid rgba(0,0,0,0.12)',
+                      borderRadius: '2px',
+                    }}
+                  >
+                    {n}
+                  </Link>
+                )
+              })}
+
+              <Link
+                href={safePage < totalPages ? `/articles/${slug}?page=${safePage + 1}` : `/articles/${slug}?page=${safePage}`}
+                aria-disabled={safePage === totalPages}
+                style={{
+                  padding: '0.6rem 1.1rem', fontSize: '0.72rem', letterSpacing: '0.08em', textTransform: 'uppercase',
+                  fontFamily: '"Inter", sans-serif', textDecoration: 'none',
+                  color: safePage === totalPages ? '#ccc' : 'var(--ink)',
+                  border: '1px solid rgba(0,0,0,0.12)', borderRadius: '2px',
+                  pointerEvents: safePage === totalPages ? 'none' : 'auto',
+                }}
+              >
+                Next →
+              </Link>
+            </nav>
           )}
         </div>
       </section>

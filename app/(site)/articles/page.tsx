@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ClientImage from '@/components/ui/ClientImage'
-import CategoryExpand from '@/components/journalism/CategoryExpand'
+import CategoryOverview from '@/components/journalism/CategoryOverview'
 import { getAllArticles } from '@/lib/data/articles'
 import { formatYear } from '@/lib/utils/slugify'
 
@@ -64,10 +64,10 @@ export default async function JournalismPage() {
               fontFamily: '"Inter", sans-serif', fontWeight: 300,
               letterSpacing: '0.04em',
             }}>
-              Hover a category to explore all pieces inside it.
+              Two categories, {articles.length} pieces between them.
             </p>
           </div>
-          <CategoryExpand articles={articles as any} />
+          <CategoryOverview articles={articles as any} />
         </div>
       </section>
 

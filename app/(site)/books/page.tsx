@@ -248,7 +248,7 @@ export default async function BooksPage() {
                     <ClientImage src={book.coverImage} alt={book.title} width={80} height={120} style={{ objectFit: 'cover', width: '100%', height: 'auto', display: 'block' }} />
                   </div>
                   <div>
-                    <span style={{ display: 'inline-block', fontSize: '0.58rem', color: 'white', background: book.role === 'foreword' ? '#a8402f' : '#0f5c73', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0.2rem 0.5rem', marginBottom: '0.5rem', borderRadius: '2px' }}>
+                    <span style={{ display: 'inline-block', fontSize: '0.58rem', color: 'white', background: book.role === 'foreword' ? '#a8402f' : 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0.2rem 0.5rem', marginBottom: '0.5rem', borderRadius: '2px' }}>
                       {book.role === 'foreword' ? 'Foreword only' : 'Translated edition'}
                     </span>
                     <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 400, fontSize: '1.05rem', color: 'var(--ink)', marginBottom: '0.3rem', lineHeight: 1.25 }}>{book.title}</h3>

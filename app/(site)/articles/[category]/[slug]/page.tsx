@@ -6,6 +6,8 @@ import { CATEGORY_LABELS, JournalismCategory } from '@/types/journalism'
 import type { Article } from '@/types/database'
 import { SEED_ARTICLES } from '@/lib/config/articles'
 import ArticleComments from '@/components/journalism/ArticleComments'
+import BibleVerseInteractive from '@/components/journalism/BibleVerseInteractive'
+import { wrapBibleRefs } from '@/lib/utils/wrapBibleRefs'
 
 export const revalidate = 60
 
@@ -161,12 +163,17 @@ export default async function NativeArticlePage({ params }: Props) {
       <section style={{ background: '#f8f6f1', padding: 'clamp(4rem,8vw,6rem) 0' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 clamp(1.25rem,5vw,4rem)' }}>
 
-          {/* RICH CONTENT */}
+          {/* RICH CONTENT — Bible references (e.g. "Jn. 14:27") are detected
+              server-side and made hoverable/clickable to show the verse
+              inline, sourced from a local public-domain KJV dataset so
+              readers don't have to leave the page. */}
           {article.content_html ? (
-            <div
-              className="article-prose"
-              dangerouslySetInnerHTML={{ __html: article.content_html }}
-            />
+            <BibleVerseInteractive>
+              <div
+                className="article-prose"
+                dangerouslySetInnerHTML={{ __html: wrapBibleRefs(article.content_html) }}
+              />
+            </BibleVerseInteractive>
           ) : (
             <p style={{ color: '#6b6b6b', fontStyle: 'italic' }}>Content coming soon.</p>
           )}
@@ -252,56 +259,6 @@ export default async function NativeArticlePage({ params }: Props) {
           )}
         </div>
       </section>
-
-      {/* PROSE STYLES for rendered rich content */}
-      <style>{`
-        .article-prose {
-          font-family: "Playfair Display", Georgia, serif;
-          font-size: 1.05rem;
-          line-height: 1.88;
-          color: #1c1c1c;
-        }
-        .article-prose h2 {
-          font-size: 1.6rem; font-weight: 400;
-          margin: 2rem 0 0.85rem; color: var(--ink);
-          letter-spacing: -0.01em;
-        }
-        .article-prose h3 {
-          font-size: 1.2rem; font-weight: 400;
-          margin: 1.75rem 0 0.75rem; color: var(--ink);
-        }
-        .article-prose p { margin-bottom: 1.25rem; }
-        .article-prose strong { color: var(--ink); font-weight: 600; }
-        .article-prose em { color: #3a3a3a; }
-        .article-prose ul, .article-prose ol {
-          padding-left: 1.5rem; margin-bottom: 1.25rem;
-        }
-        .article-prose li { margin-bottom: 0.4rem; }
-        .article-prose blockquote {
-          border-left: 3px solid var(--gold);
-          margin: 1.75rem 0; padding: 0.5rem 0 0.5rem 1.5rem;
-          color: #3a3a3a; font-style: italic; font-size: 1.08rem;
-        }
-        .article-prose code {
-          background: rgba(0,0,0,0.06); padding: 0.1rem 0.35rem;
-          border-radius: 2px; font-family: monospace; font-size: 0.88em;
-        }
-        .article-prose pre {
-          background: #1a1a1a; color: rgba(255,255,255,0.85);
-          border-radius: 3px; padding: 1.25rem; margin-bottom: 1.25rem;
-          overflow-x: auto;
-        }
-        .article-prose pre code { background: none; padding: 0; color: inherit; }
-        .article-prose hr {
-          border: none; border-top: 1px solid rgba(0,0,0,0.1);
-          margin: 2rem 0;
-        }
-        .article-prose img {
-          max-width: 100%; height: auto; border-radius: 3px;
-          margin: 1.5rem 0;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-      `}</style>
     </>
   )
 }

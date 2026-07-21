@@ -884,3 +884,108 @@ anchor links -- collapses to a horizontal pill nav on mobile instead of a
 sidebar. No content was changed, only how it's organized and navigated.
 
 This closes out every item from Randy's 10-screenshot list.
+
+---
+
+# SESSION 8 (2026-07-21)
+
+Randy sent 4 more screenshots and pushed on a specific distinction: "redesign"
+means replacing the underlying mechanism, not recoloring the existing one --
+several sections (homepage hero, homepage "Recent Work", the Articles category
+tiles) were the same interactive pattern he'd already used on another client's
+site, just with different content in it.
+
+## 1. Real content-loss bug found and fixed
+"We had hoped that..." was missing its entire opening blockquote (Bernie
+Cueto's Easter message). Root cause: an earlier session's HTML-cleaning
+script had a blanket rule stripping all `<figure>` tags (intended to
+remove image captions), but this one post used `<figure class=
+"wp-block-table">` as a styled quote-box, so the whole quote got deleted
+with it. Checked all 32 posts for the same pattern -- isolated to this
+one. Went back to the raw scraped HTML and correctly re-extracted it.
+
+## 2. Favicon -- found the real bug
+`app/layout.tsx` metadata referenced `/assets/images/misc/favicon.ico`,
+which never actually existed (only the apple-touch-icon had been made).
+Generated a real multi-resolution `.ico`, and also added `app/icon.png`
+at Next.js App Router's natively auto-detected icon location as a second,
+more reliable path.
+
+## 3. The color -- "--gold" was actually dark teal
+`--gold: #0f5c73` was teal/cyan, not gold, despite the name -- exactly why
+"BIBLICAL THOUGHTS" and other gold-labeled text kept vanishing against
+dark backgrounds. Changed to a real warm gold (`#b8923a` / `#d4af5a`
+light variant) at the single CSS variable definition, which cascades
+through the entire site's borders, links, labels, and buttons
+automatically. Also found and fixed 2 places where the old teal was
+hardcoded directly instead of using the variable (would not have picked
+up the fix otherwise).
+
+## 4. Three mechanisms replaced, not just recolored
+- **Homepage hero**: removed `HeroTypewriter` (a cycling-word animation
+  that also hardcoded its own random color array, completely bypassing
+  the site's color system -- this is why "Author." rendered salmon-pink
+  regardless of any CSS change). Replaced with `HeroIntro`, a static,
+  confident editorial headline. No animation gimmick.
+- **Homepage "Recent Work"**: removed `HomeExpandStack` (cards that only
+  revealed content on hover, expanding to fill the section). Replaced
+  with directly-visible article preview cards -- nothing is hidden
+  behind an interaction.
+- **Articles category tiles**: removed `CategoryExpand` (same
+  hover-to-reveal mechanism, same hardcoded color bypass). Replaced with
+  `CategoryOverview` -- always-visible category cards showing real piece
+  counts and the 3 most recent titles in each.
+- All three old components were deleted from the codebase entirely, not
+  just unused -- confirmed via grep that nothing else referenced them
+  before removing.
+
+## 5. Pagination added to category pages
+Was previously unbounded -- every article in a category rendered on one
+ever-growing page. `/articles/[category]` now takes a `?page=` param,
+shows 10 per page, with real Prev/Next and numbered page links. The
+"N pieces" count in the hero still shows the true total, not just the
+current page's count.
+
+## 6. Bible verse hover/click feature -- built end-to-end
+Sourced a full public-domain KJV Bible (66 books, all chapters/verses,
+~4.3MB JSON from a GitHub-hosted public-domain dataset) and stored it at
+`lib/data/bible-kjv.json` -- lives in the project, works fully offline,
+no external API calls or rate limits at runtime.
+- `lib/utils/bibleBooks.ts` -- maps the real abbreviation styles used in
+  Randy's actual article text ("Jn.", "1 Thess.", "Rom.", "Lk", "Phil.")
+  to the dataset's own book codes.
+- `app/api/bible-verse/route.ts` -- parses a reference (single verse or a
+  range, e.g. "Phil 3:20-21"), looks it up, strips KJV's bracketed
+  translator notes, returns clean text. Cached for a day per reference.
+- `lib/utils/wrapBibleRefs.ts` -- server-side, scans an article's HTML
+  for reference-shaped text and wraps matches in an interactive span --
+  carefully operates only on text between tags, so it can never corrupt
+  existing markup or match inside an href.
+- `components/journalism/BibleVerseInteractive.tsx` -- client component,
+  one set of event-delegated hover/click/focus listeners for the whole
+  article (not one listener per reference). Shows the verse in a small
+  popover near the reference; keyboard-focusable too, not just
+  mouse-hover.
+- Wired into the article detail page, wrapping the existing
+  `.article-prose` render.
+
+## 7. Cleanup found while in this code
+The article detail page had its own local, page-scoped `.article-prose`
+`<style>` block that predated Session 7's global typography work in
+`globals.css` -- meaning articles actually did have real styling before
+Session 7 (correction to that session's note, which said "zero CSS
+anywhere" -- that was true for the CV page but not for article detail
+pages specifically, which had their own local copy). Removed the
+duplicate, consolidated everything into the one definition in
+`globals.css` so there's a single source of truth going forward, and
+carried over the `code`/`pre` block styling that was only in the local
+copy.
+
+## Validation method upgraded this session
+Past sessions self-checked with a naive brace/paren counter, which
+throws false positives on regex literals containing `{`/`}` as syntax
+(hit this exact false alarm on the new Bible API route). Confirmed
+`esbuild` is available in this environment and is a real parser --
+switched to `npx esbuild <file> --bundle=false` for actual syntax
+validation. Ran it across all 109 TS/TSX files in the project this
+session; all pass.

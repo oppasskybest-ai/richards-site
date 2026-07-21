@@ -35,8 +35,8 @@
 @theme {
   --color-ink: #1c1a17;
   --color-paper: #f6f1e6;
-  --color-gold: #0f5c73;
-  --color-gold-light: #17798f;
+  --color-gold: #b8923a;
+  --color-gold-light: #d4af5a;
   --font-family-serif: "Playfair Display", Georgia, serif;
   --font-family-sans: "Inter", system-ui, sans-serif;
 }
@@ -57,10 +57,10 @@
   --lead-light: #6b6258;
 
   /* Gold (= teal) — primary accent: links, buttons, headings */
-  --gold: #0f5c73;
-  --gold-rgb: 15,92,115;
-  --gold-light: #17798f;
-  --gold-light-rgb: 23,121,143;
+  --gold: #b8923a;
+  --gold-rgb: 184,146,58;
+  --gold-light: #d4af5a;
+  --gold-light-rgb: 212,175,90;
 
   /* Brick — secondary accent: tags, hover states only */
   --brick: #a8402f;
@@ -199,6 +199,22 @@ a { text-decoration: none; color: inherit; transition: color 0.2s ease; }
   text-align: center;
   margin-top: 0.5em;
 }
+.article-prose code {
+  background: rgba(0,0,0,0.06);
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  font-family: monospace;
+  font-size: 0.88em;
+}
+.article-prose pre {
+  background: #1a1a1a;
+  color: rgba(255,255,255,0.85);
+  border-radius: 3px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+}
+.article-prose pre code { background: none; padding: 0; color: inherit; }
 /* Some scraped posts wrap the whole thing in one outer <p> with no real
    paragraph breaks (WordPress quirk) -- keep line-height generous enough
    that dense unbroken text is still readable. */
