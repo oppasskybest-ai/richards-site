@@ -22,16 +22,27 @@ function toBookData(b: Book): BookData {
   }
 }
 
-// Fetch all books from Supabase, ordered by order_index.
-// Falls back to static config if DB returns nothing or errors.
+// Merges live Supabase rows with the static book list by slug. A Supabase
+// row wins over a static entry with the same slug; static entries not yet
+// migrated to Supabase are kept rather than dropped. See the matching note
+// in lib/data/articles.ts -- this replaces an all-or-nothing fallback that
+// made every real book vanish from "Other Books" sidebars the instant a
+// single new book was added through the admin panel.
+function mergeBooksBySlug(dbBooks: BookData[], staticBooks: BookData[]): BookData[] {
+  const dbSlugs = new Set(dbBooks.map((b) => b.slug))
+  const missingFromDb = staticBooks.filter((b) => !dbSlugs.has(b.slug))
+  return [...dbBooks, ...missingFromDb]
+}
+
+// Fetch all books from Supabase, merged with any not-yet-migrated static books.
 export async function getAllBooks(): Promise<BookData[]> {
   try {
     const { data, error } = await supabaseAdmin
       .from('books')
       .select('*')
       .order('order_index', { ascending: true })
-    if (error || !data || data.length === 0) return STATIC_BOOKS
-    return data.map(toBookData)
+    if (error || !data) return STATIC_BOOKS
+    return mergeBooksBySlug(data.map(toBookData), STATIC_BOOKS)
   } catch {
     return STATIC_BOOKS
   }

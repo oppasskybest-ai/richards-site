@@ -10,7 +10,74 @@ missing.
 
 ---
 
-# STATUS AT A GLANCE (2026-07-21, evening)
+# STATUS AT A GLANCE (2026-07-21, night)
+
+Session 13: Randy tested by adding a real book and a real native article
+through the admin panel, plus a garbage/test entry, and reported several
+things breaking at once: the new article had no comment section, the new
+book's "Other Books" sidebar was empty (and other books' sidebars lost
+entries too), podcasts/conferences seemed to have content that didn't
+match what the admin showed, and the podcasts admin page got stuck on
+"Loading…".
+
+**Root cause, found once and present in four places:** `lib/data/
+books.ts`, `lib/data/podcasts.ts`, `lib/data/articles.ts`, and `app/
+(site)/events/page.tsx` all used the same all-or-nothing fallback:
+"if Supabase has *any* rows, use ONLY those; otherwise use ONLY the
+static/seed list." That means the instant a single new item was added
+through the admin panel, the entire static list of real, already-
+published content vanished from every list on the site -- "Other Books"
+sidebars, the all-articles/category/featured lists, and the podcasts and
+conferences pages. Individual pages for the static items still worked
+(they have their own per-slug fallback), which is exactly why the
+symptom looked like "some things work, some don't" rather than a clean
+failure.
+
+**Fix:** replaced the all-or-nothing fallback with a merge in all four
+places -- a Supabase row always wins over a static entry with the same
+key (slug for articles/books, title+source for podcasts, title+date for
+events), but static entries not yet migrated or added through the admin
+are kept instead of dropped. Adding one new item can now never again
+make the rest of the site's real content disappear. Also corrected two
+stale comments/copy that described the old (now-fixed) behavior: the
+admin Podcasts tab's already-accurate copy was left as-is, and the admin
+Conferences tab's copy ("shows a stay tuned message until you add one")
+was corrected since the public page now shows the real keynote history
+regardless.
+
+**Second real bug, in `comments_enabled`:** a working checkbox exists in
+`components/admin/ArticleForm.tsx` to toggle comments per-article, but
+it's only shown for native-content articles, and both the schema and the
+form's default silently start it at `false`. Every seeded article
+defaults to `true` (`lib/config/articles.ts`'s `comments_enabled ?? true`),
+so a newly created native article behaved differently from every
+existing one with no clear signal why. Changed the new-article default
+in `app/admin/articles/page.tsx` to `true`, matching seeded behavior;
+the checkbox is still there to turn comments off for any specific post.
+
+**Layout overflow:** the very long, space-less test title Randy used
+("dkmcsmcssss...") overflowed the hero section on both the article and
+book detail pages. Added `overflowWrap: 'break-word'` to both page
+titles and the article excerpt as a general robustness fix -- protects
+against any unusually long real title too, not just the test string.
+
+**Podcasts admin "stuck Loading":** read through the whole fetch/render
+path and couldn't find a code-level reason it would hang -- `loading` is
+set to `false` in every branch, success or failure. Added a 15s
+AbortController timeout as a defensive backstop so this can never hang
+indefinitely regardless of cause (most likely a transient network/
+Supabase stall during testing), and a clearer error message if it does
+time out. If this recurs, worth checking Vercel function logs for the
+actual `/api/admin/podcasts` request at the time.
+
+Randy also mentioned the old WordPress site had real reader comments
+already posted on some articles, which should carry over, and offered to
+share the old site's export again so they can be re-extracted and added
+-- noted here, waiting on that file.
+
+All changes re-validated with `npx esbuild --bundle=false`.
+
+
 
 Session 12: Randy sent a screenshot of the admin dashboard and asked for
 a full audit -- which admin tab talks to which Supabase table, which

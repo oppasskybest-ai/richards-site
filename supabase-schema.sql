@@ -123,8 +123,8 @@ create index if not exists events_status_idx on events(status);
 
 -- Podcasts / media appearances -- one of the 4 required content types in
 -- richards-master-prompt.md. Table exists and lib/data/podcasts.ts reads
--- from it (falling back to lib/config/podcasts.ts if empty), but there is
--- no /admin/podcasts CRUD tab yet -- see PROGRESS.md.
+-- from it, merging with lib/config/podcasts.ts for anything not yet added
+-- through the /admin/podcasts CRUD tab.
 create table if not exists podcasts (
   id uuid primary key default gen_random_uuid(),
   title text not null,

@@ -125,6 +125,7 @@ export default async function NativeArticlePage({ params }: Props) {
               fontWeight: 400, color: 'white',
               lineHeight: 1.12, letterSpacing: '-0.01em',
               marginBottom: '1rem',
+              overflowWrap: 'break-word', wordBreak: 'break-word',
             }}
           >
             {article.title}
@@ -137,6 +138,7 @@ export default async function NativeArticlePage({ params }: Props) {
               lineHeight: 1.65,
               marginBottom: '1.25rem',
               fontStyle: 'italic',
+              overflowWrap: 'break-word', wordBreak: 'break-word',
             }}>
               {article.excerpt}
             </p>

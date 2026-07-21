@@ -107,7 +107,10 @@ export default function AdminEvents() {
           <p style={{ padding: '2rem', color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem' }}>Loading…</p>
         ) : events.length === 0 ? (
           <p style={{ padding: '2rem', color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem' }}>
-            No events yet. The public events page shows a &quot;stay tuned&quot; message until you add one.
+            No events in the database yet. The public page falls back to the
+            real keynote history in <code>lib/config/events.ts</code> — add
+            one here once you want to manage upcoming conferences from this
+            table instead.
           </p>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>

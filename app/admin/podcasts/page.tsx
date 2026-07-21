@@ -38,11 +38,19 @@ export default function AdminPodcasts() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await authFetch('/api/admin/podcasts')
+      // Defensive timeout: the loading state should never hang forever
+      // regardless of cause (a network stall, a slow query, etc) --
+      // if nothing comes back within 15s, fail visibly instead of spinning.
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 15000)
+      const res = await authFetch('/api/admin/podcasts', { signal: controller.signal })
+      clearTimeout(timeout)
       if (!res.ok) { setLoading(false); return }
       const d = await res.json()
       setPodcasts(Array.isArray(d) ? d : d.data || [])
-    } catch { showToast('Could not load podcasts.') }
+    } catch {
+      showToast('Could not load podcasts. Check your connection and try again.')
+    }
     setLoading(false)
   }, [authFetch])
 

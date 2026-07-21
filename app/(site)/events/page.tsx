@@ -24,6 +24,18 @@ function formatEventDate(dateStr: string, timeStr: string | null) {
   return timeStr ? `${formatted} · ${timeStr}` : formatted
 }
 
+// Merges live Supabase rows with the static conference history by
+// title+date. A Supabase row wins if it matches; static entries not yet
+// added through /admin/events are kept rather than dropped. This replaces
+// an all-or-nothing fallback that made the entire real keynote history
+// disappear the instant a single conference was added through the admin
+// panel -- see the matching note in lib/data/articles.ts.
+function mergeEvents(dbEvents: Event[], staticEvents: Event[]): Event[] {
+  const dbKeys = new Set(dbEvents.map((e) => `${e.title}::${e.event_date}`))
+  const missingFromDb = staticEvents.filter((e) => !dbKeys.has(`${e.title}::${e.event_date}`))
+  return [...dbEvents, ...missingFromDb]
+}
+
 async function getEvents(): Promise<{ upcoming: Event[]; past: Event[] }> {
   try {
     const { data, error } = await supabaseAdmin
@@ -32,9 +44,9 @@ async function getEvents(): Promise<{ upcoming: Event[]; past: Event[] }> {
       .neq('status', 'cancelled')
       .order('event_date', { ascending: true })
 
-    // Real conference history exists (see lib/config/events.ts) -- don't
-    // show "no events" just because Supabase hasn't been seeded yet.
-    const rows = (!error && data && data.length > 0) ? data : STATIC_EVENTS
+    // Real conference history exists (see lib/config/events.ts) -- merge it
+    // in rather than showing only whatever's in Supabase.
+    const rows = (!error && data) ? mergeEvents(data, STATIC_EVENTS) : STATIC_EVENTS
 
     const today = new Date().toISOString().slice(0, 10)
     const upcoming = rows.filter((e: Event) => e.event_date >= today)

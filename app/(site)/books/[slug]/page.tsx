@@ -144,6 +144,7 @@ export default async function BookPage({ params }: Props) {
               fontWeight: 400, color: 'white',
               lineHeight: 1.05, marginBottom: '0.75rem',
               letterSpacing: '-0.01em',
+              overflowWrap: 'break-word', wordBreak: 'break-word',
             }}>
               {book.title}
             </h1>

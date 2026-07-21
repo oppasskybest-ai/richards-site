@@ -9,7 +9,11 @@ import { CATEGORY_LABELS, CATEGORY_SLUGS } from '@/types/journalism'
 const EMPTY: Partial<Article> = {
   title: '', slug: '', publication: '', category: 'bible-culture',
   url: '', date: '', excerpt: '', image: '', featured: false, status: 'published',
-  content_type: 'external', content_html: null, pdf_url: null, comments_enabled: false,
+  // Defaults to true so a new native article behaves like every seeded one
+  // (see lib/config/articles.ts's `comments_enabled ?? true`) instead of
+  // silently shipping with comments off -- still overridable via the
+  // checkbox in ArticleForm for any post Randy wants to disable them on.
+  content_type: 'external', content_html: null, pdf_url: null, comments_enabled: true,
 }
 
 const filterInputStyle: React.CSSProperties = {

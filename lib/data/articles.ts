@@ -37,7 +37,28 @@ export function toCardItem(a: ArticleRow) {
   }
 }
 
-// Fetch ALL published articles from Supabase, fall back to seed data
+// Merges live Supabase rows with the static seed list by slug. A Supabase
+// row always wins over a seed entry with the same slug (it's either the
+// migrated version or a genuine edit). Seed entries whose slug ISN'T in
+// Supabase yet are kept, not dropped.
+//
+// This replaces an all-or-nothing fallback that used to say "if Supabase
+// has *any* rows, use ONLY those, otherwise use ONLY the seed list." That
+// meant the instant a single new article was added through the admin
+// panel (before running Seed), every other real, already-published
+// article vanished from every list on the site -- they were still
+// individually reachable by direct URL (the single-article page has its
+// own per-slug fallback), just missing from "all articles," category
+// pages, and the featured rail. Merging fixes that for good: adding one
+// new item can never again make the rest of the site's real content
+// disappear.
+function mergeBySlug<T extends { slug?: string; date?: string }>(dbItems: T[], seedItems: T[]): T[] {
+  const dbSlugs = new Set(dbItems.map((i) => i.slug))
+  const missingFromDb = seedItems.filter((i) => !dbSlugs.has(i.slug))
+  return [...dbItems, ...missingFromDb].sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+}
+
+// Fetch ALL published articles from Supabase, merged with any not-yet-migrated seed articles
 export async function getAllArticles() {
   try {
     const { data, error } = await supabaseAdmin
@@ -45,14 +66,14 @@ export async function getAllArticles() {
       .select('*')
       .eq('status', 'published')
       .order('created_at', { ascending: false })
-    if (error || !data || data.length === 0) return SEED_ARTICLES
-    return data.map(toCardItem)
+    if (error) return SEED_ARTICLES
+    return mergeBySlug(data.map(toCardItem), SEED_ARTICLES)
   } catch {
     return SEED_ARTICLES
   }
 }
 
-// Fetch articles by category — falls back to seed data for that category
+// Fetch articles by category — merged with any not-yet-migrated seed articles for that category
 export async function getArticlesByCategory(category: JournalismCategory) {
   try {
     const { data, error } = await supabaseAdmin
@@ -61,16 +82,14 @@ export async function getArticlesByCategory(category: JournalismCategory) {
       .eq('category', category)
       .eq('status', 'published')
       .order('created_at', { ascending: false })
-    if (error || !data || data.length === 0) {
-      return SEED_ARTICLES.filter((a) => a.category === category)
-    }
-    return data.map(toCardItem)
+    if (error) return SEED_ARTICLES.filter((a) => a.category === category)
+    return mergeBySlug(data.map(toCardItem), SEED_ARTICLES.filter((a) => a.category === category))
   } catch {
     return SEED_ARTICLES.filter((a) => a.category === category)
   }
 }
 
-// Fetch featured articles for homepage
+// Fetch featured articles for homepage — merged with any not-yet-migrated seed articles
 export async function getFeaturedArticles(limit = 4) {
   try {
     const { data, error } = await supabaseAdmin
@@ -80,10 +99,8 @@ export async function getFeaturedArticles(limit = 4) {
       .eq('featured', true)
       .order('created_at', { ascending: false })
       .limit(limit)
-    if (error || !data || data.length === 0) {
-      return SEED_ARTICLES.filter((a) => a.featured).slice(0, limit)
-    }
-    return data.map(toCardItem)
+    if (error) return SEED_ARTICLES.filter((a) => a.featured).slice(0, limit)
+    return mergeBySlug(data.map(toCardItem), SEED_ARTICLES.filter((a) => a.featured)).slice(0, limit)
   } catch {
     return SEED_ARTICLES.filter((a) => a.featured).slice(0, limit)
   }
