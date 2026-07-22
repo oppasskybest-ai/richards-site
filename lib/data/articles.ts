@@ -1,6 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase/server'
 import { SEED_ARTICLES } from '@/lib/config/articles'
 import type { JournalismCategory } from '@/types/journalism'
+import { toAbsoluteUrl } from '@/lib/utils/url'
 
 export interface ArticleRow {
   id: string
@@ -28,7 +29,7 @@ export function toCardItem(a: ArticleRow) {
     slug: a.slug,
     publication: a.publication || '',
     category: a.category,
-    url: a.url || '',
+    url: a.url ? toAbsoluteUrl(a.url) : '',
     date: a.date || a.created_at,
     excerpt: a.excerpt,
     image: a.image,

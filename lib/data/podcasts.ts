@@ -1,6 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase/server'
 import { PODCASTS as STATIC_PODCASTS } from '@/lib/config/podcasts'
 import type { PodcastData } from '@/types/podcasts'
+import { toAbsoluteUrl } from '@/lib/utils/url'
 
 export const revalidate = 60
 
@@ -11,14 +12,15 @@ export const revalidate = 60
 // admin is kept from the static list rather than dropped. This replaces an
 // all-or-nothing fallback that made the entire static list disappear the
 // instant a single podcast was added through the admin panel.
+
 function toPodcastData(row: Record<string, unknown>): PodcastData {
   return {
     id: row.id as string,
     title: row.title as string,
     source: row.source as string,
     description: (row.description as string) || '',
-    url: row.url as string,
-    embedUrl: (row.embed_url as string) || undefined,
+    url: toAbsoluteUrl(row.url as string),
+    embedUrl: row.embed_url ? toAbsoluteUrl(row.embed_url as string) : undefined,
     image: (row.image as string) || undefined,
     date: (row.date as string) || undefined,
   }

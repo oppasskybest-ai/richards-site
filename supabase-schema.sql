@@ -184,9 +184,9 @@ create index if not exists comments_parent_id_idx on comments(parent_id);
 -- 3. TESTIMONIALS
 -- ============================================================
 
--- Homepage / Endorsements page quotes. Currently a single honest
--- placeholder is shown until real quotes are added — see PROGRESS.md.
--- Do not seed this with invented quotes.
+-- Homepage / Endorsements page quotes. Seeded from lib/config/reviews.ts
+-- (real testimonials from randolphrichards.com/endorsements/, not invented)
+-- by /api/admin/seed, then editable from /admin/reviews from there on.
 create table if not exists reviews (
   id uuid primary key default gen_random_uuid(),
   quote text not null,

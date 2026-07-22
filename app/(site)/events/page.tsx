@@ -5,6 +5,7 @@ import SubscribeForm from '@/components/subscribe/SubscribeForm'
 import { supabaseAdmin } from '@/lib/supabase/server'
 import type { Event } from '@/types/database'
 import { STATIC_EVENTS } from '@/lib/config/events'
+import { toAbsoluteUrl } from '@/lib/utils/url'
 
 export const metadata: Metadata = {
   title: 'Conferences',
@@ -293,7 +294,7 @@ export default async function EventsPage() {
                       )}
                       {ev.register_url && (
                         <a
-                          href={ev.register_url}
+                          href={toAbsoluteUrl(ev.register_url)}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{

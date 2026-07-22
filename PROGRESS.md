@@ -10,7 +10,84 @@ missing.
 
 ---
 
-# STATUS AT A GLANCE (2026-07-21, later that night)
+# STATUS AT A GLANCE (2026-07-22)
+
+Session 15: Randy sent the old WordPress site export back for comment
+recovery, flagged that Endorsements and Conferences still weren't
+actually syncing to Supabase (so they couldn't be edited from admin, even
+after the Session 13 merge fix made them *display* correctly), and caught
+a new bug: a book buy link entered without `https://` (e.g.
+"www.amazon.com/...") opened as a broken same-site 404 instead of going
+to Amazon.
+
+**1. Legacy comments recovered.** The old site export's HTML is a scrape
+with cryptic filenames (`index0044.html`, etc) and no folder structure by
+post, so pages had to be matched to articles by exact `<title>` text.
+Found real comment threads (WordPress `id="comment-NNN"` markup) in 151
+of the 465 exported pages. Initial extraction wildly overcounted (one
+article showed "465 comments" against its own page's stated "15
+responses") because the scrape saved ~30 duplicate copies of some pages
+(query-param/AMP/trackback variants) under different filenames -- fixed
+by deduping on the actual WordPress comment id. Also fixed two parsing
+bugs: the site owner's replies wrap the author name in an `<a>` tag
+instead of plain text (so they extracted as blank authors -- now
+correctly attributed to "E. Randolph Richards" and flagged
+`is_owner_reply`), and each comment's "Like" button markup lives *inside*
+the same content `<div>` as the real text, so it was bleeding "LikeLike
+Reply" onto the end of comment bodies -- now stripped before extraction.
+Final result: 56 real comments across 19 articles, correctly threaded
+(parent/child) via document-order depth tracking rather than a naive
+chronological sort, which would have scrambled reply structure. Saved to
+`lib/data/legacy-comments.ts`. Wired into `/api/admin/seed`: runs after
+articles are seeded (so it can resolve each article's real Supabase
+UUID by slug), inserts top-level comments first so replies can reference
+the correct `parent_id`, and dedupes on article_id+author_name+created_at
+so it's safe to re-run.
+
+**2. Endorsements and Conferences never actually reached Supabase.** Both
+had real content -- 6 genuine endorsements, 5 real conference entries --
+but it was sitting as a hardcoded fallback array directly in the page
+component (`app/(site)/reviews/page.tsx`) and `lib/config/events.ts`
+respectively, never migrated into the database. The Session 13 fix made
+them *display* correctly (merged with Supabase instead of an
+all-or-nothing swap) but that was never going to make them *editable*,
+which is what Randy actually needed. Extracted the endorsements out of
+the page component into `lib/config/reviews.ts` (matching the pattern
+already used for books/podcasts/events), and extended `/api/admin/seed`
+to insert both into their tables -- reviews deduped by quote text, events
+deduped by title+date (same key the page's merge logic already uses).
+Also corrected a stale schema comment that said "do not seed this with
+invented quotes" -- these aren't invented, they're the same real
+word-for-word quotes that were already live on the fallback, just
+finally landing in the table they were always meant to be in. Also
+applied the same all-or-nothing-to-merge fix from Session 13 to the
+Endorsements page specifically, since it had its own independent copy of
+that exact bug.
+
+**3. Relative-URL bug, fixed at the root.** A link entered as
+"www.amazon.com/..." (no protocol) is a *relative* href as far as the
+browser is concerned -- clicking it appends the text onto the current
+page's own URL instead of navigating to Amazon, which 404s. Built a
+shared `lib/utils/url.ts` (`toAbsoluteUrl`) and applied it at the
+data-read layer -- not just the admin form -- for every field that holds
+an admin-entered external link: book buy URLs (both), podcast URLs and
+embed URLs, event registration links, and article external URLs (list
+view via `toCardItem`, and the single-article page's direct Supabase
+fetch, which bypassed `toCardItem` entirely and was returning raw
+unnormalized data). Fixing it at the read layer rather than only at entry
+means it also repairs whatever bad data is already sitting in Supabase
+from before this fix existed -- including the exact book Randy already
+created with this problem.
+
+**Build verified properly this time:** installed real `node_modules`,
+ran `npx tsc --noEmit -p .` (zero errors) and then the literal
+`npm run build` Vercel runs, with placeholder secrets standing in for
+Supabase/Resend. Confirmed clean -- every route including
+`/api/admin/seed`, `/reviews`, `/events`, and all book/article pages
+compiles and prerenders. `node_modules`, `.next`, and the placeholder
+`.env.local` removed before repackaging.
+
+
 
 Session 14: the Session 13 merge fix broke the Vercel build. Type error
 in `lib/data/articles.ts`: `mergeBySlug` had a single generic `T` shared

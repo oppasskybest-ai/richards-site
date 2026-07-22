@@ -8,6 +8,8 @@ export const revalidate = 60
 // Convert a Supabase Book row into the BookData shape used across the site.
 // Field names differ slightly (cover_image vs coverImage, buy_url vs buyUrl)
 // so this adapter keeps the public pages free of Supabase-specific field names.
+import { toAbsoluteUrl } from '@/lib/utils/url'
+
 function toBookData(b: Book): BookData {
   return {
     slug: b.slug,
@@ -16,8 +18,8 @@ function toBookData(b: Book): BookData {
     subtitle: b.subtitle,
     description: b.description,
     coverImage: b.cover_image,
-    buyUrl: b.buy_url || '',
-    buyUrl2: b.buy_url_2 || undefined,
+    buyUrl: toAbsoluteUrl(b.buy_url) || '',
+    buyUrl2: b.buy_url_2 ? toAbsoluteUrl(b.buy_url_2) : undefined,
     quotes: Array.isArray(b.quotes) ? b.quotes : [],
   }
 }

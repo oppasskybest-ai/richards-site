@@ -8,6 +8,7 @@ import { SEED_ARTICLES } from '@/lib/config/articles'
 import ArticleComments from '@/components/journalism/ArticleComments'
 import BibleVerseInteractive from '@/components/journalism/BibleVerseInteractive'
 import { wrapBibleRefs } from '@/lib/utils/wrapBibleRefs'
+import { toAbsoluteUrl } from '@/lib/utils/url'
 
 export const revalidate = 60
 
@@ -55,7 +56,13 @@ async function getArticle(category: string, slug: string): Promise<Article | nul
       .eq('content_type', 'native')
       .eq('status', 'published')
       .single()
-    if (!error && data) return data as Article
+    if (!error && data) {
+      return {
+        ...data,
+        url: data.url ? toAbsoluteUrl(data.url) : data.url,
+        pdf_url: data.pdf_url ? toAbsoluteUrl(data.pdf_url) : data.pdf_url,
+      } as Article
+    }
   } catch {
     // Supabase unreachable -- fall through to static content below
   }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import ScrollReveal from '@/components/home/ScrollReveal'
 import { supabaseAdmin } from '@/lib/supabase/server'
+import { STATIC_REVIEWS } from '@/lib/config/reviews'
 
 export const revalidate = 60
 
@@ -17,17 +18,10 @@ type Review = {
 }
 
 // Real endorsements, pulled word-for-word from randolphrichards.com/endorsements/.
-// Used whenever the Supabase `reviews` table is empty/unreachable (i.e. before
-// the DB is provisioned — see PROGRESS.md). Once Supabase is live, real
-// reader-submitted reviews from the DB take precedence over this list.
-const FALLBACK: Review[] = [
-  { id: '1', quote: "Dr. Randy Richards taught me so much about the gospel of John from a new perspective. His teaching gives you insight into John's character and history of the times you didn't know. Dr. Richards has a wonderful way of speaking and making you feel wanting to continue learning. Dr. Richards also has a wonderful humor that puts you at ease.", name: 'Kathy Skinner', location: 'retired IT Director', rating: 5, source: 'reader', book_slug: null },
-  { id: '2', quote: "Dr. Randy Richards is a gifted communicator and teacher of God's Word. He makes the text come alive with his extensive background knowledge, careful exposition, and practical application for today's world.", name: 'Jon Stubblefield', location: 'pastor', rating: 5, source: 'reader', book_slug: null },
-  { id: '3', quote: 'Our presenter, Dr. Randy Richards is an incredible communicator. His biblical knowledge is unsurpassed. His presentations are fresh, extemporaneous, and winsome. It was a very pleasurable experience, and I look forward to hearing him again soon.', name: 'Del Gann', location: 'retired geology professor and pastor', rating: 5, source: 'reader', book_slug: null },
-  { id: '4', quote: "I recently attended an expository Bible conference taught by Dr. Richards. His engaging teaching style and humor held everyone's attention through multiple sessions, and his knowledge of the historical context of the gospels gave me new insights into Jesus' life and ministry.", name: 'Kelly Hardin', location: 'former attorney and current church administrative assistant', rating: 5, source: 'reader', book_slug: null },
-  { id: '5', quote: "Dr. Randy Richards made the 'Life of Jesus' come alive for us while leading our Expository Bible Conference last week. He pointed out some emotions and feelings the biblical characters were likely experiencing in a unique and meaningful presentation of John's Gospel. Attendance by our church members and guests was consistently high and our people were enthusiastic as we were drawn into the narrative through Randy's exciting style of teaching that kept us involved as if we were actually there. We would definitely like to have him return to lead future conferences.", name: 'Johnny Ross', location: 'Church Planter, Coronado Baptist Church, Hot Springs Village, Arkansas', rating: 5, source: 'reader', book_slug: null },
-  { id: '6', quote: 'Dr. Richards teaches the hidden insights of antiquity into the life and times of Christ, presented in an enduring colloquial style. You will leave the conference in exhilarating wonderment, as if you have had a personal encounter with Jesus.', name: 'Gregg Cudworth', location: 'retired pharmacist and pastor', rating: 5, source: 'reader', book_slug: null },
-]
+// Defined in lib/config/reviews.ts (also used by /api/admin/seed to migrate
+// these into Supabase so they're editable from /admin/reviews instead of
+// only ever showing as read-only fallback text).
+const FALLBACK: Review[] = STATIC_REVIEWS.map((r) => ({ ...r, source: 'reader' as const, book_slug: null }))
 
 async function getAllReviews(): Promise<Review[]> {
   try {
@@ -35,15 +29,24 @@ async function getAllReviews(): Promise<Review[]> {
       supabaseAdmin.from('reviews').select('id,quote,name,location,rating').eq('status','approved').order('created_at',{ascending:false}),
       supabaseAdmin.from('book_reviews').select('id,reviewer,body,country,rating,book_slug').eq('status','approved').order('created_at',{ascending:false}),
     ])
-    const visitor: Review[] = (v||[]).map(r => ({ id:r.id, quote:r.quote, name:r.name, location:r.location||'', rating:r.rating||5, source:'reader', book_slug:null }))
-    const amazon: Review[] = (b||[]).map(r => ({ id:r.id, quote:r.body, name:r.reviewer, location:r.country||'', rating:r.rating||5, source:'amazon', book_slug:r.book_slug }))
+    const visitor: Review[] = (v||[]).map(r => ({ id:r.id, quote:r.quote, name:r.name, location:r.location||'', rating:r.rating||5, source:'reader' as const, book_slug:null }))
+    const amazon: Review[] = (b||[]).map(r => ({ id:r.id, quote:r.body, name:r.reviewer, location:r.country||'', rating:r.rating||5, source:'amazon' as const, book_slug:r.book_slug }))
+
+    // Merge the static endorsements in by quote text rather than an
+    // all-or-nothing swap -- once these are seeded into Supabase they'll
+    // naturally show up in `visitor` and get deduped out here; until then
+    // (or if Supabase is briefly unreachable) they still show rather than
+    // the whole endorsements page going empty.
+    const knownQuotes = new Set([...visitor, ...amazon].map(r => r.quote))
+    const missingStatic = FALLBACK.filter(r => !knownQuotes.has(r.quote))
+
     const merged: Review[] = []
     const max = Math.max(visitor.length, amazon.length)
     for (let i = 0; i < max; i++) {
       if (amazon[i]) merged.push(amazon[i])
       if (visitor[i]) merged.push(visitor[i])
     }
-    return merged.length > 0 ? merged : FALLBACK
+    return [...merged, ...missingStatic]
   } catch { return FALLBACK }
 }
 
